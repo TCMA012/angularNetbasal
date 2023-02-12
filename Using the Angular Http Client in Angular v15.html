@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-02-12T15:31:52.357899781"/>
+	<meta name="changed" content="2023-02-12T15:44:44.405660465"/>
+	<style type="text/css">
+		h1.cjk { font-family: "Noto Serif CJK SC" }
+		h1.ctl { font-family: "Lohit Devanagari" }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		h2.cjk { font-family: "Noto Serif CJK SC" }
+		h2.ctl { font-family: "Lohit Devanagari" }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+	</style>
+</head>
+<body lang="en-CA" dir="ltr"><p style="margin-bottom: 0cm; font-weight: normal; line-height: 0.44cm">
+<font color="#757575"><font face="sohne, Helvetica Neue, Helvetica, Arial, sans-serif"><font size="1" style="font-size: 8pt">https://netbasal.com/using-the-angular-http-client-in-angular-v15-f4bec3c11926</font></font></font></p>
+<p style="margin-bottom: 0cm; font-weight: normal; line-height: 0.44cm">
+<font color="#757575"><font face="sohne, Helvetica Neue, Helvetica, Arial, sans-serif"><font size="1" style="font-size: 8pt">Oct
+25, 2022</font></font></font></p>
+<p style="margin-bottom: 0cm; font-weight: normal; line-height: 0.44cm">
+<span style="display: inline-block; border: none; padding: 0cm"><font face="sohne, Helvetica Neue, Helvetica, Arial, sans-serif"><font size="1" style="font-size: 8pt"><font color="#757575">·</span></font></font></font></p>
+<h1 class="western"><a name="43f21"></a>Using the Angular Http Client
+in Angular v15</h1>
+<p><br/>
+<br/>
+
+</p>
+<p><a name="6bfd"></a>As part of the new standalone feature, Angular
+<code class="western">v15</code> introduces a new method to use the
+Http client API that doesn’t require using <code class="western">HttpClientModule</code>:</p>
+<pre class="western">import {
+  provideHttpClient,
+  withJsonpSupport,
+  withXsrfConfiguration
+} from '@angular/common/http';
+import { bootstrapApplication } from '@angular/platform-browser';
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideHttpClient(
+      withXsrfConfiguration({ cookieName: '', headerName: '' }),
+      withJsonpSupport()
+    ),
+  ],
+})</pre><p style="margin-bottom: 0cm">
+<a href="https://gist.github.com/NetanelBasal/40879e5466ac778c44706757cf5309f0#file-http-v15-1-ts">http-v15-1.ts</a></p>
+<p><br/>
+<br/>
+
+</p>
+<p>As with the <a href="https://netbasal.com/using-the-angular-router-api-without-routermodule-2d415e9d5e84" target="_blank">Router</a>
+API, the new API exposes a <code class="western">provideHttpClient</code>
+function that takes the <code class="western">features</code> we want
+to use. Using interceptors is now made easier with a new feature
+function called <code class="western">withInterceptors()</code>. It
+accepts a list of interceptor functions we want to use:</p>
+<pre class="western">import {
+  provideHttpClient,
+  withInterceptors
+} from '@angular/common/http';
+import { bootstrapApplication } from '@angular/platform-browser';
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideHttpClient(
+      withInterceptors([
+       (req, next) =&gt; {
+          // We can use the inject() function inside this function
+          // For example: inject(AuthService)
+          return next(req);
+        },
+      ])
+    ),
+  ],
+})
+<a href="https://gist.github.com/NetanelBasal/0523b3114c7d6fb67361b9eba661642c#file-http-v15-2-ts">http-v15-2.ts</a></pre><p>
+<br/>
+<br/>
+
+</p>
+<p><a name="7ed1"></a>If you still want to use the current
+interceptors without changing your code, you can provide the
+<code class="western">withInterceptorsFromDi()</code> feature:</p>
+<pre class="western">import {
+  HTTP_INTERCEPTORS,
+  provideHttpClient,
+  withInterceptors,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
+import { bootstrapApplication } from '@angular/platform-browser';
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    provideHttpClient(
+      withInterceptorsFromDi(),
+      withInterceptors([
+        (req, next) =&gt; {
+          return next(req);
+        },
+      ])
+    ),
+  ],
+});</pre><p>
+<a href="https://gist.github.com/NetanelBasal/49f3eb17dcc4c35bf045fdae63c7f419#file-http-v15-3-ts">http-v15-3.ts</a></p>
+<h2 class="western">Interceptors in Lazy Loaded Modules</h2>
+<p><a name="9c9a"></a>The ability to define interceptors in
+lazy-loaded modules has been <a href="https://github.com/angular/angular/issues/20575" target="_blank">requested</a>
+for a long time. A new <em>developer preview</em> feature in this
+version of Angular makes this possible to do it. We can use the
+<code class="western">withRequestsMadeViaParent()</code> feature in
+our lazy loaded <a href="https://netbasal.com/getting-to-know-the-environment-initializer-injection-token-in-angular-9622cb824f57" target="_blank">routes</a>
+and modules: 
+</p>
+<pre class="western">bootstrapApplication(AppComponent, {
+  providers: [
+    provideHttpClient(
+      withInterceptors([
+        (req, next) =&gt; {
+          console.log('Global interceptor');
+          return next(req);
+        },
+      ])
+    ),
+    provideRouter([
+      { path: '', component: HomeComponent },
+      {
+        path: 'todos',
+        loadChildren() {
+          return import('./app/todos/todos.routes');
+        },
+      },
+    ]),
+  ],
+});</pre><p>
+<a href="https://gist.github.com/NetanelBasal/546e40b6386ccadbbeb25505b111d7da#file-http-v15-4-ts">http-v15-4.ts</a></p>
+<pre class="western">import {
+  provideHttpClient,
+  withRequestsMadeViaParent,
+  withInterceptors,
+} from '@angular/common/http';
+
+export default [
+  {
+    path: '',
+    providers: [
+      provideHttpClient(
+        // 👇👇👇👇
+        withRequestsMadeViaParent(),
+        withInterceptors([
+          (req, next) =&gt; {
+            console.log('TodosComponent Interceptors');
+            return next(req);
+          },
+        ])
+      ),
+    ],
+    loadComponent() {
+      return import('./todos/todos.component');
+    },
+  },
+];</pre><p>
+<a href="https://gist.github.com/NetanelBasal/546e40b6386ccadbbeb25505b111d7da#file-http-v15-5-ts">http-v15-5.ts</a></p>
+<p><br/>
+<br/>
+
+</p>
+<p><a name="7932"></a>In the above case, each request initiated by
+the <code class="western">TodoComponent</code> and its children will
+use both the <strong>inline</strong> and the <strong>global</strong>
+interceptors 🙌 (inline runs first)</p>
+<p><a name="7a1f"></a>In tests, we can use the
+<code class="western">provideHttpClientTesting()</code> function.</p>
+</body>
+</html>
