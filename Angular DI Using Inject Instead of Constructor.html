@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-02-21T20:02:16.717985300"/>
+	<meta name="changed" content="2023-02-21T20:11:05.419270944"/>
+	<style type="text/css">
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+	</style>
+</head>
+<body lang="en-CA" dir="ltr"><h1><font size="4" style="font-size: 16pt">Angular
+DI: Using Inject Instead of Constructor</font></h1>
+<p><font size="3" style="font-size: 12pt">https://netbasal.com/angular-di-using-inject-instead-of-constructor-d0782d434fb1</font></p>
+<p><font size="3" style="font-size: 12pt">Netanel Basal</font></p>
+<p><font size="3" style="font-size: 12pt">Sep 2, 2022</font></p>
+<p><font size="3" style="font-size: 12pt">As we learned in my
+<a href="https://netbasal.com/unleash-the-power-of-di-functions-in-angular-2eb9f2697d66" target="_blank">previous</a>
+article, we can now use the <code class="western">inject()</code>
+function inside components, directives, and pipes. Here are the
+reasons I chose it over the <code class="western">constructor</code>
+for dependency injection. The first thing I noticed is that it is
+cleaner and more readable:</font></p>
+<pre class="western"><font size="3" style="font-size: 12pt">export class AppComponent {</font>
+  <font size="3" style="font-size: 12pt">constructor(</font>
+    <font size="3" style="font-size: 12pt">@Inject(FOO) private foo: string,</font>
+    <font size="3" style="font-size: 12pt">@Optional() @Inject(BAR) private bar: string | null,</font>
+    <font size="3" style="font-size: 12pt">private http: HttpClient,</font>
+    <font size="3" style="font-size: 12pt">private todosService: TodosService</font>
+  <font size="3" style="font-size: 12pt">) { }</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/169411c666113d72e6fb7d237b1a6cbb#file-inject-vs-con-1-ts">inject-vs-con-1.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<pre class="western"><font size="3" style="font-size: 12pt">export class AppComponent {</font>
+  <font size="3" style="font-size: 12pt">private foo = inject(FOO)</font>
+  <font size="3" style="font-size: 12pt">private bar = inject(BAR, { optional: true })</font>
+  <font size="3" style="font-size: 12pt">private http = inject(HttpClient);</font>
+  <font size="3" style="font-size: 12pt">private todosService = inject(TodosService);</font>
+<font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt"><font face="Liberation Serif, serif"><a href="https://gist.github.com/NetanelBasal/cdb608bec3890f8e767c42ca15cd9da8#file-inject-vs-con-2-ts">inject-vs-con-2.ts </a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></font>
+<font size="3" style="font-size: 12pt"><font face="Liberation Serif, serif">Next, the provider’s type is automatically inferred:</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">export class AppComponent {</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">private foo = inject(FOO) // typed as string</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">private bar = inject(BAR, { optional: true }) // typed as string | null</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">private http = inject(HttpClient) // typed as HttpClient</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">private todosService = inject(TodosService) // typed as TodosService</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font>
+<font size="3" style="font-size: 12pt"><font face="Liberation Serif, serif"><a href="https://gist.github.com/NetanelBasal/02ab79c17bac59659a071b631fc0c888#file-inject-vs-con-3-ts">inject-vs-con-3.ts </a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></font>
+
+<font size="3" style="font-size: 12pt">Additionally, <code class="western">directiveInject()</code> is used in the compiled code anyway:</font>
+<font size="3" style="font-size: 12pt">AppComponent.ɵfac = function AppComponent_Factory(t) {</font>
+  <font size="3" style="font-size: 12pt">return new (t || AppComponent)(</font>
+    <font size="3" style="font-size: 12pt">_angular_core__WEBPACK_IMPORTED_MODULE_0__[&quot;ɵɵdirectiveInject&quot;](FOO),</font>
+    <font size="3" style="font-size: 12pt">_angular_core__WEBPACK_IMPORTED_MODULE_0__[&quot;ɵɵdirectiveInject&quot;](BAR, 8),</font>
+    <font size="3" style="font-size: 12pt">_angular_core__WEBPACK_IMPORTED_MODULE_0__[&quot;ɵɵdirectiveInject&quot;](</font>
+      <font size="3" style="font-size: 12pt">_angular_common_http__WEBPACK_IMPORTED_MODULE_1__.HttpClient</font>
+    <font size="3" style="font-size: 12pt">),</font>
+    <font size="3" style="font-size: 12pt">...</font>
+  <font size="3" style="font-size: 12pt">);</font>
+<font size="3" style="font-size: 12pt">};</font></pre><p>
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/69a83f066af5b664f5d266ed5117505e#file-inject-vs-con-6-ts">inject-vs-con-6.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p><br/>
+<br/>
+
+</p>
+<p><a name="5c68"></a><font size="3" style="font-size: 12pt">Moreover,
+the param decorator isn’t part of the <code class="western">tc39</code>
+<a href="https://github.com/tc39/proposal-decorators" target="_blank">spec</a>.</font></p>
+<p><a name="2da0"></a>Lastly, the Angular team appears to be heading
+that way. We can see the <code class="western">inject()</code> usage
+in the new <code class="western"><a href="https://netbasal.com/using-angular-ngoptimizedimage-to-implement-image-loading-best-practices-e20a69d71ea3" target="_blank">NgOptimizedImage</a></code>
+directive, for <a href="https://github.com/angular/angular/blob/main/packages/common/src/directives/ng_optimized_image/ng_optimized_image.ts#L167-L170" target="_blank">example</a>:</p>
+<p><br/>
+<br/>
+
+</p>
+<pre class="western"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">@Directive({</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">standalone: true,</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">selector: 'img[rawSrc]',</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">})</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">export class NgOptimizedImage implements OnInit, OnChanges, OnDestroy {</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">private imageLoader = inject(IMAGE_LOADER);</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">private renderer = inject(Renderer2);</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">private imgElement: HTMLImageElement = inject(ElementRef).nativeElement;</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">private injector = inject(Injector);</font></font>
+  
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">...</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font></pre><p>
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/7b65d6eca0c30cb25e979af0f474cbc1#file-inject-vs-con-4-ts">inject-vs-con-4.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p><font size="3" style="font-size: 12pt">My main concern is
+<strong>consistency</strong>. I’d like to see an <code class="western">eslint</code>
+plugin that helps with that.</font></p>
+<p><br/>
+<br/>
+
+</p>
+</body>
+</html>

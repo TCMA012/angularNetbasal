@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-02-23T21:19:46.865181792"/>
+	<meta name="changed" content="2023-02-23T21:45:58.259469851"/>
+	<style type="text/css">
+		@page { size: 21.59cm 27.94cm; margin: 2cm }
+		p { margin-bottom: 0.25cm; line-height: 115%; background: transparent }
+		h1 { margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h1.western { font-family: "Liberation Serif", serif; font-size: 24pt; font-weight: bold }
+		h1.cjk { font-family: "Noto Serif CJK SC"; font-size: 24pt; font-weight: bold }
+		h1.ctl { font-family: "Lohit Devanagari"; font-size: 24pt; font-weight: bold }
+		h2 { margin-top: 0.35cm; margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h2.western { font-family: "Liberation Serif", serif; font-size: 18pt; font-weight: bold }
+		h2.cjk { font-family: "Noto Serif CJK SC"; font-size: 18pt; font-weight: bold }
+		h2.ctl { font-family: "Lohit Devanagari"; font-size: 18pt; font-weight: bold }
+		h3 { margin-top: 0.25cm; margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h3.western { font-family: "Liberation Serif", serif; font-size: 14pt; font-weight: bold }
+		h3.cjk { font-family: "Noto Serif CJK SC"; font-size: 14pt; font-weight: bold }
+		h3.ctl { font-family: "Lohit Devanagari"; font-size: 14pt; font-weight: bold }
+		pre { background: transparent }
+		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace; font-size: 10pt }
+		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		a:link { color: #000080; so-language: zxx; text-decoration: underline }
+		a:visited { color: #800000; so-language: zxx; text-decoration: underline }
+		code.western { font-family: "Liberation Mono", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.ctl { font-family: "Liberation Mono", monospace }
+	</style>
+</head>
+<body lang="en-CA" link="#000080" vlink="#800000" dir="ltr"><h1 class="western">
+<font size="4" style="font-size: 16pt">Accessible Lists Made Easy
+Using the Angular CDK Listbox Module</font></h1>
+<p style="margin-bottom: 0cm; line-height: 100%">Netanel Basal</p>
+<p style="margin-bottom: 0cm; line-height: 100%">Aug 22, 2022</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><a href="https://netbasal.com/accessible-lists-made-easy-using-the-angular-cdk-listbox-module-62ec21691742">https://netbasal.com/accessible-lists-made-easy-using-the-angular-cdk-listbox-module-62ec21691742</a></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">Although
+we get most of the functionality from Angular CDK, we need to write
+quite a bit of code to build accessible lists. One of my previous
+articles discusses it in more detail:</font></p>
+<h2 class="western"><a name="d488"></a><a href="https://netbasal.com/accessibility-made-easy-with-angular-cdk-1caaf3d98de2" target="_blank"><font size="3" style="font-size: 12pt">Accessibility
+Made Easy with Angular CDK</font></a></h2>
+<h3 class="western"><a href="https://netbasal.com/accessibility-made-easy-with-angular-cdk-1caaf3d98de2" target="_blank"><font size="3" style="font-size: 12pt">Keyboard
+focus and navigation are essential when developing for the accessible
+web. Many users rely on a keyboard when…</font></a></h3>
+<p><a href="https://netbasal.com/accessibility-made-easy-with-angular-cdk-1caaf3d98de2" target="_blank"><font size="3" style="font-size: 12pt">netbasal.com</font></a></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p><a name="9223"></a><font size="3" style="font-size: 12pt">Fortunately,
+starting from version </font><code class="western"><font size="3" style="font-size: 12pt">14.2.0</font></code><font size="3" style="font-size: 12pt">,
+this is made seamless by the Angular CDK. A new module named
+</font><code class="western"><font size="3" style="font-size: 12pt">@angular/cdk/listbox</font></code><font size="3" style="font-size: 12pt">
+provides directives to help create accessible custom list boxes.</font></p>
+<p><a name="2a68"></a><font size="3" style="font-size: 12pt">To use
+it, we need to import the </font><code class="western"><font size="3" style="font-size: 12pt">CdkListboxModule</font></code><font size="3" style="font-size: 12pt">,
+which provides two directives — </font><code class="western"><font size="3" style="font-size: 12pt">cdkListbox</font></code><font size="3" style="font-size: 12pt">
+and </font><code class="western"><font size="3" style="font-size: 12pt">cdkOption</font></code><font size="3" style="font-size: 12pt">:</font></p>
+<pre class="western"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">&lt;div&gt;</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">&lt;h5&gt;Courses&lt;/h5&gt;</font></font>
+  
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">&lt;ul cdkListbox&gt;</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">&lt;li cdkOption=&quot;angular&quot;&gt;Angular&lt;/li&gt;</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">&lt;li cdkOption=&quot;react&quot;&gt;React&lt;/li&gt;</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">&lt;li cdkOption=&quot;solid&quot;&gt;Solid&lt;/li&gt;</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">&lt;/ul&gt;</font></font>
+  
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">&lt;/div&gt;</font></font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/42b859b68fb092664ab598f3dec916c9#file-listbox-1-html">listbox-1.html
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><img src="Accessible%20Lists%20Made%20Easy%20Using%20the%20Angular%20CDK%20Listbox%20Module_html_70a0c9092b99ff43.gif" name="Image1" align="left" width="796" height="311" border="0"/>
+<br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p><a name="7b85"></a><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">These
+two directives give us all the expected behavior for an accessible
+experience, such as bidi layout support and keyboard interaction. In
+addition, all directives apply their associated ARIA roles to their
+host elements.</font></font></p>
+<p><a name="ab64"></a><font face="Liberation Serif, serif">There is
+also support for Angular forms, disabling options, custom styles,
+orientation, options typehead, multiple selects, and more!</font></p>
+<p><a name="e21d"></a><font face="Liberation Serif, serif">Each
+feature has an example in the official repository:</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<h2 class="western"><a name="e21d1"></a><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt"><a href="https://github.com/angular/components/tree/main/src/components-examples/cdk/listbox" target="_blank">components/src/components-examples/cdk/listbox
+at main · angular/components</a></font></font></h2>
+<h3 class="western"><a href="https://github.com/angular/components/tree/main/src/components-examples/cdk/listbox" target="_blank">Component
+infrastructure and Material Design components for Angular -
+components/src/components-examples/cdk/listbox at…</a></h3>
+<p><a href="https://github.com/angular/components/tree/main/src/components-examples/cdk/listbox" target="_blank">github.com</a></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">And
+the official docs:</font></font></p>
+<h2 class="western"><a name="cce2"></a><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt"><a href="https://github.com/angular/components/blob/main/src/cdk/listbox/listbox.md" target="_blank">components/listbox.md
+at main · angular/components</a></font></font></h2>
+<h3 class="western"><a href="https://github.com/angular/components/blob/main/src/cdk/listbox/listbox.md" target="_blank">The
+@angular/cdk/listbox module provides directives to help create custom
+listbox interactions based on the WAI ARIA…</a></h3>
+<p><a href="https://github.com/angular/components/blob/main/src/cdk/listbox/listbox.md" target="_blank">github.com</a></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+</body>
+</html>

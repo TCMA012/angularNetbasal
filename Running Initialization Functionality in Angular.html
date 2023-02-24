@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-02-21T19:44:45.905154745"/>
+	<meta name="changed" content="2023-02-21T19:57:57.464802248"/>
+	<style type="text/css">
+		@page { margin: 2cm }
+		p { margin-bottom: 0.25cm; line-height: 115% }
+		h1 { margin-bottom: 0.21cm }
+		h1.western { font-family: "Liberation Serif", serif }
+		h1.cjk { font-family: "Noto Serif CJK SC"; font-size: 24pt }
+		h1.ctl { font-family: "Lohit Devanagari"; font-size: 24pt }
+		h2.cjk { font-family: "Noto Serif CJK SC" }
+		h2.ctl { font-family: "Lohit Devanagari" }
+		h3.cjk { font-family: "Noto Serif CJK SC" }
+		h3.ctl { font-family: "Lohit Devanagari" }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		a:link { so-language: zxx }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+	</style>
+</head>
+<body lang="en-CA" dir="ltr"><h1 class="western"><font size="5" style="font-size: 18pt">Running
+Initialization Functionality in Angular</font></h1>
+<p><font size="3" style="font-size: 12pt">https://netbasal.com/running-initialization-functionality-in-angular-312d0b3c141f</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%">Netanel Basal</p>
+<p style="margin-bottom: 0cm; line-height: 100%">Sep 19, 2022</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p><a name="2dda"></a><font size="3" style="font-size: 12pt">In one
+of my <a href="https://netbasal.com/spring-cleaning-time-dont-let-global-functionality-clutter-up-your-angular-app-d013faa71a?source=friends_link&amp;sk=fdb72c6dc9510b40e628b9f204534a3d" target="_blank">previous</a>
+articles, I showed how to run a global functionality without
+cluttering up your components. Now that we have the
+</font><code class="western"><font size="3" style="font-size: 12pt">ENVIRONMENT_INITIALIZER</font></code><font size="3" style="font-size: 12pt">
+provider let’s look at how I use it on both the root and feature
+components. In case you are unfamiliar with this provider, you can
+read my previous article:</font></p>
+<h2 class="western"><a href="https://netbasal.com/getting-to-know-the-environment-initializer-injection-token-in-angular-9622cb824f57" target="_blank"><font size="3" style="font-size: 12pt">Getting
+to know the ENVIRONMENT_INITIALIZER Injection Token in Angular</font></a></h2>
+<h3 class="western"><a href="https://netbasal.com/getting-to-know-the-environment-initializer-injection-token-in-angular-9622cb824f57" target="_blank"><font size="3" style="font-size: 12pt">The
+environment injector is a generalized version of NgModuleRef, which
+is also known as the “module </font></a>
+</h3>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">In
+my application, I’ve created a function named <code class="western">attachInitEffect</code>,
+which takes an <code class="western">init</code> function and
+registers it in the <code class="western">ENVIRONMENT_INITIALIZER</code>
+token:</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">import { ENVIRONMENT_INITIALIZER, Provider } from '@angular/core';</font></font>
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">export function attachInitEffect(fn: VoidFunction): Provider {</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">return {</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">multi: true,</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">provide: ENVIRONMENT_INITIALIZER,</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">useValue: fn,</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">};</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/c1db12e41e775ecf1589fab2103df977#file-attachiniteffect-1-ts">attachInitEffect-1.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">Let’s
+use the <code class="western">offline</code> use case example from
+the previous article with this function:</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">export const OFFLINE_INIT = attachInitEffect(() =&gt; {</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const toast = inject(ToastService);</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const window = inject(WINDOW);</font></font>
+
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">window.addEventListener('offline', () =&gt; {</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">toast.warning('There is no internet connection', {</font></font>
+      <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">duration: 10_000,</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">})</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">})</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">})</font></font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt"><font face="Liberation Serif, serif"><a href="https://gist.github.com/NetanelBasal/e2459388d083d46564c6d3e44d7e9505#file-attachiniteffect-2-ts">attachInitEffect-2.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">And
+register it in the <code class="western">bootstrapApplication</code>
+providers:</font></font></p>
+<pre class="western"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">bootstrapApplication(AppComponent, {</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">providers: [</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">OFFLINE_INIT</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">]</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">})</font></font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt"><font face="Liberation Serif, serif"><a href="https://gist.github.com/NetanelBasal/10fcb90820ac930594471966a7b078eb#file-attachiniteffect-3-ts">attachInitEffect-3.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt"><font face="Liberation Serif, serif">That’s
+all. I also use it to register and lazy load specific SVG icons I
+need on my pages instead of polluting the component:</font></font></font></p>
+<pre class="western"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">// users.routes.ts</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">import { SvgIconRegistry } from '@ngneat/svg-icon';</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">import { addGroupIcon, removeGroupIcon } from '@app/svg';</font></font>
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const ICONS_INIT = attachInitEffect(() =&gt; {</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">inject(SvgIconRegistry).register([</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">addGroupIcon,</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">removeGroupIcon</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">])</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">})</font></font>
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">export const ROUTES = [{</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">path: '',</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">component: UsersPageComponent,</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">// 👇👇👇</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">providers: [ICONS_INIT]</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}]</font></font>
+
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">// routes.ts</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">{</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">path: 'users',</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">loadChildren: () =&gt; import('@app/users').then(m =&gt; m.ROUTES)</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt"><font face="Liberation Serif, serif"><a href="https://gist.github.com/NetanelBasal/31cc8ca37b5f2b87e0255cb39799001e#file-attachiniteffect-4-ts">attachInitEffect-4.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt"><font face="Liberation Serif, serif">For
+additional use cases, please refer to the <a href="https://netbasal.com/spring-cleaning-time-dont-let-global-functionality-clutter-up-your-angular-app-d013faa71a?source=friends_link&amp;sk=fdb72c6dc9510b40e628b9f204534a3d" target="_blank">previous</a>
+article.</font></font></font></p>
+</body>
+</html>

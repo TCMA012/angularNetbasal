@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-02-23T21:48:12.094805336"/>
+	<meta name="changed" content="2023-02-23T21:53:51.919677314"/>
+	<style type="text/css">
+		@page { size: 21.59cm 27.94cm; margin: 2cm }
+		p { margin-bottom: 0.25cm; line-height: 115%; background: transparent }
+		h1 { margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h1.western { font-family: "Liberation Serif", serif; font-size: 24pt; font-weight: bold }
+		h1.cjk { font-family: "Noto Serif CJK SC"; font-size: 24pt; font-weight: bold }
+		h1.ctl { font-family: "Lohit Devanagari"; font-size: 24pt; font-weight: bold }
+		pre { background: transparent }
+		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace; font-size: 10pt }
+		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		a:link { color: #000080; so-language: zxx; text-decoration: underline }
+		a:visited { color: #800000; so-language: zxx; text-decoration: underline }
+		code.western { font-family: "Liberation Mono", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.ctl { font-family: "Liberation Mono", monospace }
+	</style>
+</head>
+<body lang="en-CA" link="#000080" vlink="#800000" dir="ltr"><h1 class="western">
+<a href="https://netbasal.com/using-the-angular-router-api-without-routermodule-2d415e9d5e84?source=collection_home---------16----------------------------" target="_blank"><font size="4" style="font-size: 16pt">Using
+the Angular Router API without RouterModule</font></a></h1>
+<p style="margin-bottom: 0cm; line-height: 100%">Netanel Basal</p>
+<p style="margin-bottom: 0cm; line-height: 100%">Aug 17, 2022</p>
+<p><a name="8d42"></a>As part of the new standalone feature, Angular
+<code class="western">v14.2.0</code> introduces a new method to use
+the Router API that doesn’t require using <code class="western">RouterModule</code>.</p>
+<p><a name="91fc"></a>Using the <code class="western">RouterModule</code>,
+we pass extra options through a <code class="western">config</code>
+object, for example:</p>
+<pre class="western"><font size="3" style="font-size: 12pt">RouterModule.forRoot(appRoutes, {</font>
+  <font size="3" style="font-size: 12pt">enableTracing: true,</font>
+  <font size="3" style="font-size: 12pt">preloadingStrategy: Strategy,</font>
+  <font size="3" style="font-size: 12pt">...</font>
+<font size="3" style="font-size: 12pt">})</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<a href="https://gist.github.com/NetanelBasal/5702a299b388a6a88bee426bca4b9016#file-routermodule-forroot-ts">RouterModule-forroot.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%">We can now use these
+options by using feature functions:</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western"><font size="3" style="font-size: 12pt">import { provideRouter, withDebugTracing, withPreloading, ... } from '@angular/router';</font>
+
+<font size="3" style="font-size: 12pt">bootstrapApplication(AppComponent, {</font>
+  <font size="3" style="font-size: 12pt">providers: [</font>
+    <font size="3" style="font-size: 12pt">provideRouter(</font>
+      <font size="3" style="font-size: 12pt">appRoutes, </font>
+      <font size="3" style="font-size: 12pt">withDebugTracing(), </font>
+      <font size="3" style="font-size: 12pt">withInMemoryScrolling(options?)</font>
+      <font size="3" style="font-size: 12pt">withDisabledInitialNavigation(),</font>
+      <font size="3" style="font-size: 12pt">withEnabledBlockingInitialNavigation(),</font>
+      <font size="3" style="font-size: 12pt">withPreloading(preloadingStrategy),</font>
+      <font size="3" style="font-size: 12pt">withRouterConfig(routerConfigOptions)</font>
+    <font size="3" style="font-size: 12pt">),</font>
+  <font size="3" style="font-size: 12pt">],</font>
+<font size="3" style="font-size: 12pt">});</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<a href="https://gist.github.com/NetanelBasal/2e2984b33d90a761a12bfd3d97221051#file-providerouter-ts">provideRouter.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p><a name="5cfb"></a>The significant benefit of using this approach
+is that these features are now tree-shakable.</p>
+<p><br/>
+<br/>
+
+</p>
+<p style="page-break-before: always"><a name="1de9"></a>In tests, we
+can use the <code class="western">provideRouterForTesting()</code>
+function as follows:</p>
+<pre class="western"><font size="3" style="font-size: 12pt">beforeEach(() =&gt; {</font>
+  <font size="3" style="font-size: 12pt">TestBed.configureTestingModule({</font>
+    <font size="3" style="font-size: 12pt">providers: [</font>
+      <font size="3" style="font-size: 12pt">provideRouterForTesting(</font>
+        <font size="3" style="font-size: 12pt">testRoutes,</font>
+        <font size="3" style="font-size: 12pt">withDebugTracing(),</font>
+        <font size="3" style="font-size: 12pt">withRouterConfig({ paramsInheritanceStrategy: 'always' })</font>
+      <font size="3" style="font-size: 12pt">),</font>
+    <font size="3" style="font-size: 12pt">],</font>
+  <font size="3" style="font-size: 12pt">});</font>
+<font size="3" style="font-size: 12pt">});</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<a href="https://gist.github.com/NetanelBasal/6a22d91ac53e7f4c9095fcf8933179f2#file-providerouterfortesting-ts">provideRouterForTesting.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+</body>
+</html>
