@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-02-24T20:55:35.825857497"/>
+	<meta name="changed" content="2023-02-24T21:08:08.429449315"/>
+	<style type="text/css">
+		@page { size: 21.59cm 27.94cm; margin: 2cm }
+		p { margin-bottom: 0.25cm; line-height: 115%; background: transparent }
+		h1 { margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h1.western { font-family: "Liberation Serif", serif; font-size: 24pt; font-weight: bold }
+		h1.cjk { font-family: "Noto Serif CJK SC"; font-size: 24pt; font-weight: bold }
+		h1.ctl { font-family: "Lohit Devanagari"; font-size: 24pt; font-weight: bold }
+		pre { background: transparent }
+		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace; font-size: 10pt }
+		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		h2 { margin-top: 0.35cm; margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h2.western { font-family: "Liberation Serif", serif; font-size: 18pt; font-weight: bold }
+		h2.cjk { font-family: "Noto Serif CJK SC"; font-size: 18pt; font-weight: bold }
+		h2.ctl { font-family: "Lohit Devanagari"; font-size: 18pt; font-weight: bold }
+		h3 { margin-top: 0.25cm; margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h3.western { font-family: "Liberation Serif", serif; font-size: 14pt; font-weight: bold }
+		h3.cjk { font-family: "Noto Serif CJK SC"; font-size: 14pt; font-weight: bold }
+		h3.ctl { font-family: "Lohit Devanagari"; font-size: 14pt; font-weight: bold }
+		a:link { color: #000080; so-language: zxx; text-decoration: underline }
+		a:visited { color: #800000; so-language: zxx; text-decoration: underline }
+		code.western { font-family: "Liberation Mono", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.ctl { font-family: "Liberation Mono", monospace }
+	</style>
+</head>
+<body lang="en-CA" link="#000080" vlink="#800000" dir="ltr"><h1 class="western">
+<font size="4" style="font-size: 16pt">Add Keyboard Shortcuts to Your
+Angular App</font></h1>
+<p><font size="3" style="font-size: 12pt">https://netbasal.com/add-keyboard-shortcuts-to-your-angular-app-9bf2e89862b3</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">Netanel
+Basal</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">Aug
+10, 2022</font></p>
+<p><a name="86ed"></a><font size="4" style="font-size: 16pt"><font size="3" style="font-size: 12pt">Angular
+provides a special syntax for registering keyboard events. A keyboard
+event can be bound to a specific </font><code class="western"><a href="https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values" target="_blank"><font size="3" style="font-size: 12pt">key</font></a></code><font size="3" style="font-size: 12pt">
+or </font><code class="western"><a href="https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_code_values" target="_blank"><font size="3" style="font-size: 12pt">code</font></a></code><font size="3" style="font-size: 12pt">.
+It’s assumed by default that you’ll use the </font><code class="western"><font size="3" style="font-size: 12pt">key</font></code><font size="3" style="font-size: 12pt">
+field on the keyboard event.</font></font></p>
+<p><a name="3f3c"></a><font size="3" style="font-size: 12pt">Combinations
+of keys can be used by separating them with a </font><code class="western"><font size="3" style="font-size: 12pt">period</font></code><font size="3" style="font-size: 12pt">.
+For example, </font><code class="western"><font size="3" style="font-size: 12pt">keydown.enter</font></code><font size="3" style="font-size: 12pt">
+allows binding events to the </font><code class="western"><font size="3" style="font-size: 12pt">enter</font></code><font size="3" style="font-size: 12pt">
+key. We can also use modifier keys, such as </font><code class="western"><font size="3" style="font-size: 12pt">shift</font></code><font size="3" style="font-size: 12pt">,
+</font><code class="western"><font size="3" style="font-size: 12pt">alt</font></code><font size="3" style="font-size: 12pt">,
+</font><code class="western"><font size="3" style="font-size: 12pt">control</font></code><font size="3" style="font-size: 12pt">,
+and </font><code class="western"><font size="3" style="font-size: 12pt">meta</font></code><font size="3" style="font-size: 12pt">.</font></p>
+<p><a name="5a57"></a><font size="3" style="font-size: 12pt">This
+<a href="https://www.toptal.com/developers/keycode/for/meta" target="_blank">website</a>
+is great for exploring different event values:</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><img src="Add%20Keyboard%20Shortcuts%20to%20Your%20Angular%20App_html_f0356e7e4abb483d.gif" name="Image1" align="left" width="796" height="567" border="0"/>
+<br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="4" style="font-size: 16pt"><font size="3" style="font-size: 12pt">Three
+APIs can use this syntax — template event binding, </font><code class="western"><font size="3" style="font-size: 12pt">HostListener</font></code><font size="3" style="font-size: 12pt">,
+and </font><code class="western"><font size="3" style="font-size: 12pt">Renderer2.listen()</font></code><font size="3" style="font-size: 12pt">:</font></font></p>
+<pre class="western">
+<font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">&lt;input type=&quot;text&quot; (keydown.meta.k)=&quot;openModal($event)&quot;&gt;</font>
+  <font size="3" style="font-size: 12pt">`,</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class MyComponent {</font>
+  <font size="3" style="font-size: 12pt">constructor(private renderer: Renderer2) {}</font>
+  
+  <font size="3" style="font-size: 12pt">ngOnInit() {</font>
+    <font size="3" style="font-size: 12pt">// call dispose() on destroy</font>
+    <font size="3" style="font-size: 12pt">this.dispose = this.renderer.listen(document, 'keydown.meta.k', (e: KeyboardEvent) =&gt; {</font>
+      <font size="3" style="font-size: 12pt">e.preventDefault();</font>
+    <font size="3" style="font-size: 12pt">})</font>
+  <font size="3" style="font-size: 12pt">}</font>
+
+  <font size="3" style="font-size: 12pt">@HostListener('document:keydown.meta.k', ['$event'])</font>
+  <font size="3" style="font-size: 12pt">openModal(e: KeyboardEvent) {</font>
+    <font size="3" style="font-size: 12pt">e.preventDefault();</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font size="4" style="font-size: 16pt"><font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/b350d616dcefc1e0f75bdea11b915dd6#file-keyboard-events-1-ts">keyboard-events-1.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="4" style="font-size: 16pt"><font size="3" style="font-size: 12pt">To
+use the </font><code class="western"><font size="3" style="font-size: 12pt">code</font></code><font size="3" style="font-size: 12pt">
+field, we need to add the </font><code class="western"><font size="3" style="font-size: 12pt">code</font></code><font size="3" style="font-size: 12pt">
+keyword after the event name:</font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western">  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">@HostListener('document:keydown.code.meta.keyk', ['$event'])</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">openDialog(e: KeyboardEvent) {</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">e.preventDefault();</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/12d09b195c7ff5a03c6862f6112fa007#file-keyboard-events-2-ts">keyboard-events-2.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p><a name="fac1"></a><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt"><font face="Liberation Serif, serif">Note
+that it also works with a lowercase value instead of </font><code class="western"><font face="Liberation Serif, serif">KeyK</font></code><font face="Liberation Serif, serif">.</font></font></font></p>
+<p><a name="6cdd"></a><font face="Liberation Serif, serif">If you
+need to use the </font><code class="western"><font face="Liberation Serif, serif">period</font></code><font face="Liberation Serif, serif">
+key, it doesn’t work using the </font><code class="western"><font face="Liberation Serif, serif">key</font></code><font face="Liberation Serif, serif">
+syntax. You can use the </font><code class="western"><font face="Liberation Serif, serif">code</font></code><font face="Liberation Serif, serif">
+syntax in this case:</font></p>
+<pre class="western">  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">@HostListener('document:keydown.code.control.Period', ['$event'])</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">openModal(e: KeyboardEvent) {</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">e.preventDefault();</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/29c2edf406f380708515b145e6e28848#file-keyboard-events-3-ts">keyboard-events-3.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt"><font face="Liberation Serif, serif">Read
+about the differences between using the </font><code class="western"><font face="Liberation Serif, serif">key</font></code><font face="Liberation Serif, serif">
+and the </font><code class="western"><font face="Liberation Serif, serif">code</font></code><font face="Liberation Serif, serif">
+value here and decide which is best for your use case:</font></font></font></p>
+<h2 class="western"><a name="3606"></a><font size="4" style="font-size: 16pt"><a href="https://javascript.info/keyboard-events#event-code-and-event-key" target="_blank"><font size="3" style="font-size: 12pt">Keyboard:
+keydown and keyup</font></a></font></h2>
+<h3 class="western"><a href="https://javascript.info/keyboard-events#event-code-and-event-key" target="_blank"><font size="3" style="font-size: 12pt">Before
+we get to keyboard, please note that on modern devices there are
+other ways to &quot;input something&quot;. For instance…</font></a></h3>
+<p><a href="https://javascript.info/keyboard-events#event-code-and-event-key" target="_blank"><font size="3" style="font-size: 12pt">javascript.info</font></a></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">Here
+are some other examples:</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western"><font size="3" style="font-size: 12pt">&lt;input (keydown.shift.k)=&quot;onKeydown($event)&quot; /&gt;</font>
+<font size="3" style="font-size: 12pt">&lt;input (keydown.k)=&quot;onKeydown($event)&quot; /&gt;</font>
+<font size="3" style="font-size: 12pt">&lt;input (keydown.code.keyk)=&quot;onKeydown($event)&quot; /&gt;</font>
+<font size="3" style="font-size: 12pt">&lt;input (keydown.code.shift.alt.Period)=&quot;onKeydown($event)&quot; /&gt;</font>
+<font size="3" style="font-size: 12pt">&lt;input (keydown.meta.k)=&quot;onKeydown($event)&quot; /&gt;</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/261c6baf15422c442f4d43bd20ea7f5e#file-keyboard-events-4-html">keyboard-events-4.html
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<h2 class="western"><font size="3" style="font-size: 12pt"><a href="https://github.com/ngneat/hotkeys" target="_blank">GitHub
+- ngneat/hotkeys: 🤖 A declarative library for handling hotkeys in
+Angular applications</a></font></h2>
+<h3 class="western"><a href="https://github.com/ngneat/hotkeys" target="_blank"><font size="3" style="font-size: 12pt">Shortcut
+like a pro! A declarative library for handling hotkeys in Angular
+applications. Web apps are getting closer…</font></a></h3>
+<p><a href="https://github.com/ngneat/hotkeys" target="_blank"><font size="3" style="font-size: 12pt">github.com</font></a></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+</body>
+</html>

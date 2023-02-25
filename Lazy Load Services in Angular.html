@@ -1,0 +1,222 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-02-24T21:09:16.515416603"/>
+	<meta name="changed" content="2023-02-24T21:21:20.550611839"/>
+	<style type="text/css">
+		@page { size: 21.59cm 27.94cm; margin: 2cm }
+		p { margin-bottom: 0.25cm; line-height: 115%; background: transparent }
+		h1 { margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h1.western { font-family: "Liberation Serif", serif; font-size: 24pt; font-weight: bold }
+		h1.cjk { font-family: "Noto Serif CJK SC"; font-size: 24pt; font-weight: bold }
+		h1.ctl { font-family: "Lohit Devanagari"; font-size: 24pt; font-weight: bold }
+		pre { background: transparent }
+		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace; font-size: 10pt }
+		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		a:link { color: #000080; so-language: zxx; text-decoration: underline }
+		a:visited { color: #800000; so-language: zxx; text-decoration: underline }
+		code.western { font-family: "Liberation Mono", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.ctl { font-family: "Liberation Mono", monospace }
+	</style>
+</head>
+<body lang="en-CA" link="#000080" vlink="#800000" dir="ltr"><h1 class="western">
+<font size="4" style="font-size: 16pt">Lazy Load Services in Angular</font></h1>
+<p style="margin-bottom: 0cm; line-height: 100%">Netanel Basal</p>
+<p style="margin-bottom: 0cm; line-height: 100%">Aug 9, 2022</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><a href="https://netbasal.com/lazy-load-services-in-angular-bcf8eae406c8">https://netbasal.com/lazy-load-services-in-angular-bcf8eae406c8</a></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%">Imagine we have a
+large service with many dependencies and logic. It should only be
+used when a user performs a specific action, such as clicking a
+button.</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western"><font size="3" style="font-size: 12pt">@Injectable({</font>
+  <font size="3" style="font-size: 12pt">providedIn: 'root'</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class BigService {</font>
+  <font size="3" style="font-size: 12pt">// ....</font>
+  
+  <font size="3" style="font-size: 12pt">doSomething() {</font>
+    <font size="3" style="font-size: 12pt">// ....</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<a href="https://gist.github.com/NetanelBasal/fd7d068551e874263f9b5a39801f9326#file-bigservice-ts">BigService.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western"><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">&lt;button (click)=&quot;doSomething()&quot;&gt;Action&lt;/button&gt;</font>
+  <font size="3" style="font-size: 12pt">`</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class FooComponent {</font>
+  <font size="3" style="font-size: 12pt">constructor(private service: BigService) {}</font>
+  
+  <font size="3" style="font-size: 12pt">doSomething() {</font>
+    <font size="3" style="font-size: 12pt">this.service.doSomething();</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<a href="https://gist.github.com/NetanelBasal/fd7d068551e874263f9b5a39801f9326#file-bigserviceuse-ts">BigServiceUse.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p><a name="abeb"></a>It’s possible to defer the loading and
+parsing of the service by lazy loading it when the action is
+performed.</p>
+<p><a name="7fb0"></a>Let’s create a lazy inject service:</p>
+<p><br/>
+<br/>
+
+</p>
+<p style="page-break-before: always"><br/>
+<br/>
+
+</p>
+<pre class="western"><font size="3" style="font-size: 12pt">@Injectable({ providedIn: 'root' })</font>
+<font size="3" style="font-size: 12pt">class LazyInject {</font>
+  <font size="3" style="font-size: 12pt">constructor(private injector: Injector) {}</font>
+
+  <font size="3" style="font-size: 12pt">async get&lt;T&gt;(providerLoader: () =&gt; Promise&lt;ProviderToken&lt;T&gt;&gt;) {</font>
+    <font size="3" style="font-size: 12pt">return this.injector.get(await providerLoader());</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<a href="https://gist.github.com/NetanelBasal/b2f12a8afb5cbb35b420c5fe99f2f195#file-lazyinject-service-ts">lazyInject.service.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%">The <code class="western">get()</code>
+method expects a provider token loader — a promise that returns a
+provider token. A reference to the provider is retrieved from the
+injector when the provider is loaded. Let’s use our service:</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western"><font size="3" style="font-size: 12pt">import type { BigService } from './big-service.service';</font>
+
+<font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">&lt;button (click)=&quot;doSomething()&quot;&gt;Action&lt;/button&gt;</font>
+  <font size="3" style="font-size: 12pt">`</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class FooComponent {</font>
+  <font size="3" style="font-size: 12pt">constructor(private lazyInjector: LazyInject) {}</font>
+  
+  <font size="3" style="font-size: 12pt">async doSomething() {</font>
+    <font size="3" style="font-size: 12pt">const service = await this.lazyInjector.get&lt;BigService&gt;(() =&gt;</font>
+      <font size="3" style="font-size: 12pt">import('./big-service.service').then((m) =&gt; m.BigService)</font>
+    <font size="3" style="font-size: 12pt">);</font>
+    
+    <font size="3" style="font-size: 12pt">service.doSomething()</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<a href="https://gist.github.com/NetanelBasal/9a75220032ebcf24bfde889113c640dd#file-lazyinject-usage-ts">lazyInject-usage.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p><a name="b169"></a>And that’s all. We can take it one step
+further. Imagine we have several strategies and need to choose one
+based on configuration. Each strategy contains a lot of code. Adding
+every strategy to the main bundle would be wasteful since all clients
+would have to download and parse it, even if they didn’t need it.</p>
+<p><a name="9aef"></a>We can lazy load the required service in
+runtime and make it available to our component through the injector.
+Let’s see a simple example of using a storage provider:</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western" style="page-break-before: always"><font size="3" style="font-size: 12pt">export abstract class Storage {</font>
+  <font size="3" style="font-size: 12pt">abstract get(): string;</font>
+  <font size="3" style="font-size: 12pt">// ....</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<a href="https://gist.github.com/NetanelBasal/9ca11298634c25a9d87051504863d67f#file-1storage-ts">1storage.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western"><font size="3" style="font-size: 12pt">import { Storage } from './storage';</font>
+
+<font size="3" style="font-size: 12pt">export default class LocalStorage extends Storage {</font>
+  <font size="3" style="font-size: 12pt">get() {</font>
+    <font size="3" style="font-size: 12pt">return 'local';</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<a href="https://gist.github.com/NetanelBasal/9ca11298634c25a9d87051504863d67f#file-2local-ts">2local.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western"><font size="3" style="font-size: 12pt">import { Storage } from './storage';</font>
+
+<font size="3" style="font-size: 12pt">export default class SessionStorage extends Storage {</font>
+  <font size="3" style="font-size: 12pt">get() {</font>
+    <font size="3" style="font-size: 12pt">return 'session';</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<a href="https://gist.github.com/NetanelBasal/9ca11298634c25a9d87051504863d67f#file-3session-ts">3session.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%">		All files under
+storage directory</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p><a name="b4e7"></a>Now we can create a directive that’ll lazy
+load the required service based on a configuration, create an
+injector, and pass it to the component:</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western">
+<font size="3" style="font-size: 12pt">@Directive({</font>
+  <font size="3" style="font-size: 12pt">selector: '[container]'</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class ContainerDirective {</font>
+  <font size="3" style="font-size: 12pt">constructor(</font>
+     <font size="3" style="font-size: 12pt">private userConfig: UserConfig,</font>
+     <font size="3" style="font-size: 12pt">private vcr: ViewContainerRef, </font>
+     <font size="3" style="font-size: 12pt">private injector: Injector</font>
+  <font size="3" style="font-size: 12pt">) { }</font>
+
+  <font size="3" style="font-size: 12pt">async ngOnInit() {</font>
+    <font size="3" style="font-size: 12pt">const StorageProvider = await import(`./storage/${this.userConfig.storage}-storage`)</font>
+                                        <font size="3" style="font-size: 12pt">.then(m =&gt; m.default)</font>
+
+    <font size="3" style="font-size: 12pt">const injector = Injector.create({</font>
+      <font size="3" style="font-size: 12pt">providers: [{ provide: Storage, useClass: StorageProvider }],</font>
+      <font size="3" style="font-size: 12pt">parent: this.injector,</font>
+    <font size="3" style="font-size: 12pt">});</font>
+
+    <font size="3" style="font-size: 12pt">this.vcr.createComponent(MyComponent, { injector });</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<a href="https://gist.github.com/NetanelBasal/16ea6cfa87bc81440afb93ca00f24b72#file-storage-example-ts">storage-example.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><code class="western">MyComponent</code>
+doesn’t care about the implementation details. It injects the
+<code class="western">Storage</code> token and uses it.</p>
+</body>
+</html>

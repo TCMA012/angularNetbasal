@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-02-24T21:44:42.740084950"/>
+	<meta name="changed" content="2023-02-24T21:49:33.472847879"/>
+	<style type="text/css">
+		@page { size: 21.59cm 27.94cm; margin: 2cm }
+		p { margin-bottom: 0.25cm; line-height: 115%; background: transparent }
+		h1 { margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h1.western { font-family: "Liberation Serif", serif; font-size: 24pt; font-weight: bold }
+		h1.cjk { font-family: "Noto Serif CJK SC"; font-size: 24pt; font-weight: bold }
+		h1.ctl { font-family: "Lohit Devanagari"; font-size: 24pt; font-weight: bold }
+		pre { background: transparent }
+		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace; font-size: 10pt }
+		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		h2 { margin-top: 0.35cm; margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h2.western { font-family: "Liberation Serif", serif; font-size: 18pt; font-weight: bold }
+		h2.cjk { font-family: "Noto Serif CJK SC"; font-size: 18pt; font-weight: bold }
+		h2.ctl { font-family: "Lohit Devanagari"; font-size: 18pt; font-weight: bold }
+		h3 { margin-top: 0.25cm; margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h3.western { font-family: "Liberation Serif", serif; font-size: 14pt; font-weight: bold }
+		h3.cjk { font-family: "Noto Serif CJK SC"; font-size: 14pt; font-weight: bold }
+		h3.ctl { font-family: "Lohit Devanagari"; font-size: 14pt; font-weight: bold }
+		a:link { color: #000080; so-language: zxx; text-decoration: underline }
+		a:visited { color: #800000; so-language: zxx; text-decoration: underline }
+		code.western { font-family: "Liberation Mono", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.ctl { font-family: "Liberation Mono", monospace }
+	</style>
+</head>
+<body lang="en-CA" link="#000080" vlink="#800000" dir="ltr"><h1 class="western">
+<font size="4" style="font-size: 16pt">A New Method for Retrieving
+Metadata about Angular Components</font></h1>
+<p style="margin-bottom: 0cm; line-height: 100%">Netanel Basal</p>
+<p style="margin-bottom: 0cm; line-height: 100%">Jul 28, 2022</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><a href="https://netbasal.com/a-new-method-for-retrieving-metadata-about-angular-components-b494351dd130">https://netbasal.com/a-new-method-for-retrieving-metadata-about-angular-components-b494351dd130</a></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%">A new function named
+<code class="western">reflectComponentType()</code> has been added to
+Angular v14.1.0 that returns the following <code class="western">metadata</code>
+from a component:</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western"><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">selector: 'standalone-component',</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">&lt;ng-content&gt;&lt;/ng-content&gt;</font>
+    <font size="3" style="font-size: 12pt">&lt;ng-content select=&quot;content-selector-a&quot;&gt;&lt;/ng-content&gt;</font>
+  <font size="3" style="font-size: 12pt">`,</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">class StandaloneComponent {</font>
+  <font size="3" style="font-size: 12pt">@Input() inputA: string;</font>
+  <font size="3" style="font-size: 12pt">@Input('aliasB') inputB: string;</font>
+
+  <font size="3" style="font-size: 12pt">@Output() eventA = new EventEmitter();</font>
+  <font size="3" style="font-size: 12pt">@Output('aliasEvent') eventB = new EventEmitter();</font>
+<font size="3" style="font-size: 12pt">}</font>
+
+<font size="3" style="font-size: 12pt">const mirror = reflectComponentType(StandaloneComponent)!;</font>
+
+<font size="3" style="font-size: 12pt">expect(mirror.selector).toBe('standalone-component');</font>
+
+<font size="3" style="font-size: 12pt">expect(mirror.type).toBe(StandaloneComponent);</font>
+
+<font size="3" style="font-size: 12pt">expect(mirror.isStandalone).toEqual(true);</font>
+
+<font size="3" style="font-size: 12pt">expect(mirror.inputs).toEqual([</font>
+  <font size="3" style="font-size: 12pt">{ propName: 'inputA', templateName: 'inputA' },</font>
+  <font size="3" style="font-size: 12pt">{ propName: 'inputB', templateName: 'aliasB' },</font>
+<font size="3" style="font-size: 12pt">]);</font>
+
+<font size="3" style="font-size: 12pt">expect(mirror.outputs).toEqual([</font>
+  <font size="3" style="font-size: 12pt">{ propName: 'eventA', templateName: 'eventA' },</font>
+  <font size="3" style="font-size: 12pt">{ propName: 'eventB', templateName: 'aliasEvent' },</font>
+<font size="3" style="font-size: 12pt">]);</font>
+
+<font size="3" style="font-size: 12pt">expect(mirror.ngContentSelectors).toEqual(['*', 'content-selector-a']);</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<a href="https://gist.github.com/NetanelBasal/d5f10bdf18ea79bfbeaefed276f1ca7f#file-reflectcomponenttype-ts">reflectComponentType.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<p style="margin-bottom: 0cm; line-height: 100%; page-break-before: always">
+This function has several uncommon uses. It can be used to create
+debugging tools or, for example, we can use the <code class="western">selector</code>
+metadata to create custom elements based on existing components:</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western"><font size="3" style="font-size: 12pt">export const customElementComponents = [</font>
+  <font size="3" style="font-size: 12pt">TextBoxCustomElementComponent,</font>
+  <font size="3" style="font-size: 12pt">CheckBoxCustomElementComponent</font>
+  <font size="3" style="font-size: 12pt">...</font>
+<font size="3" style="font-size: 12pt">]</font>
+
+<font size="3" style="font-size: 12pt">function createCustomElements(injector: Injector){</font>
+  <font size="3" style="font-size: 12pt">customElementComponents.forEach((cmp: Type&lt;any&gt;) =&gt; {</font>
+    <font size="3" style="font-size: 12pt">const element = createCustomElement(cmp, { injector: injector })</font>
+    <font size="3" style="font-size: 12pt">const selector = reflectComponentType(cmp)?.selector;</font>
+    <font size="3" style="font-size: 12pt">customElements.define(selector, element);</font>
+  <font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<a href="https://gist.github.com/NetanelBasal/fe3fb6be3b591c0dd3583367b0fb5f6f#file-createcustomelements-ts">createCustomElements.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">We
+can use it to create dynamic components based on a JSON file. The
+following thread contains additional use cases:</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<h2 class="western"><a href="https://github.com/angular/angular/issues/44926" target="_blank"><font size="3" style="font-size: 12pt">Alternative
+way for depreciation of ComponentFactory in order to get
+componentFactory inputs ·…</font></a></h2>
+<h3 class="western"><a href="https://github.com/angular/angular/issues/44926" target="_blank"><font size="3" style="font-size: 12pt">Which
+@angular/* package(s) are the source of the bug? core Is this a
+regression? Yes Description Since Angular 13 the…</font></a></h3>
+<p><a href="https://github.com/angular/angular/issues/44926" target="_blank"><font size="3" style="font-size: 12pt">github.com</font></a></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+</body>
+</html>

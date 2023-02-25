@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-02-24T21:39:47.788604766"/>
+	<meta name="changed" content="2023-02-24T21:43:55.172926601"/>
+	<style type="text/css">
+		@page { size: 21.59cm 27.94cm; margin: 2cm }
+		p { margin-bottom: 0.25cm; line-height: 115%; background: transparent }
+		h1 { margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h1.western { font-family: "Liberation Serif", serif; font-size: 24pt; font-weight: bold }
+		h1.cjk { font-family: "Noto Serif CJK SC"; font-size: 24pt; font-weight: bold }
+		h1.ctl { font-family: "Lohit Devanagari"; font-size: 24pt; font-weight: bold }
+		pre { background: transparent }
+		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace; font-size: 10pt }
+		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		a:link { color: #000080; so-language: zxx; text-decoration: underline }
+		a:visited { color: #800000; so-language: zxx; text-decoration: underline }
+		code.western { font-family: "Liberation Mono", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.ctl { font-family: "Liberation Mono", monospace }
+	</style>
+</head>
+<body lang="en-CA" link="#000080" vlink="#800000" dir="ltr"><h1 class="western">
+<font size="4" style="font-size: 16pt">Determine Why a Navigation Was
+Canceled in Angular</font></h1>
+<p style="margin-bottom: 0cm; line-height: 100%">Netanel Basal</p>
+<p style="margin-bottom: 0cm; line-height: 100%">Jul 29, 2022</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><a href="https://netbasal.com/determine-why-a-navigation-was-canceled-in-angular-252a65ebff3c">https://netbasal.com/determine-why-a-navigation-was-canceled-in-angular-252a65ebff3c</a></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p><a name="829d"></a>Angular v14.1.0 added a new property named <code class="western">code</code>
+to the <code class="western">NavigationCancel</code> event. It
+contains a <code class="western">code</code> that indicates why the
+navigation was canceled. The <code class="western">code</code> is an
+<code class="western">enum</code> with the following options:</p>
+<p><a name="4077"></a><code class="western">NavigationCancellationCode.Redirect</code>
+— A navigation failed because a guard returned a <code class="western">UrlTree</code>
+to redirect.</p>
+<p><a name="0d72"></a><code class="western">NavigationCancellationCode.SupersededByNewNavigation</code>
+— A navigation failed because more recent navigation started.</p>
+<p><a name="43ec"></a><code class="western">NavigationCancellationCode.NoDataFromResolver</code>
+—A navigation failed because one of the resolvers completed without
+emitting a value.</p>
+<p><a name="5529"></a><code class="western">NavigationCancellationCode.GuardRejected</code>
+— A navigation failed because a guard returned <code class="western">false</code>.</p>
+<p><a name="2586"></a>When navigation is canceled, we can determine
+the reason for the cancellation and perform different actions as
+needed:</p>
+<p><br/>
+<br/>
+
+</p>
+<pre class="western"><font size="3" style="font-size: 12pt">import { NavigationCancel, NavigationCancellationCode, Router } from '@angular/router';</font>
+
+<font size="3" style="font-size: 12pt">@Component(...)</font>
+<font size="3" style="font-size: 12pt">export class MyComponent {</font>
+  <font size="3" style="font-size: 12pt">constructor(router: Router) {</font>
+    <font size="3" style="font-size: 12pt">router.events.subscribe(e =&gt; {</font>
+    
+      <font size="3" style="font-size: 12pt">if(e instanceof NavigationCancel) {</font>
+      
+        <font size="3" style="font-size: 12pt">if(NavigationCancellationCode.GuardRejected) {</font>
+          <font size="3" style="font-size: 12pt">// ...</font>
+        <font size="3" style="font-size: 12pt">}</font>
+        
+      <font size="3" style="font-size: 12pt">}</font>
+    <font size="3" style="font-size: 12pt">})</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<a href="https://gist.github.com/NetanelBasal/9687e016ddf5aaf4ee84bab1f715849b#file-navigationcancellationcode-ts">NavigationCancellationCode.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+</body>
+</html>

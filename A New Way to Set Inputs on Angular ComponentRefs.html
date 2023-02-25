@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-02-24T21:50:23.100867686"/>
+	<meta name="changed" content="2023-02-24T21:55:37.709559614"/>
+	<style type="text/css">
+		@page { size: 21.59cm 27.94cm; margin: 2cm }
+		p { margin-bottom: 0.25cm; line-height: 115%; background: transparent }
+		h1 { margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h1.western { font-family: "Liberation Serif", serif; font-size: 24pt; font-weight: bold }
+		h1.cjk { font-family: "Noto Serif CJK SC"; font-size: 24pt; font-weight: bold }
+		h1.ctl { font-family: "Lohit Devanagari"; font-size: 24pt; font-weight: bold }
+		pre { background: transparent }
+		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace; font-size: 10pt }
+		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		h2 { margin-top: 0.35cm; margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h2.western { font-family: "Liberation Serif", serif; font-size: 18pt; font-weight: bold }
+		h2.cjk { font-family: "Noto Serif CJK SC"; font-size: 18pt; font-weight: bold }
+		h2.ctl { font-family: "Lohit Devanagari"; font-size: 18pt; font-weight: bold }
+		h3 { margin-top: 0.25cm; margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h3.western { font-family: "Liberation Serif", serif; font-size: 14pt; font-weight: bold }
+		h3.cjk { font-family: "Noto Serif CJK SC"; font-size: 14pt; font-weight: bold }
+		h3.ctl { font-family: "Lohit Devanagari"; font-size: 14pt; font-weight: bold }
+		a:link { color: #000080; so-language: zxx; text-decoration: underline }
+		a:visited { color: #800000; so-language: zxx; text-decoration: underline }
+		code.western { font-family: "Liberation Mono", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.ctl { font-family: "Liberation Mono", monospace }
+		em { font-style: italic }
+	</style>
+</head>
+<body lang="en-CA" link="#000080" vlink="#800000" dir="ltr"><h1 class="western">
+<font size="4" style="font-size: 16pt">A New Way to Set Inputs on
+Angular ComponentRefs</font></h1>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="4" style="font-size: 16pt">Netanel
+Basal</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="4" style="font-size: 16pt">Jul
+28, 2022</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt"><a href="https://netbasal.com/a-new-way-to-set-inputs-on-angular-componentrefs-6214f95db63d">https://netbasal.com/a-new-way-to-set-inputs-on-angular-componentrefs-6214f95db63d</a></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">When
+creating dynamic components in our applications or writing tests, we
+use the component reference <code class="western">instance</code>
+property to change input values. For example:</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western"><font size="3" style="font-size: 12pt">@Directive({</font>
+  <font size="3" style="font-size: 12pt">selector: '[container]',</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class ContainerDirective {</font>
+  <font size="3" style="font-size: 12pt">constructor(private vcr: ViewContainerRef) {}</font>
+
+  <font size="3" style="font-size: 12pt">ngOnInit() {</font>
+    <font size="3" style="font-size: 12pt">const ref = this.vcr.createComponent(FooComponent);</font>
+    <font size="3" style="font-size: 12pt">ref.instance.text = 'bar';</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/b845e11a32fcd05221ab238a49ef0c1e#file-setinput-1-ts">setinput-1.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p><a name="9b1b"></a><font size="3" style="font-size: 12pt">This
+approach does, however, come with four drawbacks:</font></p>
+<ul>
+	<li><p style="margin-bottom: 0cm"><a name="7122"></a>Setting input
+	properties manually wouldn’t trigger the <code class="western">NgOnChanges</code>
+	lifecycle hook</p>
+	<li><p style="margin-bottom: 0cm"><a name="fd39"></a>It’s
+	challenging to test <code class="western">OnPush</code> components
+	since they are not marked for check</p>
+	<li><p style="margin-bottom: 0cm"><a name="85fd"></a>As a result of
+	input <code class="western">aliasing</code>, setting input
+	properties was <em>fragile</em> because a property name on a
+	component may differ from the actual input name</p>
+	<li><p><a name="9288"></a>It doesn’t throw an error if the input
+	doesn’t exist</p>
+</ul>
+<p><a name="53ee"></a>Since v14.1.0, Angular added the <code class="western">setInput()</code>
+method to the component reference, making the above issues a thing of
+the past:</p>
+<pre class="western"><font size="3" style="font-size: 12pt">@Directive({</font>
+  <font size="3" style="font-size: 12pt">selector: '[container]',</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class ContainerDirective {</font>
+  <font size="3" style="font-size: 12pt">constructor(private vcr: ViewContainerRef) {}</font>
+
+  <font size="3" style="font-size: 12pt">ngOnInit() {</font>
+    <font size="3" style="font-size: 12pt">const ref = this.vcr.createComponent(FooComponent);</font>
+    <font size="3" style="font-size: 12pt">ref.setInput('text', 'Angular');</font>
+    <font size="3" style="font-size: 12pt">ref.setInput('myAlias', 'v14.1.0');</font>
+    <font size="3" style="font-size: 12pt">// This will throw an error</font>
+    <font size="3" style="font-size: 12pt">ref.setInput('doesNotExist', 'error');</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/a8850b2e2713d9ace36fac7aa6657e4c#file-set-input-2-ts">set-input-2.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p><a name="cae3"></a><font size="3" style="font-size: 12pt">These
+modifications unify <code class="western">inputs</code> across
+dynamically created components and the ones referenced in templates.</font></p>
+<p><a name="a6fc"></a>There is only one drawback to this approach
+over using the instance directly — it isn’t typed. You can
+type-safe it like this if you don’t use an alias:</p>
+<p><br/>
+<br/>
+
+</p>
+<pre class="western"><font size="3" style="font-size: 12pt">const textInput: keyof FooComponent = 'text';</font>
+<font size="3" style="font-size: 12pt">this.vcr.createComponent(FooComponent).setInput(textInput, 'bar');</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/de51886e5ed48a28c0e22d6a9b7a5662#file-setinput-3-ts">setinput-3.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">The
+following article explains how to create a stricter typed version of
+the above:</font></p>
+<h2 class="western"><a name="d2cd"></a><font size="3" style="font-size: 12pt"><a href="https://netbasal.com/create-a-typed-version-of-simplechanges-in-angular-451f86593003" target="_blank">Create
+a Typed Version of SimpleChanges in Angular</a></font></h2>
+<h3 class="western"><a href="https://netbasal.com/create-a-typed-version-of-simplechanges-in-angular-451f86593003" target="_blank"><font size="3" style="font-size: 12pt">Angular
+calls the ngOnChanges method of a component or directive whenever it
+detects changes to the input properties…</font></a></h3>
+<p><a href="https://netbasal.com/create-a-typed-version-of-simplechanges-in-angular-451f86593003" target="_blank"><font size="3" style="font-size: 12pt">netbasal.com</font></a></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+</body>
+</html>
