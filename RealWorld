@@ -1,0 +1,33 @@
+RealWorld solves this by allowing you to choose any frontend (React, Angular, & more) and any backend (Node, Django, & more) and see how they power a real-world, beautifully designed full-stack app called Conduit.
+https://github.com/nartc/ng-conduit
+14.2.2
+https://ng-conduit.netlify.app/#/
+
+https://github.com/gothinkster/realworld
+https://github.com/gothinkster/realworld/discussions
+https://www.realworld.how/
+
+
+https://realworld-docs.netlify.app/docs/implementation-creation/introduction/
+Conduit is a social blogging site (i.e. a Medium.com clone). It uses a custom API for all requests, including authentication.
+
+
+https://github.com/gothinkster/angular-realworld-example-app
+11
+
+https://github.com/stefanoslig/angular-ngrx-nx-realworld-example-app
+Angular 15, NgRx 15, nrwl/nx 15 
+
+https://demo.realworld.io/#/
+https://thinkster.io/tutorials/building-real-world-angular-2-apps
+
+https://github.com/coolrare/angular-advanced-realworld-finish
+14.1.0
+
+https://github.com/wszgrcy/angular-miniprogram-realworld
+
+https://github.com/btradr/conduit-clone
+13.3.6
+
+https://github.com/khaledosman/angular-realworld-example-app
+13.2.0

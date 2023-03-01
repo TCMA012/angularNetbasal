@@ -1,0 +1,699 @@
+Google Developer Expert  GDE Angular
+https://angular.io/about?group=GDE
+
+
+
+Alain Chautard 
+https://github.com/alcfeoh/ng2-training
+15
+ng serve demos
+ to start the demos app. Navigate to http://localhost:4201
+ 
+https://github.com/alcfeoh/ng2-training-solutions
+
+
+https://github.com/alcfeoh/ng-weather
+14
+http://ng-weather.angulartraining.com/
+us only
+90001 Los Angeles
+
+
+
+https://github.com/alcfeoh/ng-advanced-workshop
+8 OLD
+
+
+
+Alexander Inkin
+
+Alexey Zuev
+
+
+
+Alisa Duncan
+https://dev.to/alisaduncan
+https://github.com/alisaduncan/angular-practical-providers-code
+
+
+
+Alvaro Camillo Neto
+Spanish
+
+
+
+Alyssa Nicoll
+https://github.com/alyssamichelle
+https://www.telerik.com/blogs/author/alyssa-nicoll
+Kendo UI
+
+
+
+Amadou Sall
+https://github.com/ahasall
+OLD
+
+
+
+Andrew Grekov
+https://github.com/IndigoSoft/ngxd
+NgComponentOutlet
+Dynamic Components
+
+
+
+Ankit Sharma
+https://github.com/AnkitSharma-007/angular-forms-validation
+https://ng-forms-validation.web.app/
+
+
+
+Antonio Cardenas
+https://github.com/AntonioCardenas
+
+
+
+
+Aristeidis Bampakos
+https://github.com/bampakoa
+https://github.com/PacktPublishing/Learning-Angular-Fourth-Edition
+Learning Angular, Fourth Edition, Packt
+
+https://github.com/PacktPublishing/Angular-Projects-Second-Edition
+Angular Projects - Second Edition, Packt 
+
+https://github.com/bampakoa/devfest-hellas-2022
+Angular Material !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Fake store rest API for your e-commerce or shopping website prototype
+
+https://github.com/bampakoa/angular-heroes
+https://angular-superheroes.web.app/
+Angular Material !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Marvel Comics API 
+search engine over the characters and comics Marvel database
+
+https://github.com/bampakoa/angular-workshop
+https://bampakoa.github.io/angular-workshop/
+
+
+
+Armen Vardanyan
+https://armenvardanyan.dev/
+https://github.com/Armenvardanyan95/sightseer
+https://github.com/this-is-learning/rxjs-fundamentals-course
+
+
+
+Balram Chavan
+https://balramchavan.medium.com
+
+
+https://github.com/ultrasonicsoft/ng-connection-service
+Internet Connection Monitoring Service
+
+https://github.com/ultrasonicsoft/ngx-highlight-text
+The Angular pipe for highlighting given word in the HTML 
+
+https://github.com/ultrasonicsoft/ng-communication-ways
+passing message between components
+
+https://github.com/ultrasonicsoft/ngx-angular-qrcode
+wrapper library over the plain JavaScript QR Code Styling library
+
+https://github.com/ultrasonicsoft/ng-application-builder
+https://balramchavan.medium.com/ui-workflow-tool-to-generate-angular-applications-dbed9c629f4
+
+https://github.com/ultrasonicsoft/ngx-swiss-five-rappen-chf-pipe
+
+
+
+Bezael Perez
+https://github.com/bezael
+
+
+
+Bonnie Brennan
+https://github.com/bcarson/dynamic-reactive-form
+
+
+
+Brian Love
+https://github.com/blove
+
+Brooke Avery
+
+Carlos Caballero
+https://github.com/Caballerog/angular-ngx-translate-typing !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+i18n
+
+Christian Liebel
+https://github.com/christianliebel/my-poke-ui
+
+Christian Weyer
+https://github.com/ChristianWeyer
+
+Christoffer Noring
+https://github.com/softchris
+
+Ciro Nunes
+https://github.com/cironunes
+
+
+
+Cory Rylan
+https://angularforms.dev/
+https://github.com/coryrylan/beginner-reactive-programming-with-rxjs/tree/master/angular-demo
+
+
+
+Craig Spence
+https://github.com/phenomnomnominal/betterer
+https://github.com/phenomnomnominal/betterer
+https://phenomnomnominal.github.io/betterer/
+Improve, incrementally
+Betterer is built upon an idea popularised by snapshot testing, where the result of a test is saved in a file in your codebase. However, instead of a static value, Betterer keeps track of a value as it changes over time, and makes sure that the value changes how you want it to change!
+
+
+
+Dan Wahlin
+https://github.com/DanWahlin/angular-architecture
+Angular Architecture and Best Practices
+https://www.pluralsight.com/courses/angular-architecture-best-practices
+
+an example of an application that follows the rules in this course at 
+https://github.com/DanWahlin/Angular-JumpStart
+http://localhost:8080
+
+Once the app is running you can play around with editing customers after you login. Use any email address and any password that's at least 6 characters long (with 1 digit).
+
+Angular Playground
+http://www.angularplayground.it
+
+https://github.com/DanWahlin/Observable-Store
+https://blog.codewithdan.com/simplifying-front-end-state-management-with-observable-store/
+blog.codewithdan.com
+
+https://github.com/DanWahlin/TypeScriptDemos
+
+
+
+Dany Paredes
+Sorting, Filtering, Grouping, and Aggregating Data
+https://github.com/danywalls/angular-play-with-data
+
+https://github.com/danywalls/dropdowns-in-angular
+
+https://github.com/danywalls/angular-project-structures
+
+https://www.telerik.com/blogs/author/dany-paredes
+
+https://github.com/danywalls/dynamic-forms
+
+https://github.com/danywalls/use-composition-in-angular-components
+https://www.danywalls.com/understand-composition-and-inheritance-in-angular
+
+https://github.com/danywalls/burger-angular-content-projection-demo
+
+https://github.com/danywalls/how_handle_constructor_dependecies_in_components
+
+https://github.com/danywalls/when-state-angular
+
+
+
+David Muellerchen
+https://github.com/web-dave/rxjs-workshop
+https://github.com/web-dave/chat-app-vergleich
+https://github.com/web-dave/livestream
+
+
+
+Deborah Kurata
+https://github.com/DeborahK/Angular-GettingStarted
+Pluralsight course: Angular: Getting Started
+
+https://github.com/DeborahK/Angular-Routing
+Pluralsight course: Angular Routing
+
+https://github.com/DeborahK/Angular-Communication
+Pluralsight course: Angular Component Communications
+
+https://github.com/DeborahK/Angular-RxJS
+https://app.pluralsight.com/library/courses/rxjs-angular-reactive-development
+
+https://github.com/DeborahK/Angular-ReactiveDevelopment
+reactive programming in a CRUD application
+
+https://github.com/DeborahK/Angular-posts
+https://jsonplaceholder.typicode.com/
+post-simple: Demonstrates a procedural and reactive approach to accessing users and todos.
+post-mgmt: Demonstrates more complex techniques such as autocomplete, sorting, and grouping
+
+https://github.com/DeborahK/Gentle-Introduction-to-JavaScript
+https://github.com/DeborahK/Gentle-Introduction-to-CSS
+https://github.com/DeborahK/Gentle-Introduction-to-HTML
+https://www.freecodecamp.org/news/author/deborah-kurata/
+
+https://github.com/DeborahK/Angular-ReactiveForms
+12
+https://app.pluralsight.com/library/courses/angular-2-reactive-forms
+
+
+
+Dmytro Mezhenskyi
+courses.decodedfrontend.io
+https://github.com/DMezhenskyi/angular-can-match-guard
+https://github.com/DMezhenskyi/angular-global-error-handling-example
+https://github.com/DMezhenskyi/angular-app-initializer-example
+
+
+
+Doguhan Uluca
+
+https://github.com/duluca/lemon-mart
+https://github.com/duluca/lemon-mart/wiki
+http://angularforenterprise.com/
+
+https://github.com/duluca/local-weather-app
+https://local-weather-app-duluca.vercel.app/
+
+https://github.com/duluca/minimal-mean
+
+https://github.com/excellalabs/the-javascript-curriculum
+https://github.com/excellalabs/js-best-practices-workshopper
+
+
+
+Elad Bezalel
+
+Eliran Eliassy
+
+Fabian Gosebrink
+
+Fanis Prodromou
+https://github.com/profanis/ng-material-theme-loader
+
+
+Fatima AMZIL
+https://github.com/famzila/Watch-Movies
+https://github.com/famzila/ng-fitness-app
+https://github.com/famzila/covid-tracker
+13, Material
+
+Ferdinand Malcher
+German
+
+Gerard Sans
+AWS Amplify
+
+Jay Bell
+
+Jecelyn Yeen
+
+Jeff Whelpley
+
+Jeremy Wilken
+
+
+
+Joe Eames
+https://github.com/joeeames
+old
+Fundamentals of Angular
+https://thinkster.io/topics/fundamentals-of-angular
+https://www.youtube.com/watch?v=1kQBg-9H1Js
+13 Hours of Video
+interactive exercises
+
+
+
+Johannes Hoppe
+https://github.com/JohannesHoppe/angular-date-value-accessor
+http://johanneshoppe.github.io/angular-date-value-accessor/
+
+
+
+Jordan Powell
+https://github.com/jordanpowell88/blog
+https://github.com/jordanpowell88/
+old
+
+
+
+Jorge Cano
+https://github.com/jorgeucano
+old
+
+
+
+Joshua Morony
+https://github.com/joshuamorony/angular-notice-board
+
+https://github.com/joshuamorony/angular-zone-cd-example
+
+https://github.com/joshuamorony/angular-onpush-reactive-forms
+
+
+
+
+Chau Tran
+https://github.com/nartc/ng-template-outlet-example
+@ngrx/component-store
+
+
+RealWorld solves this by allowing you to choose any frontend (React, Angular, & more) and any backend (Node, Django, & more) and see how they power a real-world, beautifully designed full-stack app called Conduit.
+https://github.com/nartc/ng-conduit
+14.2.2
+https://ng-conduit.netlify.app/#/
+
+https://github.com/gothinkster/realworld
+https://github.com/gothinkster/realworld/discussions
+https://www.realworld.how/
+
+
+https://realworld-docs.netlify.app/docs/implementation-creation/introduction/
+Conduit is a social blogging site (i.e. a Medium.com clone). It uses a custom API for all requests, including authentication.
+
+
+https://github.com/gothinkster/angular-realworld-example-app
+11
+
+https://github.com/stefanoslig/angular-ngrx-nx-realworld-example-app
+Angular 15, NgRx 15, nrwl/nx 15 
+
+https://demo.realworld.io/#/
+https://thinkster.io/tutorials/building-real-world-angular-2-apps
+
+https://github.com/coolrare/angular-advanced-realworld-finish
+14.1.0
+
+https://github.com/wszgrcy/angular-miniprogram-realworld
+
+https://github.com/btradr/conduit-clone
+13.3.6
+
+https://github.com/khaledosman/angular-realworld-example-app
+13.2.0
+
+
+
+
+
+https://github.com/JunkieLabs/treeform-angular-webapp
+9.0+
+Angular Material
+treeform.junkielabs.in
+
+
+
+
+Tomas Trajan
+https://github.com/tomastrajan
+old
+
+
+
+
+
+Josue Gutierrez
+https://josueggh.github.io/
+old
+
+
+
+Juri Strumpflohner 
+https://github.com/juristr
+old
+
+
+
+Justin Schwartzenberger
+https://github.com/jschwarty/angular-essential-training
+14.0.0-next.4
+
+
+
+Kamil Mysliwiec
+Creator of NestJS
+
+
+
+Katerina Skroumpelou
+Google Maps
+
+
+Keilla Menezes Fernandes
+?
+
+
+Kevin Davila
+https://github.com/kevindaviladev/angular-crud-v15-standalone-firebase
+
+
+
+Kevin Kreuzer
+https://github.com/kreuzerk/ng-sortgrid
+https://github.com/kreuzerk/RxJS
+
+Kevin Yang
+https://github.com/chgc/dynamic-form-with-controlContainer
+
+Kim Maida
+https://github.com/kmaida/
+old
+
+Kwinten Pisman
+https://github.com/KwintenP
+old
+No angular
+
+Leonardo Zizzamia
+https://github.com/Zizzamia
+old
+
+Maina Wycliffe
+https://github.com/mainawycliffe/angular-without-modules-demo
+https://angular-without-modules.vercel.app/
+todo app, built with only standalone components, no modules
+14
+
+https://github.com/mainawycliffe/angular-cdk-accordion-demo
+
+
+Manfred Steyer
+https://github.com/manfredsteyer/standalone-example-cli.git
+https://www.angulararchitects.io/en/aktuelles/the-refurbished-httpclient-in-angular-15-standalone-apis-and-functional-interceptors/
+15
+
+https://github.com/manfredsteyer/angular-crud
+13
+https://www.angulararchitects.io/en/
+
+Maria Korneeva
+?
+
+
+
+Marko Stanimirović
+https://github.com/markostanimirovic/musicians-app
+15
+
+https://github.com/markostanimirovic/reactive-ng-workshop
+13
+
+https://github.com/markostanimirovic/juliette
+Reactive State Management Powered by RxJS 
+12
+rxjs": "~6.6.7
+https://dev.to/this-is-angular/dry-way-to-manage-subscriptions-in-angular-components-256j
+
+Martina Kraus
+https://github.com/martinakraus/bookmonkey-client-standalone
+15
+
+Mashhood Rastgar
+https://github.com/mashhoodr/
+?
+
+Maxim Salnikov
+old
+
+Michael Hladky
+https://github.com/BioPhoton/
+?
+
+Michele Stieven
+old
+
+Mike Brocchi
+https://github.com/Brocco/standalone-toh
+15
+https://github.com/Brocco/rxjs-subjects-playground
+
+https://github.com/Brocco/ng-service-operators
+
+Mike Hartington
+https://github.com/mhartington/StarTrack-ng
+https://github.com/mhartington/angular-14-test
+
+Mike Huang
+https://github.com/wellwind
+
+Muhammad Ahsan Ayaz
+https://github.com/AhsanAyaz/ng-custom-form-control
+ControlValueAccessor
+11
+
+Natalia Venditto
+https://github.com/anfibiacreativa/myapp-apollo-interceptors
+
+Nicolas Molina
+old
+
+Nir Kaufman
+NGRX Store Demo
+https://github.com/nirkaufman/state-workshop-ref
+14
+
+https://github.com/nirkaufman/state-workshop-labs
+14
+
+Nishu Goel
+old https://github.com/NishuGoel/CRUDwithAngular
+old https://github.com/NishuGoel/frameworkAgnostic-searchBar
+
+Pascal Precht
+?
+
+Patricio Vargas
+old
+https://github.com/devpato/angular-github-search
+https://github.com/devpato/angular-google-maps-tutorial
+
+
+Preston Lamb
+old
+
+Ralph Wang
+https://github.com/asnowwolf
+angular-cn 中文
+
+Raúl Jiménez
+old
+https://github.com/Elecash/
+
+Ricardo Chavarria
+old
+https://github.com/ricardochl/
+
+Roman Sedov
+https://github.com/MarsiBarsi
+https://github.com/ng-web-apis/common
+
+Sajeetharan Sinnathurai
+https://github.com/sajeetharan/devfest2022/tree/main/devfest-todo-app
+
+Sam Julien
+old
+https://github.com/samjulien
+
+Sam Vloeberghs
+? https://github.com/samvloeberghs
+
+Sander Elias
+? https://github.com/SanderElias/Samples
+
+Santosh Yadav
+https://github.com/SanderElias/Samples
+14
+
+Selin Tunc
+?
+
+Shai Reznik
+???  https://github.com/shairez
+
+Sharon DiOrio
+old
+
+Siddharth Ajmera
+https://github.com/SiddAjmera/Angular14App
+
+Srashti Jain
+https://github.com/srashtisj/angular-demo-app
+
+Stanimira Vlaeva
+?
+
+Stepan Suvorov
+https://github.com/stevermeister/
+old
+
+Suguru Inatomi
+https://github.com/lacolaco/angular-sac
+elementify: A function to convert an Angular SAC into the custom element
+
+https://github.com/lacolaco/angular-dynamic-navlist-example
+https://stackblitz.com/github/lacolaco/angular-dynamic-navlist-example?file=src%2Fapp%2Fnav-list%2Fnav-list.component.ts
+
+https://github.com/lacolaco/reactive-store
+https://github.com/lacolaco/reactive-store/tree/main/examples/example-angular/src/app/examples
+
+Thierry Chatel
+old
+https://github.com/tchatel
+
+Todd Motto
+old
+https://github.com/toddmotto
+
+Tomas Trajan
+old
+https://github.com/tomastrajan
+
+Tracy Lee
+old
+https://github.com/ladyleet/
+
+Uri Shaked
+https://github.com/urish
+
+Ward Bell
+Model-Driven validation, in contrast to the Form-Driven validation that we are taught in the Angular docs.
+mini-version of a Payroll Service Enrollment Application
+https://github.com/wardbell/ngc-validate
+14
+https://github.com/wardbell/subsink
+RxJS subscription sink for unsubscribing gracefully in a component 
+
+Wassim Chegham
+old
+https://github.com/manekinekko/
+
+
+Wes Grimes
+old
+https://github.com/wesleygrimes
+
+Wilson Mendes
+https://github.com/willmendesneto/ngx-feature-toggle
+
+Yannick Baron
+old
+https://github.com/thinktecture
+
+
+Younes Jaaidi
+Angular is one of the easiest frameworks to integrate with modern dev tools out of the box (e.g. Vite, Vitest, SWC, Playwright Component Testing)
+https://marmicode.io/blog/versatile-angular
+https://github.com/yjaaidi/experiments/tree/versatile-angular
+
+https://github.com/jscutlery/devkit
+https://github.com/yjaaidi/experiments/tree/private-configurable-store
+
+Zack DeRose
+https://github.com/ZackDeRose/derxjs
+Domain-agnostic state-management
+
+https://github.com/ZackDeRose/angular-supaship-io
+Supabase is an open source Firebase alternative.
+Supabase is a dedicated PostgreSQL database
