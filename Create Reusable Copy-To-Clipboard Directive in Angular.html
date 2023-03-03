@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-02-27T21:46:38.871869471"/>
+	<meta name="changed" content="2023-02-27T22:09:03.511577081"/>
+	<style type="text/css">
+		h1.cjk { font-family: "Noto Serif CJK SC" }
+		h1.ctl { font-family: "Lohit Devanagari" }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+	</style>
+</head>
+<body lang="en-CA" dir="ltr"><h1 class="western"><font size="4" style="font-size: 16pt">Create
+Reusable Copy-To-Clipboard Directive in Angular</font></h1>
+<p><font size="4" style="font-size: 16pt">Netanel Basal</font></p>
+<p>Jun 9, 2022</p>
+<p><a name="d731"></a>Including a copy button in an application is a
+common feature that enhances user experience, especially on mobile
+devices where users may have difficulty selecting text.</p>
+<p><a name="da79"></a>Let’s create a directive that simplifies our
+work. Our API will look like this:</p>
+<pre class="western"><font size="3" style="font-size: 12pt">&lt;button copy=&quot;Clicking this button copies this text to the clipboard&quot;&gt;</font>
+  <font size="3" style="font-size: 12pt">Copy</font>
+<font size="3" style="font-size: 12pt">&lt;/button&gt;</font>
+
+<font size="3" style="font-size: 12pt">&lt;button [copy]=&quot;fooText&quot;&gt;</font>
+  <font size="3" style="font-size: 12pt">Copy</font>
+<font size="3" style="font-size: 12pt">&lt;/button&gt;</font></pre><p>
+<a href="https://gist.github.com/NetanelBasal/e7192bd60772f625356fd75d1f30c346#file-copy-11-html">copy-11.html
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<p>As a first step, let’s create a directive and register a <code class="western">click</code>
+handler for our <code class="western">host</code> element:</p>
+<pre class="western">
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';</font></font>
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">@UntilDestroy()</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">@Directive({</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">selector: '[copy]'</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">})</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">export class CopyDirective {</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">@Input() copy: string;</font></font>
+
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">constructor(private host: ElementRef&lt;HTMLElement&gt;) {</font></font><a href="https://github.com/">GitHub</a><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font>
+
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">ngOnInit() {</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">fromEvent(this.host.nativeElement, 'click').pipe(</font></font>
+      <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">untilDestroyed()</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">).subscribe(() =&gt; {})</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font>
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/5f6a09209b59c8e8881114d6021df008#file-copy-22-directive-ts">copy-22.directive.ts </a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font>
+
+<font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">In this case, I don’t use </font></font><code class="western"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">HostListener</font></font></code><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt"> since I want to run the </font></font><code class="western"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">event</font></font></code><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt"> outside the Angular zone to avoid triggering a redundant change detection cycle whenever a user copies data:</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';</font></font>
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">@UntilDestroy()</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">@Directive({</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">selector: '[copy]'</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">})</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">export class CopyDirective {</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">@Input() copy: string;</font></font>
+
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">constructor(</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">private host: ElementRef&lt;HTMLElement&gt;,</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">private zone: NgZone,</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">) {}</font></font>
+
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">ngOnInit() {</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">this.zone.runOutsideAngular(() =&gt; {</font></font>
+      <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">fromEvent(this.host.nativeElement, 'click').pipe(</font></font>
+        <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">untilDestroyed(this)</font></font>
+      <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">).subscribe(() =&gt; { })</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">})</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font>
+<font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/d1f0e04e01b9434703fbfefe0cc9f7b4#file-copy-33-directive-ts">copy-33.directive.ts </a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></font>
+<font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">Now I can use the native </font></font><code class="western"><a href="https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/writeText" target="_blank"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">Clipboard.writeText()</font></font></a></code><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt"> API, which is <a href="https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/writeText#browser_compatibility" target="_blank">supported</a> by all major browsers, to copy the text provided by the </font></font><code class="western"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">input</font></font></code><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">, and show a success message:</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">import { Directive, ElementRef, Input, NgZone } from '@angular/core';</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">import { HotToastService } from '@ngneat/hot-toast';</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">import { fromEvent, switchMap } from 'rxjs';</font></font>
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">@UntilDestroy()</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">@Directive({</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">selector: '[copy]'</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">})</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">export class CopyDirective {</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">@Input() copy: string;</font></font>
+
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">constructor(</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">private host: ElementRef&lt;HTMLElement&gt;,</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">private zone: NgZone,</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">private toast: HotToastService</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">) {</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font>
+
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">ngOnInit() {</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">this.zone.runOutsideAngular(() =&gt; {</font></font>
+      <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">fromEvent(this.host.nativeElement, 'click').pipe(</font></font>
+        <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">switchMap(() =&gt; navigator.clipboard.writeText(this.copy)),</font></font>
+        <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">untilDestroyed(this)</font></font>
+      <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">).subscribe(() =&gt; this.toast.success('Copied!'))</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">})</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font>
+<font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/84cfdb8b9d94426ddb1ba6483b9c03fc#file-copy-44-directive-ts">copy-44.directive.ts </a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></font>
+</pre><p>
+<a name="b8e4"></a><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">Note
+that this API works on localhost or HTTPS. If you need a fallback,
+you can use the deprecated </font></font><code class="western"><a href="https://developer.mozilla.org/en-US/docs/Web/API/Document/execCommand#syntax" target="_blank"><font size="3" style="font-size: 12pt">execCommand</font></a></code><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">
+API.</font></font></p>
+<p><a name="78ee"></a>Let’s test our directive with <a href="https://github.com/ngneat/spectator" target="_blank">Spectator</a>:</p>
+<pre class="western" style="margin-bottom: 0.5cm"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">import { fakeAsync, tick } from '@angular/core/testing';</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">import { HotToastService } from '@ngneat/hot-toast';</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">import { createDirectiveFactory } from '@ngneat/spectator';</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">import { CopyDirective } from './copy.directive';</font></font>
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">describe('CopyDirective', () =&gt; {</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const createDirective = createDirectiveFactory({</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">directive: CopyDirective,</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">mocks: [HotToastService]</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">});</font></font>
+
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">it('should copy', fakeAsync(() =&gt; {</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">spyOn(navigator.clipboard, 'writeText').and.callFake(() =&gt; Promise.resolve())</font></font>
+
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const text = `Clicking this button copies this text to the clipboard`;</font></font>
+
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const spectator = createDirective(`</font></font>
+       <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">&lt;button copy=&quot;${text}&quot;&gt;Copy&lt;/button&gt;</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">`);</font></font>
+
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">spectator.click();</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">expect(navigator.clipboard.writeText).toHaveBeenCalledWith(text);</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">tick();</font></font>
+
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">expect(spectator.inject(HotToastService).success).toHaveBeenCalled();</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}));</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">});</font></font>
+<font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/c3de58b0dac09d7ab97dcff49b6f15f5#file-copy-55-directive-ts">copy-55.directive.ts </a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></font>
+
+<font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">I’m using </font></font><code class="western"><font size="3" style="font-size: 12pt">spyOn</font></code><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt"> directly on the object, but you can provide it via DI and mock it.</font></font></pre>
+</body>
+</html>

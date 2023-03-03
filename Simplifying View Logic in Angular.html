@@ -1,0 +1,117 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-03-02T20:36:09.804170338"/>
+	<meta name="changed" content="2023-03-02T20:43:50.857728351"/>
+	<style type="text/css">
+		@page { size: 21.59cm 27.94cm; margin: 2cm }
+		p { margin-bottom: 0.25cm; line-height: 115%; background: transparent }
+		h1 { margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h1.western { font-family: "Liberation Serif", serif; font-size: 24pt; font-weight: bold }
+		h1.cjk { font-family: "Noto Serif CJK SC"; font-size: 24pt; font-weight: bold }
+		h1.ctl { font-family: "Lohit Devanagari"; font-size: 24pt; font-weight: bold }
+		pre { background: transparent }
+		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace; font-size: 10pt }
+		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		a:link { color: #000080; so-language: zxx; text-decoration: underline }
+		a:visited { color: #800000; so-language: zxx; text-decoration: underline }
+		strong { font-weight: bold }
+		code.western { font-family: "Liberation Mono", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.ctl { font-family: "Liberation Mono", monospace }
+	</style>
+</head>
+<body lang="en-CA" link="#000080" vlink="#800000" dir="ltr"><h1 class="western">
+<font size="3" style="font-size: 12pt">Simplifying View Logic in
+Angular</font></h1>
+<p style="margin-bottom: 0cm; line-height: 100%">Netanel Basal</p>
+<p>Mar 1, 2023</p>
+<p><a href="https://netbasal.com/simplifying-view-logic-in-angular-14a8cda8e2da"><font size="3" style="font-size: 12pt">https://netbasal.com/simplifying-view-logic-in-angular-14a8cda8e2da</font></a></p>
+<p><a name="28d4"></a><font size="3" style="font-size: 12pt">Recently,
+I had to implement a </font><strong><font size="3" style="font-size: 12pt">popover</font></strong><font size="3" style="font-size: 12pt">
+view with many variations based on complex conditions. Using
+</font><code class="western"><font size="3" style="font-size: 12pt">ngSwitch</font></code><font size="3" style="font-size: 12pt">,
+in this case, was impossible, and using </font><code class="western"><font size="3" style="font-size: 12pt">ngIf</font></code><font size="3" style="font-size: 12pt">
+is unreadable and verbose.</font></p>
+<p><a name="55e5"></a>Here’s how I decided to approach this
+problem. The first step was to create a directive named
+<code class="western">TemplateIdDirective</code>:</p>
+<pre class="western"><a name="59ff"></a><font size="3" style="font-size: 12pt">@Directive({</font>
+  <font size="3" style="font-size: 12pt">selector: 'ng-template[id]',</font>
+  <font size="3" style="font-size: 12pt">standalone: true</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class TemplateIdDirective {</font>
+  <font size="3" style="font-size: 12pt">@Input() id: string;</font>
+  
+  <font size="3" style="font-size: 12pt">tpl = inject(TemplateRef);</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a name="6f93"></a><font size="3" style="font-size: 12pt">The
+directive targets templates with an </font><code class="western"><font size="3" style="font-size: 12pt">id</font></code><font size="3" style="font-size: 12pt">
+input. Next, I created the variations in the component template and
+assigned each an </font><code class="western"><font size="3" style="font-size: 12pt">id</font></code><font size="3" style="font-size: 12pt">:</font></p>
+<pre class="western"><a name="592a"></a><font size="3" style="font-size: 12pt">&lt;-- trace-information.component.html --&gt;</font>
+<font size="3" style="font-size: 12pt">&lt;div&gt;</font>
+  <font size="3" style="font-size: 12pt">&lt;p&gt;{{ header }}&lt;/p&gt;</font>
+  <font size="3" style="font-size: 12pt">&lt;ng-template [ngTemplateOutlet]=&quot;body&quot;&gt;&lt;/ng-template&gt;</font>
+<font size="3" style="font-size: 12pt">&lt;/div&gt;</font>
+<font size="3" style="font-size: 12pt">&lt;ng-template id=&quot;variation-one&quot;&gt;...&lt;/ng-template&gt;</font>
+<font size="3" style="font-size: 12pt">&lt;ng-template id=&quot;variation-two&quot;&gt;...&lt;/ng-template&gt;</font>
+<font size="3" style="font-size: 12pt">&lt;ng-template id=&quot;variation-three&quot;&gt;...&lt;/ng-template&gt;</font>
+<font size="3" style="font-size: 12pt">&lt;ng-template id=&quot;variation-four&quot;&gt;...&lt;/ng-template&gt;</font>
+<font size="3" style="font-size: 12pt">&lt;ng-template id=&quot;variation-five&quot;&gt;...&lt;/ng-template&gt;</font></pre><p>
+<a name="1898"></a>Lastly, I’ve written all the logic in the
+component, obtained a reference to the templates, and rendered the
+one that matched:</p>
+<pre class="western"><a name="9aef"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">selector: 'app-trace-information',</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">imports: [TemplateIdDirective],</font>
+  <font size="3" style="font-size: 12pt">templateUrl: './trace-information.component.html'</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class TraceInformationComponent {</font>
+  <font size="3" style="font-size: 12pt">header = '';</font>
+  <font size="3" style="font-size: 12pt">@Input() traceInfo: TraceInfo;</font>
+  
+  <font size="3" style="font-size: 12pt">@ViewChildren(TemplateIdDirective) </font>
+  <font size="3" style="font-size: 12pt">templates: QueryList&lt;TemplateIdDirective&gt;;</font>
+  
+  <font size="3" style="font-size: 12pt">private cdr = inject(ChangeDetectorRef);</font>
+  <font size="3" style="font-size: 12pt">ngAfterViewInit() {</font>
+    <font size="3" style="font-size: 12pt">this.resolveView();</font>
+  <font size="3" style="font-size: 12pt">}</font>
+ 
+  <font size="3" style="font-size: 12pt">private resolveView() {</font>
+    <font size="3" style="font-size: 12pt">// All the complex conditions are defined here.</font>
+    <font size="3" style="font-size: 12pt">// In real life is way more complicated than that.</font>
+    <font size="3" style="font-size: 12pt">// This is only for illustration</font>
+    <font size="3" style="font-size: 12pt">if(...) {</font>
+      <font size="3" style="font-size: 12pt">this.header = '...';</font>
+      <font size="3" style="font-size: 12pt">this.body = this.getTemplate('variation-one');</font>
+    <font size="3" style="font-size: 12pt">} else if(...) {</font>
+       <font size="3" style="font-size: 12pt">if(...) {</font>
+         <font size="3" style="font-size: 12pt">this.header = '...';</font>
+         <font size="3" style="font-size: 12pt">this.body = this.getTemplate('variation-two'); </font>
+       <font size="3" style="font-size: 12pt">} else {</font>
+         <font size="3" style="font-size: 12pt">this.header = '...';</font>
+         <font size="3" style="font-size: 12pt">this.body = this.getTemplate('variation-three');</font>
+       <font size="3" style="font-size: 12pt">}</font>
+    <font size="3" style="font-size: 12pt">}</font>
+    <font size="3" style="font-size: 12pt">this.cdr.detectChanges();</font>
+  <font size="3" style="font-size: 12pt">}</font>
+  <font size="3" style="font-size: 12pt">private getTemplate(id: string) {</font>
+    <font size="3" style="font-size: 12pt">return this.templates.find((tpl) =&gt; tpl.id === id).tpl;</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a name="e80a"></a>Creating a component for every variation would
+have achieved the same result, but in this case, the view is tiny, so
+creating a component for every variation would be overkill.</p>
+<p><br/>
+<br/>
+
+</p>
+</body>
+</html>

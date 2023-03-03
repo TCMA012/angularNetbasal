@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-02-27T21:40:21.432079318"/>
+	<meta name="changed" content="2023-02-27T21:46:12.159584050"/>
+	<style type="text/css">
+		h1.cjk { font-family: "Noto Serif CJK SC" }
+		h1.ctl { font-family: "Lohit Devanagari" }
+		h2.cjk { font-family: "Noto Serif CJK SC" }
+		h2.ctl { font-family: "Lohit Devanagari" }
+		h3.cjk { font-family: "Noto Serif CJK SC" }
+		h3.ctl { font-family: "Lohit Devanagari" }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+	</style>
+</head>
+<body lang="en-CA" dir="ltr"><h1 class="western"><font size="4" style="font-size: 16pt">Introducing
+the CanMatch Router Guard In Angular</font></h1>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p>Netanel Basal</p>
+<p>Jun 15, 2022</p>
+<p><a name="e251"></a>Angular provides the <code class="western">canLoad</code>
+and <code class="western">canActivate</code> router guards. <code class="western">CanLoad</code>
+and <code class="western">canActivate</code> guards are used to
+determine if a lazy-loaded module or component should be loaded and
+activated, respectively.</p>
+<p><a name="0f7a"></a>Using these guards has two drawbacks. The first
+is that you usually have to define both. Furthermore, there is no
+easy way to define multiple routes with the <strong>same path</strong>
+that can be activated based on certain conditions.</p>
+<p><a name="81e0"></a>Luckily, a new powerful guard addresses these
+issues in the next version of Angular— the <code class="western">CanMatch</code>
+guard.</p>
+<p><a name="1bb8"></a>The <code class="western">CanMatch</code> guard
+would control whether we can use the route and, as a side effect,
+whether we can download the code. In addition, when one of the
+defined guards returns <code class="western">false</code>, the route
+is skipped, and other routes are processed instead.</p>
+<p><a name="2ded"></a>We can, for example, use the <code class="western">CanMatch</code>
+guard to load different components based on a feature flag.
+Currently, we need to do what I explained in one of my previous
+articles:</p>
+<h2 class="western"><a name="2ded1"></a><a href="https://netbasal.com/conditionally-load-a-module-using-angular-router-aff022923850" target="_blank"><font size="3" style="font-size: 12pt">Conditionally
+Load a Module Using Angular Router</font></a></h2>
+<h3 class="western"><a href="https://netbasal.com/conditionally-load-a-module-using-angular-router-aff022923850" target="_blank"><font size="3" style="font-size: 12pt">In
+most cases, a feature flag is used when creating a new version of an
+existing page rather than adding multiple…</font></a></h3>
+<p><a href="https://netbasal.com/conditionally-load-a-module-using-angular-router-aff022923850" target="_blank"><font size="3" style="font-size: 12pt">netbasal.com</font></a></p>
+<p><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">Now,
+we can do the following:</font></font></p>
+<pre class="western"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const routes: Routes = [</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">{</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">path: 'todos',</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">canMatch: [() =&gt; inject(FeatureFlagsService).hasPermission('todos-v2')],</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">loadComponent: () =&gt; import('./todos-page-v2/todos-page-v2.component')</font></font>
+                        <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">.then(v =&gt; v.TodosPageV2Component)</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">},</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">{</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">path: 'todos',</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">loadComponent: () =&gt; import('./todos-page/todos-page.component')</font></font>
+                         <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">.then(v =&gt; v.TodosPageComponent)</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}];</font></font></pre><p>
+<font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace"><a href="https://gist.github.com/NetanelBasal/407518654043bc18dce08991e57e48a8#file-can-match-2-ts">can-match-2.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></font></p>
+<p><font size="3" style="font-size: 12pt">When the guard function
+returns true, it’ll load and activate the new todos version;
+otherwise, the legacy version will be used.</font></p>
+<p><img src="https://miro.medium.com/max/1101/1*lg_-NS4n-5jBJePLXlqOWQ.gif" name="Image1" align="bottom" width="642" height="535" border="0"/>
+</p>
+<p><a name="8093"></a><font size="3" style="font-size: 12pt">Alternatively,
+we can return a URL tree or redirect to another route.</font></p>
+<p><a name="171f"></a>We can also use this technique to load
+different components based on the user role.</p>
+<p><br/>
+<br/>
+
+</p>
+</body>
+</html>

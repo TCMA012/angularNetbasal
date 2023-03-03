@@ -1,0 +1,215 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-02-28T21:42:37.486822167"/>
+	<meta name="changed" content="2023-03-01T21:39:02.963737455"/>
+	<style type="text/css">
+		@page { size: 21.59cm 27.94cm; margin-left: 2cm; margin-right: 1cm; margin-top: 1cm; margin-bottom: 1cm }
+		p { margin-bottom: 0.25cm; line-height: 115%; background: transparent }
+		h1 { margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h1.western { font-family: "Liberation Serif", serif; font-size: 24pt; font-weight: bold }
+		h1.cjk { font-family: "Noto Serif CJK SC"; font-size: 24pt; font-weight: bold }
+		h1.ctl { font-family: "Lohit Devanagari"; font-size: 24pt; font-weight: bold }
+		pre { background: transparent }
+		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace; font-size: 10pt }
+		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		h2 { margin-top: 0.35cm; margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h2.western { font-family: "Liberation Serif", serif; font-size: 18pt; font-weight: bold }
+		h2.cjk { font-family: "Noto Serif CJK SC"; font-size: 18pt; font-weight: bold }
+		h2.ctl { font-family: "Lohit Devanagari"; font-size: 18pt; font-weight: bold }
+		h3 { margin-top: 0.25cm; margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h3.western { font-family: "Liberation Serif", serif; font-size: 14pt; font-weight: bold }
+		h3.cjk { font-family: "Noto Serif CJK SC"; font-size: 14pt; font-weight: bold }
+		h3.ctl { font-family: "Lohit Devanagari"; font-size: 14pt; font-weight: bold }
+		code.western { font-family: "Liberation Mono", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.ctl { font-family: "Liberation Mono", monospace }
+		a:link { color: #000080; so-language: zxx; text-decoration: underline }
+		strong { font-weight: bold }
+		em { font-style: italic }
+	</style>
+</head>
+<body lang="en-CA" link="#000080" vlink="#800000" dir="ltr"><h1 class="western">
+<font size="4" style="font-size: 14pt">Unleash the Power of DI
+Functions in Angular</font></h1>
+<p><font size="3" style="font-size: 12pt">Netanel Basal</font></p>
+<p><font size="3" style="font-size: 12pt">May 19, 2022</font></p>
+<p><a href="https://netbasal.com/unleash-the-power-of-di-functions-in-angular-2eb9f2697d66"><font size="3" style="font-size: 12pt">https://netbasal.com/unleash-the-power-of-di-functions-in-angular-2eb9f2697d66</font></a></p>
+<p><font size="3" style="font-size: 12pt">We can use Angular’s
+</font><code class="western"><a href="https://angular.io/api/core/inject#inject" target="_blank"><font size="3" style="font-size: 12pt">inject()</font></a></code><font size="3" style="font-size: 12pt">
+function to obtain a reference for a token from the currently active
+injector. We can use it in the </font><code class="western"><font size="3" style="font-size: 12pt">factory</font></code><font size="3" style="font-size: 12pt">
+providers or services, for example:</font></p>
+<pre class="western"><font size="3" style="font-size: 12pt">export const HTTP = new InjectionToken('', {</font>
+  <font size="3" style="font-size: 12pt">providedIn: 'root',</font>
+  <font size="3" style="font-size: 12pt">factory() {</font>
+    <font size="3" style="font-size: 12pt">return inject(HttpClient);</font>
+  <font size="3" style="font-size: 12pt">},</font>
+<font size="3" style="font-size: 12pt">});</font>
+
+<font size="3" style="font-size: 12pt">@Injectable()</font>
+<font size="3" style="font-size: 12pt">export class FooService {</font>
+  <font size="3" style="font-size: 12pt">http = inject(HttpClient);</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<font size="3" style="font-size: 12pt">new-inj-1.ts hosted with ❤
+by GitHub</font></p>
+<p><a name="ad68"></a><font size="3" style="font-size: 12pt">You can
+read more about </font><code class="western"><font size="3" style="font-size: 12pt">InjectionToken</font></code><font size="3" style="font-size: 12pt">
+factory providers in this article:</font></p>
+<h2 class="western"><a href="https://netbasal.com/the-hidden-power-of-injectiontoken-factory-functions-in-angular-d42d5575859b" target="_blank"><font size="3" style="font-size: 12pt">The
+Hidden Power of InjectionToken Factory Functions in Angular</font></a></h2>
+<h3 class="western"><a href="https://netbasal.com/the-hidden-power-of-injectiontoken-factory-functions-in-angular-d42d5575859b" target="_blank"><font size="3" style="font-size: 12pt">In
+this article, I want to talk about a feature which Angular provides,
+that isn’t particularly well known or used by…</font></a></h3>
+<p><a href="https://netbasal.com/the-hidden-power-of-injectiontoken-factory-functions-in-angular-d42d5575859b" target="_blank"><font size="3" style="font-size: 12pt">netbasal.com</font></a></p>
+<p><a name="d469"></a><font size="3" style="font-size: 12pt">Starting
+from Angular v14, we can also use the </font><code class="western"><font size="3" style="font-size: 12pt">inject()</font></code><font size="3" style="font-size: 12pt">
+function in components, directives, and pipes. It opens up a whole
+new world of possibilities. Utilizing the DI system, we can create
+reusable functions. I like to call it a </font><strong><font size="3" style="font-size: 12pt">DI
+function</font></strong><font size="3" style="font-size: 12pt">:</font></p>
+<p><a name="eadc"></a><font size="3" style="font-size: 12pt">F<font face="Liberation Mono, monospace">or
+example:</font></font></p>
+<pre class="western"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">import { inject } from '@angular/core';</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">import { ActivatedRoute } from '@angular/router';</font></font>
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">export function getRouteParam(key: string) {</font></font>
+  <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">return inject(ActivatedRoute).snapshot.params[key];</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font></pre><p>
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/a0c32a01bcc8c4d6bec18ba9b33c32cd#file-new-inj-2-ts">new-inj-2.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<pre class="western"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">@Component({</font></font>
+  <font size="3" style="font-size: 12pt">selector: 'app-todo-page',</font>
+  <font size="3" style="font-size: 12pt">templateUrl: './todo-page.component.html',</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class TodoPageComponent {</font>
+  <font size="3" style="font-size: 12pt">id = getRouteParam('id');</font>
+
+  <font size="3" style="font-size: 12pt">ngOnInit() {</font>
+    <font size="3" style="font-size: 12pt">console.log(this.id)</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/a0c32a01bcc8c4d6bec18ba9b33c32cd#file-new-inj-3-ts">new-inj-3.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></font></p>
+<p><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">Here’s
+one more example that returns an observable based on the </font></font><code class="western"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">timespan</font></font></code><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">
+query parameter:</font></font></p>
+<pre class="western"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">export function timespan$() {</font></font>
+  <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">const activatedRoute = inject(ActivatedRoute);</font></font>
+
+  <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">return activatedRoute.queryParams.pipe(</font></font>
+    <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">pluck('timespan'),</font></font>
+    <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">filterNil(),</font></font>
+    <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">distinctUntilChanged()</font></font>
+  <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">);</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font></pre><p>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/2bd389852bc50483edb4ed613fdc0b2c#file-new-inj-4-ts">new-inj-4.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></font></p>
+<pre class="western"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">@Component({</font></font>
+  <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">selector: 'app-todo-page',</font></font>
+  <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">templateUrl: './todo-page.component.html'</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">})</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">export class TodoPageComponent {</font></font>
+  <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">data$ = timespan$().pipe(</font></font>
+    <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">switchMap(..)   </font></font>
+  <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">)</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font></pre><p>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/2bd389852bc50483edb4ed613fdc0b2c#file-new-inj-5-ts">new-inj-5.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></font></p>
+<pre class="western"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">export function untilDestroyed() {</font></font>
+  <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">const subject = new Subject&lt;void&gt;();</font></font>
+
+  <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">const viewRef = inject(ChangeDetectorRef) as ViewRef;</font></font>
+
+  <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">viewRef.onDestroy(() =&gt; {</font></font>
+    <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">subject.next();</font></font>
+    <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">subject.complete()</font></font>
+  <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">});</font></font>
+
+  <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">return takeUntil(subject.asObservable())</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/272bf890fbfe1aedd4584ed7ed53a98d#file-new-inj-6-ts">new-inj-6.ts </a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></font>
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">@Component({</font></font>
+  <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">selector: 'app-todo-page',</font></font>
+  <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">templateUrl: './todo-page.component.html'</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">})</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">export class TodoPageComponent {</font></font>
+  <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">destroy$ = untilDestroyed();</font></font>
+
+  <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">ngOnInit() {</font></font>
+    <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">interval(1000).pipe(</font></font>
+      <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">this.destroy$</font></font>
+    <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">).subscribe(console.log)</font></font>
+  <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">}</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font></pre><p>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/272bf890fbfe1aedd4584ed7ed53a98d#file-new-inj-7-ts">new-inj-7.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></font></p>
+<p><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">We
+can also leverage the </font></font><code class="western"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">NodeInjector</font></font></code><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">:</font></font></p>
+<pre class="western"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">export function getRootComponent() {</font></font>
+  <font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">return inject(AppComponent);</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font></pre><p>
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/06531a7a654016d46b5213f95ceebb35#file-new-inj-8-ts">new-inj-8.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">It
+can be used to provide a more clean and robust approach for library
+authors:</font></font></p>
+<p><br/>
+<br/>
+
+</p>
+<p><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">function
+createEntityService(store) {</font></font></p>
+<p><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const
+http = inject(HttpClient);</font></font></p>
+<p><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const
+loader = inject(NgEntityServiceLoader);</font></font></p>
+<p><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const
+notifier = inject(NgEntityServiceNotifier);</font></font></p>
+<p><br/>
+<br/>
+
+</p>
+<p><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">return
+new EntityService(store, http, loader, notifier);</font></font></p>
+<p><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font></p>
+<p><br/>
+<br/>
+
+</p>
+<p><font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/754f63fc3fa197e58c361a43a4503316#file-new-inj-7-ts">new-inj-7.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p><a name="9ebc"></a><font size="3" style="font-size: 12pt">It is
+undoubtedly a very powerful feature, but let’s look at the cons as
+well.</font></p>
+<p><a name="a422"></a><font size="3" style="font-size: 12pt">First,
+</font><code class="western"><font size="3" style="font-size: 12pt">inject()</font></code><font size="3" style="font-size: 12pt">
+can only be called in the </font><code class="western"><font size="3" style="font-size: 12pt">constructor</font></code><font size="3" style="font-size: 12pt">,
+so we can’t leverage a component’s </font><code class="western"><font size="3" style="font-size: 12pt">inputs</font></code><font size="3" style="font-size: 12pt">.
+We can work around it by using </font><code class="western"><font size="3" style="font-size: 12pt">closures</font></code><font size="3" style="font-size: 12pt">,
+but did we gain anything?</font></p>
+<p><a name="c3a0"></a><font size="3" style="font-size: 12pt">Secondly,
+it makes testing harder. I don’t mind since I work directly with
+</font><code class="western"><font size="3" style="font-size: 12pt">Cypress</font></code><font size="3" style="font-size: 12pt">
+and don’t mock anything, but it might be an issue in your case.</font></p>
+<p><a name="59cc"></a><font size="3" style="font-size: 12pt">And last
+but not least, it might feel like </font><em><font size="3" style="font-size: 12pt">magic
+(</font></em><font size="3" style="font-size: 12pt">similar to React
+hooks</font><em><font size="3" style="font-size: 12pt">)</font></em><font size="3" style="font-size: 12pt">,
+and I’m not too fond of magic, unlike my children 😄</font></p>
+<h2 class="western"><a name="073a"></a><font size="4" style="font-size: 14pt">Closing
+Thoughts</font></h2>
+<p><a name="ac56"></a><font size="3" style="font-size: 12pt">It is a
+very exciting feature. I am still not sure how I feel about it, but
+we will have to wait and see where the community takes it.</font></p>
+<p><br/>
+<br/>
+
+</p>
+</body>
+</html>

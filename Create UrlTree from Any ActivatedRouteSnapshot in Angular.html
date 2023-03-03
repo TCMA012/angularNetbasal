@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-02-27T21:33:03.486888570"/>
+	<meta name="changed" content="2023-02-27T21:40:07.908338001"/>
+	<style type="text/css">
+		@page { size: 21.59cm 27.94cm; margin: 2cm }
+		p { margin-bottom: 0.25cm; line-height: 115%; background: transparent }
+		h1 { margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h1.western { font-family: "Liberation Serif", serif; font-size: 24pt; font-weight: bold }
+		h1.cjk { font-family: "Noto Serif CJK SC"; font-size: 24pt; font-weight: bold }
+		h1.ctl { font-family: "Lohit Devanagari"; font-size: 24pt; font-weight: bold }
+		pre { background: transparent }
+		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace; font-size: 10pt }
+		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		a:link { color: #000080; so-language: zxx; text-decoration: underline }
+		a:visited { color: #800000; so-language: zxx; text-decoration: underline }
+		code.western { font-family: "Liberation Mono", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.ctl { font-family: "Liberation Mono", monospace }
+		em { font-style: italic }
+	</style>
+</head>
+<body lang="en-CA" link="#000080" vlink="#800000" dir="ltr"><h1 class="western">
+<font size="4" style="font-size: 16pt">Create UrlTree from Any
+ActivatedRouteSnapshot in Angular</font></h1>
+<p style="margin-bottom: 0cm; line-height: 100%">Netanel Basal</p>
+<p>Jun 24, 2022</p>
+<p><a href="https://netbasal.com/create-urltree-from-any-activatedroutesnapshot-in-angular-34a29af25416">https://netbasal.com/create-urltree-from-any-activatedroutesnapshot-in-angular-34a29af25416</a></p>
+<p><a name="642a"></a>In the current Router API version (v14.0.0-),
+the <code class="western">UrlTree</code> can only be created from an
+<code class="western">ActivatedRoute</code>, which must both be
+active and materially appear in the <code class="western">UrlTree</code>
+(meaning it cannot be an empty path named outlet).</p>
+<p><a name="2807"></a>Due to the implementation of the current
+<code class="western">UrlTree</code> creation process, the <code class="western">UrlSegment</code>
+of the <code class="western">ActivatedRoute</code> is looked up in
+the currently active <code class="western">UrlTree</code> of the
+router. If this doesn’t work, the <code class="western">UrlTree</code>
+creation fails.</p>
+<p><a name="12e5"></a>As an example, suppose we have a guard that,
+based on some condition, redirects to a sibling route:</p>
+<pre class="western"><font size="3" style="font-size: 12pt">@Injectable({ providedIn: 'root' })</font>
+<font size="3" style="font-size: 12pt">export class MyGuard implements CanActivate {</font>
+  <font size="3" style="font-size: 12pt">constructor(private router: Router, private route: ActivatedRoute) { }</font>
+
+  <font size="3" style="font-size: 12pt">canActivate(route: ActivatedRouteSnapshot) {</font>
+    <font size="3" style="font-size: 12pt">if(checkData(route)) {</font>
+      <font size="3" style="font-size: 12pt">this.router.navigate(['../sibling'], { relativeTo: this.route }); </font>
+      <font size="3" style="font-size: 12pt">return false;</font>
+    <font size="3" style="font-size: 12pt">}</font>
+    
+    <font size="3" style="font-size: 12pt">return true;</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a href="https://gist.github.com/NetanelBasal/7f3b998406961e3b28702549f29c80dd#file-relative-guard-1-ts">relative-guard-1.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<pre class="western">
+<font size="3" style="font-size: 12pt">const routes: Routes = [{</font>
+  <font size="3" style="font-size: 12pt">path: 'parent',</font>
+  <font size="3" style="font-size: 12pt">component: ParentComponent,</font>
+  <font size="3" style="font-size: 12pt">children: [</font>
+    <font size="3" style="font-size: 12pt">{</font>
+      <font size="3" style="font-size: 12pt">path: 'child',</font>
+      <font size="3" style="font-size: 12pt">component: ChildComponent,</font>
+      <font size="3" style="font-size: 12pt">canActivate: [MyGuard]</font>
+    <font size="3" style="font-size: 12pt">},</font>
+    <font size="3" style="font-size: 12pt">{</font>
+      <font size="3" style="font-size: 12pt">path: 'sibling',</font>
+      <font size="3" style="font-size: 12pt">component: SiblingComponent</font>
+    <font size="3" style="font-size: 12pt">}</font>
+  <font size="3" style="font-size: 12pt">]</font>
+<font size="3" style="font-size: 12pt">}]</font></pre><p>
+<a href="https://gist.github.com/NetanelBasal/7f3b998406961e3b28702549f29c80dd#file-relative-guard-ts">relative-guard.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<p>Because the sibling route has not yet been activated, this will
+not work. To address this issue, the Router exposes a new function
+that allows creating a <code class="western">UrlTree</code> from <em>any</em>
+<code class="western">ActivatedRouteSnapshot</code>:</p>
+<pre class="western"><font size="3" style="font-size: 12pt">import { Injectable } from '@angular/core';</font>
+<font size="3" style="font-size: 12pt">import { ActivatedRouteSnapshot, createUrlTreeFromSnapshot } from '@angular/router';</font>
+
+<font size="3" style="font-size: 12pt">@Injectable({ providedIn: 'root' })</font>
+<font size="3" style="font-size: 12pt">export class MyGuard implements CanActivate {</font>
+
+  <font size="3" style="font-size: 12pt">canActivate(route: ActivatedRouteSnapshot) {</font>
+    <font size="3" style="font-size: 12pt">if(checkData(route)) {</font>
+      <font size="3" style="font-size: 12pt">return createUrlTreeFromSnapshot(route, ['../sibling']);</font>
+    <font size="3" style="font-size: 12pt">}</font>
+    
+    <font size="3" style="font-size: 12pt">return true;</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a href="https://gist.github.com/NetanelBasal/cc851d3088456767f30eeeb67a140360#file-relative-guard-3-ts">relative-guard-3.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<p>The <code class="western">CreateUrlTreeFromSnapshot</code>
+function takes an <code class="western">ActivatedRouteSnapshot</code>,
+<code class="western">commands</code>, and optional <code class="western">queryParams</code>
+and <code class="western">fragments</code> and returns a <code class="western">UrlTree</code>.</p>
+</body>
+</html>
