@@ -1,0 +1,326 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-03-02T21:26:34.694496609"/>
+	<meta name="changed" content="2023-03-02T21:51:00.735439023"/>
+	<style type="text/css">
+		@page { size: 21.59cm 27.94cm; margin: 2cm }
+		p { margin-bottom: 0.25cm; line-height: 115%; background: transparent }
+		h1 { margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h1.western { font-family: "Liberation Serif", serif; font-size: 24pt; font-weight: bold }
+		h1.cjk { font-family: "Noto Serif CJK SC"; font-size: 24pt; font-weight: bold }
+		h1.ctl { font-family: "Lohit Devanagari"; font-size: 24pt; font-weight: bold }
+		pre { background: transparent }
+		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace; font-size: 10pt }
+		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		a:link { color: #000080; so-language: zxx; text-decoration: underline }
+		a:visited { color: #800000; so-language: zxx; text-decoration: underline }
+		code.western { font-family: "Liberation Mono", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.ctl { font-family: "Liberation Mono", monospace }
+	</style>
+</head>
+<body lang="en-CA" link="#000080" vlink="#800000" dir="ltr"><h1 class="western">
+<font size="3" style="font-size: 12pt">Typed Reactive Forms in
+Angular — No Longer a Type Dream</font></h1>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">Netanel
+Basal</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">May
+17, 2022</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt"><a href="https://netbasal.com/typed-reactive-forms-in-angular-no-longer-a-type-dream-bf6982b0af28">https://netbasal.com/typed-reactive-forms-in-angular-no-longer-a-type-dream-bf6982b0af28</a></font></p>
+<p><font size="3" style="font-size: 12pt">Creating a new Angular 14
+project:</font></p>
+<pre class="western" style="margin-bottom: 0.5cm"><a name="c0e2"></a><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">npx @angular/cli@next new angular14</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const name = new FormControl('');</font></font>
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">// value is &lt;string | null&gt;</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const value = name.value</font></font>
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">// Type error</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">name.setValue(1)</font></font>
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">name.valueChanges.subscribe(value =&gt; {</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">// value is &lt;string | null&gt;</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">})</font></font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/5d418fde237df4ead525bb95926d40ed#file-typed-c-1-ts">typed-c-1.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p><a name="5a6d"></a><font size="3" style="font-size: 12pt">We pass
+a string, so the form control is automatically inferred as
+<code class="western">FormControl&lt;string | null&gt;</code>.
+TypeScript automatically enforces this type throughout the
+<code class="western">FormControl</code> API.</font></p>
+<p><a name="5669"></a>You may be wondering where the <code class="western">null</code>
+type comes from. The reason is that if you don’t pass a value to
+<code class="western">control.reset()</code>, it’ll default to
+<code class="western">null</code>. We can change this behavior by
+setting the new <code class="western">nonNullable</code> option to
+<code class="western">true</code> :</p>
+<pre class="western"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const name = new FormControl('', { nonNullable: true });</font></font>
+
+<font size="3" style="font-size: 12pt">// value is &lt;string&gt;</font>
+<font size="3" style="font-size: 12pt">const value = name.value</font>
+
+<font size="3" style="font-size: 12pt">// reset to an empty string instead of null</font>
+<font size="3" style="font-size: 12pt">name.reset()</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/9bf8dbe790329758b8fa9f390281f4d6#file-typed-c-2-ts">typed-c-2.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">You
+can also pass a <code class="western">type</code> explicitly if you
+need to:</font></p>
+<pre class="western" style="page-break-before: always"><font size="3" style="font-size: 12pt"><font face="Liberation Mono, monospace">const name = new FormControl&lt;null | string&gt;(null, { nonNullable: true });</font></font>
+  
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">// both are valid</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">name.setValue(null);</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">name.setValue('Netanel');</font></font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/2dcd28f301a83913a7e8cccc4774814f#file-typed-c-3-ts">typed-c-3.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<h1 class="western"><a name="5dd7"></a><font size="3" style="font-size: 12pt">FormGroup</font></h1>
+<pre class="western"><font size="3" style="font-size: 12pt">const profileForm = new FormGroup({</font>
+  <font size="3" style="font-size: 12pt">firstName: new FormControl('', { nonNullable: true }),</font>
+  <font size="3" style="font-size: 12pt">lastName: new FormControl('', { nonNullable: true }),</font>
+  <font size="3" style="font-size: 12pt">address: new FormGroup({</font>
+    <font size="3" style="font-size: 12pt">street: new FormControl('', { nonNullable: true }),</font>
+    <font size="3" style="font-size: 12pt">city: new FormControl('', { nonNullable: true })</font>
+  <font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">});</font>
+
+<font size="3" style="font-size: 12pt">// typed as &lt;string | undefined&gt;</font>
+<font size="3" style="font-size: 12pt">profileForm.value.firstName</font>
+
+<font size="3" style="font-size: 12pt">// typed as &lt;string | undefined&gt;</font>
+<font size="3" style="font-size: 12pt">profileForm.value.lastName</font>
+
+<font size="3" style="font-size: 12pt">// typed as &lt;Partial&lt;Address&gt; | undefined&gt;</font>
+<font size="3" style="font-size: 12pt">profileForm.value.address</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/8cb08159f1f63f53989e37d843f78d34#file-typed-c-4-ts">typed-c-4.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">The
+type <code class="western">undefined</code> is added because if the
+control is <code class="western">disabled</code>, it’ll not be
+included in the <code class="western">value</code> object. We can
+bypass it <a href="https://netbasal.com/angular-reactive-forms-tips-and-tricks-bb0c85400b58" target="_blank">using</a>
+the <code class="western">getRawValue()</code> method:</font></p>
+<pre class="western"><font size="3" style="font-size: 12pt">// typed as &lt;string&gt;</font>
+<font size="3" style="font-size: 12pt">profileForm.getRawValue().firstName</font>
+
+<font size="3" style="font-size: 12pt">// typed as &lt;string&gt;</font>
+<font size="3" style="font-size: 12pt">profileForm.getRawValue().lastName</font>
+
+<font size="3" style="font-size: 12pt">// typed as &lt;Address&gt;</font>
+<font size="3" style="font-size: 12pt">profileForm.getRawValue().address</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/5155a1309721a17f16f8664447b22393#file-typed-c-5-ts">typed-c-5.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">A
+form may have controls, which can be added and removed at runtime.
+These controls can be represented by optional fields:</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western"><font size="3" style="font-size: 12pt">interface MyForm {</font>
+  <font size="3" style="font-size: 12pt">foo: FormControl&lt;string&gt;;</font>
+  <font size="3" style="font-size: 12pt">bar?: FormControl&lt;string&gt;;</font>
+<font size="3" style="font-size: 12pt">}</font>
+
+<font size="3" style="font-size: 12pt">const form = new FormGroup&lt;MyForm&gt;({</font>
+  <font size="3" style="font-size: 12pt">foo: new FormControl('', { nonNullable: true }),</font>
+<font size="3" style="font-size: 12pt">});</font>
+
+<font size="3" style="font-size: 12pt">// error - foo is required</font>
+<font size="3" style="font-size: 12pt">form.removeControl('foo');</font>
+
+<font size="3" style="font-size: 12pt">// OK</font>
+<font size="3" style="font-size: 12pt">form.removeControl('bar');</font>
+<a href="https://gist.github.com/NetanelBasal/dcef8a16e1e00ae57ce498873e8e8ba5#file-typed-c-6-ts">typed-c-6.ts </a>hosted with ❤ by <a href="https://github.com/">GitHub</a>
+</pre><h1 class="western">
+<a name="0ce5"></a><font size="3" style="font-size: 12pt">FormRecord</font></h1>
+<p><a name="b2be"></a>There are some cases where <code class="western">FormGroup</code>
+usage doesn’t match the above pattern since the keys are unknown
+beforehand. The new <code class="western">FormRecord</code> entity
+was added for such cases:</p>
+<pre class="western"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">import { FormRecord, FormControl } from &quot;@angular/forms&quot;;</font></font>
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const langs = new FormRecord&lt;FormControl&lt;string&gt;&gt;({ });</font></font>
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">langs.addControl('keyName',</font></font>
+                 <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">new FormControl('English', { nonNullable: true })</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">);</font></font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/aceb34e6b52cbc9600eb5a546d5718c6#file-typed-c-7-ts">typed-c-7.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<h1 class="western"><a name="d0d6"></a><font size="3" style="font-size: 12pt">FormArray</font></h1>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const skills = new FormArray([new FormControl('Creativity')]);</font></font>
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">skills.push(new FormControl('Flexibility'));</font></font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/555d99e6a2000c6ce9a13b8f2831eab4#file-typed-c-10-ts">typed-c-10.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">Each
+control type in the above <code class="western">FormArray</code> is
+<code class="western">FormControl&lt;string | null&gt;</code>.
+<code class="western">UntypedFormArray</code> must be used if you
+have multiple different element types within the array:</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const names = new UntypedFormArray([]);</font></font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/6bd78481723f2c2101202f117c8ad508#file-typed-c-11-ts">typed-c-11.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<h1 class="western"><a name="d822"></a><font size="3" style="font-size: 12pt">FormBuilder</font></h1>
+<p><a name="53bc"></a>Similar to the examples above, the <code class="western">FormBuilder</code>
+class has been upgraded to support the new types.</p>
+<p><a name="dcb9"></a>In addition, we can use the new injectable
+<code class="western">NonNullableFormBuilder</code> to save the
+boilerplate when we want to use the <code class="western">nonNullable</code>
+option in every control:</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western"><font size="3" style="font-size: 12pt">import { NonNullableFormBuilder } from '@angular/forms';</font>
+
+<font size="3" style="font-size: 12pt">@Component({})</font>
+<font size="3" style="font-size: 12pt">export class AppComponent {</font>
+  <font size="3" style="font-size: 12pt">profileForm = this.fb.group({</font>
+    <font size="3" style="font-size: 12pt">firstName: '',</font>
+    <font size="3" style="font-size: 12pt">lastName: '',</font>
+    <font size="3" style="font-size: 12pt">address: this.fb.group({</font>
+      <font size="3" style="font-size: 12pt">street: '',</font>
+      <font size="3" style="font-size: 12pt">city: '',</font>
+    <font size="3" style="font-size: 12pt">})</font>
+  <font size="3" style="font-size: 12pt">})</font>
+
+  <font size="3" style="font-size: 12pt">constructor(private fb: NonNullableFormBuilder) {}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/8574dcf3c6f2fa87b52ac094a3fe2daf#file-typed-c-9-ts">typed-c.9.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">It’s
+much cleaner this way. Alternatively, you can use the <code class="western">nonNullable</code>
+property:</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const fb = new FormBuilder();</font></font>
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const profileForm = fb.nonNullable.group({</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">firstName: '',</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">lastName: '',</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">address: fb.nonNullable.group({</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">street: '',</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">city: '',</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">})</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">});</font></font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/4be7c89e4c291c47309e56beeea6d987#file-typed-c-8-ts">typed-c-8.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<h1 class="western"><a name="6428"></a><font size="3" style="font-size: 12pt">Migration</font></h1>
+<p><a name="8d46"></a>Angular provides untyped versions to enable
+incremental migrations:</p>
+<pre class="western"><font size="3" style="font-size: 12pt">const profileForm = new FormGroup({</font>
+  <font size="3" style="font-size: 12pt">firstName: new UntypedFormControl(''),</font>
+  <font size="3" style="font-size: 12pt">lastName: new UntypedFormControl(''),</font>
+  <font size="3" style="font-size: 12pt">address: new UntypedFormGroup({</font>
+    <font size="3" style="font-size: 12pt">street: new UntypedFormControl(''),</font>
+    <font size="3" style="font-size: 12pt">city: new UntypedFormControl('')</font>
+  <font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">});</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/89cf979a0134360f0453d475a66b2b5a#file-typed-c-12-ts">typed-c-12.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p><a name="361f"></a><font size="3" style="font-size: 12pt">Angular
+14 includes a migration that replaces all controls classes with their
+untyped equivalents.</font></p>
+<h1 class="western"><a name="e61e"></a>Bonus</h1>
+<p><a name="77d6"></a>We can define a <code class="western">type</code>
+that maps a <code class="western">model</code> to a strict form
+group. To demonstrate, here is a minimal version of my reactive forms
+<a href="https://github.com/ngneat/reactive-forms" target="_blank">library</a>:</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western"><font size="3" style="font-size: 12pt">interface Profile {</font>
+  firstName: string;
+  lastName: string;
+  address: {
+    street: string;
+    city: string
+  }
+}
+
+const profileForm = new FormGroup&lt;ControlsOf&lt;Profile&gt;&gt;({
+  firstName: new FormControl('', { nonNullable: true }),
+  lastName: new FormControl('', { nonNullable: true }),
+  address: new FormGroup({
+    street: new FormControl('', { nonNullable: true }),
+    city: new FormControl('', { nonNullable: true })
+  })
+});
+
+export type ControlsOf&lt;T extends Record&lt;string, any&gt;&gt; = {
+  [K in keyof T]: T[K] extends Record&lt;any, any&gt;
+  ? FormGroup&lt;ControlsOf&lt;T[K]&gt;&gt;
+  : FormControl&lt;T[K]&gt;;
+};</pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/26395c1e1dca3712ab9ecb6c99ac23d4#file-typed-c-13-ts">typed-c-13.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><img src="Typed%20Reactive%20Forms%20-%20%20No%20Longer%20a%20Type%20Dream_html_d840dd046454dcc2.gif" name="Image1" align="left" width="796" height="584" border="0"/>
+<br/>
+
+</p>
+</body>
+</html>

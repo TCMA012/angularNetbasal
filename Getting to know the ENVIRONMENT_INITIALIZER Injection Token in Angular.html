@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-03-02T21:19:18.185817406"/>
+	<meta name="changed" content="2023-03-02T21:26:10.726600491"/>
+	<style type="text/css">
+		@page { size: 21.59cm 27.94cm; margin: 2cm }
+		p { margin-bottom: 0.25cm; line-height: 115%; background: transparent }
+		h1 { margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h1.western { font-family: "Liberation Serif", serif; font-size: 24pt; font-weight: bold }
+		h1.cjk { font-family: "Noto Serif CJK SC"; font-size: 24pt; font-weight: bold }
+		h1.ctl { font-family: "Lohit Devanagari"; font-size: 24pt; font-weight: bold }
+		pre { background: transparent }
+		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace; font-size: 10pt }
+		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		a:link { color: #000080; so-language: zxx; text-decoration: underline }
+		a:visited { color: #800000; so-language: zxx; text-decoration: underline }
+		code.western { font-family: "Liberation Mono", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.ctl { font-family: "Liberation Mono", monospace }
+	</style>
+</head>
+<body lang="en-CA" link="#000080" vlink="#800000" dir="ltr"><h1 class="western">
+<font size="3" style="font-size: 12pt">Getting to know the
+ENVIRONMENT_INITIALIZER Injection Token in Angular</font></h1>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">Netanel
+Basal</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">May
+19, 2022</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt"><a href="https://netbasal.com/getting-to-know-the-environment-initializer-injection-token-in-angular-9622cb824f57"><font size="2" style="font-size: 10pt">https://netbasal.com/getting-to-know-the-environment-initializer-injection-token-in-angular-9622cb824f57</font></a></font></p>
+<p><a name="52bd"></a><font size="3" style="font-size: 12pt">The
+<code class="western">environment</code> injector is a generalized
+version of <code class="western">NgModuleRef</code>, which is also
+known as the “module injector”. It’s one of the primitives
+required to support standalone components APIs introduced in Angular
+v14.</font></p>
+<p><a name="a71f"></a>We can currently use <code class="western">NgModule</code>
+to run some initialization logic, for example:</p>
+<pre class="western"><font size="3" style="font-size: 12pt">@NgModule({})</font>
+<font size="3" style="font-size: 12pt">export class AppModule {</font>
+  <font size="3" style="font-size: 12pt">constructor(fooService: FooService) {</font>
+    <font size="3" style="font-size: 12pt">fooService.initalize();</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font>
+
+<font size="3" style="font-size: 12pt">@NgModule({})</font>
+<font size="3" style="font-size: 12pt">export class LazyModule {</font>
+  <font size="3" style="font-size: 12pt">constructor(fooService: FooService) {</font>
+    <font size="3" style="font-size: 12pt">fooService.initalize();</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/05e8751fbc3b5317a64e27b7d741e9fc#file-env-inject-2-ts">env-inject-2.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p><a name="fd12"></a><font size="3" style="font-size: 12pt">The code
+registered with this <code class="western">token</code> will be
+executed during the application’s initialization.</font></p>
+<p><a name="826a"></a>Additionally, when we navigate to a lazily
+loaded route, the router creates a new <code class="western">EnvironmentInjector</code>
+for the route. Therefore, we can also provide <code class="western">ENVIRONMENT_INITIALIZER</code>
+on a lazy route, and it’ll only be executed upon navigation:</p>
+<pre class="western">
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">export const todosRoutes: Routes = [</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">{</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">path: '',</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">loadComponent: () =&gt;</font></font>
+      <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">import('./todos-page.component').then((m) =&gt; m.TodosPageComponent),</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">providers: [</font></font>
+      <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">{</font></font>
+        <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">provide: ENVIRONMENT_INITIALIZER,</font></font>
+        <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">multi: true,</font></font>
+        <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">useValue() {</font></font>
+          <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">inject(TodosService).init();</font></font>
+        <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">},</font></font>
+      <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">},</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">],</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">},</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">];</font></font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/e5eb0181d4b69429870e795d275079b0#file-env-inject-3-ts">env-inject-3.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+</body>
+</html>
