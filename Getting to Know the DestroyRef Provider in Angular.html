@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-03-04T22:05:17.572935816"/>
+	<meta name="changed" content="2023-03-04T22:09:24.757973512"/>
+	<style type="text/css">
+		@page { size: 21.59cm 27.94cm; margin: 2cm }
+		p { margin-bottom: 0.25cm; line-height: 115%; background: transparent }
+		h1 { margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h1.western { font-family: "Liberation Serif", serif; font-size: 24pt; font-weight: bold }
+		h1.cjk { font-family: "Noto Serif CJK SC"; font-size: 24pt; font-weight: bold }
+		h1.ctl { font-family: "Lohit Devanagari"; font-size: 24pt; font-weight: bold }
+		pre { background: transparent }
+		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace; font-size: 10pt }
+		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		a:link { color: #000080; so-language: zxx; text-decoration: underline }
+		a:visited { color: #800000; so-language: zxx; text-decoration: underline }
+		code.western { font-family: "Liberation Mono", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.ctl { font-family: "Liberation Mono", monospace }
+		strong { font-weight: bold }
+	</style>
+</head>
+<body lang="en-CA" link="#000080" vlink="#800000" dir="ltr"><h1 class="western">
+<font size="4" style="font-size: 14pt">Getting to Know the DestroyRef
+Provider in Angular</font></h1>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">Netanel
+Basal</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">Mar
+4</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><a href="https://netbasal.com/getting-to-know-the-destroyref-provider-in-angular-9791aa096d77"><font size="3" style="font-size: 12pt">https://netbasal.com/getting-to-know-the-destroyref-provider-in-angular-9791aa096d77</font></a></p>
+<p><a name="65a3"></a><font size="3" style="font-size: 12pt">Angular
+<a href="https://github.com/angular/angular/blob/main/CHANGELOG.md#1600-next1-2023-03-01" target="_blank">v16</a>
+has introduced a new provider called </font><code class="western"><font size="3" style="font-size: 12pt">DestroyRef</font></code><font size="3" style="font-size: 12pt">,
+which allows for registering destroy callbacks for a specific
+lifecycle scope. This feature is applicable to components,
+directives, pipes, embedded views, and instances of
+</font><code class="western"><font size="3" style="font-size: 12pt">EnvironmentInjector</font></code><font size="3" style="font-size: 12pt">.</font></p>
+<p><a name="3a98"></a><font size="3" style="font-size: 12pt">The
+usage of </font><code class="western"><font size="3" style="font-size: 12pt">DestroyRef</font></code><font size="3" style="font-size: 12pt">
+is straightforward. We can inject the </font><code class="western"><font size="3" style="font-size: 12pt">DestroyRef</font></code><font size="3" style="font-size: 12pt">
+provider and register a </font><code class="western"><font size="3" style="font-size: 12pt">destroy</font></code><font size="3" style="font-size: 12pt">
+callback like so:</font></p>
+<pre class="western"><a name="1f72"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">selector: 'foo',</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">template: '',</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">class FooComponent {</font>
+  <font size="3" style="font-size: 12pt">constructor() {</font>
+    <font size="3" style="font-size: 12pt">inject(DestroyRef).onDestroy(() =&gt; {</font>
+      <font size="3" style="font-size: 12pt">// do something when the component is destroyed</font>
+    <font size="3" style="font-size: 12pt">})</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a name="1ac6"></a><font size="3" style="font-size: 12pt">You might
+wonder, “Isn’t the ngOnDestroy hook already available in Angular?
+Why do we need DestroyRef?”</font></p>
+<p><a name="846b"></a><font size="3" style="font-size: 12pt">Using
+</font><code class="western"><font size="3" style="font-size: 12pt">DestroyRef</font></code><font size="3" style="font-size: 12pt">,
+it’s possible to create reusable logic that performs necessary
+cleanup tasks when a </font><code class="western"><font size="3" style="font-size: 12pt">scope</font></code><font size="3" style="font-size: 12pt">
+is destroyed without the need for </font><strong><font size="3" style="font-size: 12pt">inheritance</font></strong><font size="3" style="font-size: 12pt">.
+This simplifies the implementation process and reduces complexity.</font></p>
+<p><a name="2679"></a><font size="3" style="font-size: 12pt">For
+example, we can create an </font><code class="western"><font size="3" style="font-size: 12pt">untilDestroyed</font></code><font size="3" style="font-size: 12pt">
+operator that relies on </font><code class="western"><font size="3" style="font-size: 12pt">DestroyRef</font></code><font size="3" style="font-size: 12pt">:</font></p>
+<pre class="western"><a name="6cd4"></a><font size="3" style="font-size: 12pt">export function untilDestroyed() {</font>
+  <font size="3" style="font-size: 12pt">const subject = new Subject();</font>
+  <font size="3" style="font-size: 12pt">inject(DestroyRef).onDestroy(() =&gt; {</font>
+    <font size="3" style="font-size: 12pt">subject.next(true);</font>
+    <font size="3" style="font-size: 12pt">subject.complete();</font>
+  <font size="3" style="font-size: 12pt">});</font>
+  <font size="3" style="font-size: 12pt">return &lt;T&gt;() =&gt; takeUntil&lt;T&gt;(subject.asObservable());</font>
+<font size="3" style="font-size: 12pt">}</font>
+<a name="f0de"></a><font size="3" style="font-size: 12pt">@Directive({</font>
+  <font size="3" style="font-size: 12pt">selector: '[appFoo]',</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class FooDirective {</font>
+  <font size="3" style="font-size: 12pt">private untilDestroyed = untilDestroyed();</font>
+  <font size="3" style="font-size: 12pt">ngOnInit() {</font>
+    <font size="3" style="font-size: 12pt">interval(1000)</font>
+      <font size="3" style="font-size: 12pt">.pipe(this.untilDestroyed())</font>
+      <font size="3" style="font-size: 12pt">.subscribe(console.log);</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre>
+</body>
+</html>
