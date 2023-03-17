@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-03-16T21:11:34.945670846"/>
+	<meta name="changed" content="2023-03-16T21:24:21.276188024"/>
+	<style type="text/css">
+		@page { size: 21.59cm 27.94cm; margin: 2cm }
+		p { margin-bottom: 0.25cm; line-height: 115%; background: transparent }
+		h1 { margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h1.western { font-family: "Liberation Serif", serif; font-size: 24pt; font-weight: bold }
+		h1.cjk { font-family: "Noto Serif CJK SC"; font-size: 24pt; font-weight: bold }
+		h1.ctl { font-family: "Lohit Devanagari"; font-size: 24pt; font-weight: bold }
+		pre { background: transparent }
+		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace; font-size: 10pt }
+		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		a:link { color: #000080; so-language: zxx; text-decoration: underline }
+		code.western { font-family: "Liberation Mono", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.ctl { font-family: "Liberation Mono", monospace }
+		a:visited { color: #800000; so-language: zxx; text-decoration: underline }
+	</style>
+</head>
+<body lang="en-CA" link="#000080" vlink="#800000" dir="ltr"><p style="margin-bottom: 0.5cm; line-height: 100%">
+<font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">https://netbasal.com/handling-page-titles-in-angular-40b53823af4a</font></font></p>
+<p style="margin-bottom: 0.5cm; line-height: 100%"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">Netanel
+Basal</font></font></p>
+<p><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">May
+17, 2022</font></font></p>
+<h1 class="western"><a name="2549"></a><font face="Liberation Mono, monospace"><font size="4" style="font-size: 14pt">Handling
+Page Titles in Angular</font></font></h1>
+<p style="margin-bottom: 0cm; line-height: 100%"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">Starting
+from version 14, Angular adds the option of setting the page title
+through the router. We can set the title property in our route
+definition:</font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">export const routes: Routes = [</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">{</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">path: 'todos',</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">title: 'Todos',</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">loadChildren: () =&gt; import('./todos-page/todos.routes')</font></font>
+                                      <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">.then(m =&gt; m.todosRoutes)</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">]</font></font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font size="3" style="font-size: 12pt"><font face="Liberation Serif, serif"><a href="https://gist.github.com/NetanelBasal/196e9b76be293ee51d9fb837cdf5f0a0#file-title-ng-1-ts">title-ng-1.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt"><font face="Liberation Serif, serif">There
+are times when a dynamic title is needed. For example, we might want
+to show a todo’s title on a todo page. This can be accomplished by
+passing an injectable that implements a </font><code class="western"><font face="Liberation Serif, serif">resolver</font></code><font face="Liberation Serif, serif">:</font></font></p>
+<pre class="western"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">import { ActivatedRouteSnapshot, Resolve, Routes } from '@angular/router';</font></font>
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">@Injectable({ providedIn: 'root' })</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">class TodoTitle implements Resolve&lt;string&gt; {</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">constructor(private todosRepo: TodosRepository) { }</font></font>
+
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">resolve(route: ActivatedRouteSnapshot) {</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">// We can also use `route.params.id`</font></font>
+
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">return this.todosRepo.active$.pipe(</font></font>
+      <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">map(todo =&gt; todo.title),</font></font>
+      <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">take(1)</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">);</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font>
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const todosRoutes: Routes = [</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">{</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">path: '',</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">loadComponent: () =&gt;</font></font>
+      <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">import('./todos-page.component').then((m) =&gt; m.TodosPageComponent),</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">children: [</font></font>
+      <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">{</font></font>
+        <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">path: ':id',</font></font>
+        <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">title: TodoTitle,</font></font>
+        <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">loadComponent: () =&gt;</font></font>
+          <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">import('./todo-page/todo-page.component').then(</font></font>
+            <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">(m) =&gt; m.TodoPageComponent</font></font>
+          <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">),</font></font>
+      <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">},</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">],</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">},</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">];</font></font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt"><font face="Liberation Serif, serif"><a href="https://gist.github.com/NetanelBasal/3e0bc04773bc4956ef8b25d97c51ee40#file-title-ng-2-ts">title-ng-2.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt"><font face="Liberation Serif, serif">We
+would also like the company name to appear before each title in the
+application. Luckily, we can provide a custom </font><code class="western"><font face="Liberation Serif, serif">title</font></code><font face="Liberation Serif, serif">
+strategy and do it automatically for every route:</font></font></font></p>
+<pre class="western">
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">import { bootstrapApplication, Title } from '@angular/platform-browser';</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">import { RouterModule, RouterStateSnapshot, TitleStrategy } from '@angular/router';</font></font>
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">@Injectable({ providedIn: 'root' })</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">export class TemplatePageTitleStrategy extends TitleStrategy {</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">constructor(private readonly title: Title) {</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">super();</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font>
+
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">override updateTitle(routerState: RouterStateSnapshot) {</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const title = this.buildTitle(routerState);</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">if (title !== undefined) {</font></font>
+      <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">this.title.setTitle(`App Name | ${title}`);</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font>
+
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">bootstrapApplication(AppComponent, {</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">providers: [</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">{ provide: TitleStrategy, useClass: TemplatePageTitleStrategy }</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">]</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">})</font></font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/63b3d1bfd05fef7124627062b9334ab3#file-title-ng-3-ts">title-ng-3.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></font></p>
+</body>
+</html>

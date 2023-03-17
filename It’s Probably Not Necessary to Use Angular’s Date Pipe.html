@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-03-16T21:24:32.560471192"/>
+	<meta name="changed" content="2023-03-16T21:35:45.058186137"/>
+	<style type="text/css">
+		@page { size: 21.59cm 27.94cm; margin-left: 2cm; margin-right: 1cm; margin-top: 1cm; margin-bottom: 1cm }
+		p { margin-bottom: 0.25cm; line-height: 115%; background: transparent }
+		h1 { margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h1.western { font-family: "Liberation Serif", serif; font-size: 24pt; font-weight: bold }
+		h1.cjk { font-family: "Noto Serif CJK SC"; font-size: 24pt; font-weight: bold }
+		h1.ctl { font-family: "Lohit Devanagari"; font-size: 24pt; font-weight: bold }
+		pre { background: transparent }
+		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace; font-size: 10pt }
+		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		a:link { color: #000080; so-language: zxx; text-decoration: underline }
+	</style>
+</head>
+<body lang="en-CA" link="#000080" vlink="#800000" dir="ltr"><p><br/>
+<br/>
+
+</p>
+<p>https://netbasal.com/its-probably-not-necessary-to-use-angular-s-date-pipe-857c3c124617</p>
+<p>Netanel Basal</p>
+<p>May 16, 2022</p>
+<h1 class="western"><a name="9a98"></a>It’s Probably Not Necessary
+to Use Angular’s Date Pipe</h1>
+<p><br/>
+<br/>
+
+</p>
+<p>Dates are an integral part of almost every application. Angular
+provides a date pipe out-of-the-box. The date pipe allows users to
+convert dates according to predefined or custom Angular date formats.
+For example:</p>
+<pre class="western"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">@Component({</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">selector: 'app-root',</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">template: `</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">{{ timestamp | date: 'short' }}&lt;/p&gt;</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">{{ timestamp | date: 'medium' }}&lt;/p&gt;</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">`,</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">standalone: true,</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">imports: [CommonModule]</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">})</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">export class AppComponent {</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">timestamp = new Date()</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font></pre><p>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/b521be1c45aa239dd7ce66ed068be002#file-date-pipe1-ts">date-pipe1.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></font></p>
+<p><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">Using
+it today is disadvantageous because we load a bunch of code when we
+can probably achieve the same functionality natively. The
+Intl.DateTimeFormat API can be used unless there is a special
+use-case you need that is only supported by Angular.</font></font></p>
+<p><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">Let’s
+use that as the basis for a date pipe:</font></font></p>
+<pre class="western">
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">import { Pipe, PipeTransform } from '@angular/core';</font></font>
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const LOCALE = navigator.languages</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">? navigator.languages[0]</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">: (navigator.language || (navigator as any).userLanguage);</font></font>
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">type Formats = 'short' | 'medium' | 'shortDate';</font></font>
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const predefinedFormats: Record&lt;Formats, Intl.DateTimeFormatOptions&gt; = {</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">short: {</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">timeStyle: 'short',</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">dateStyle: 'short'</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">},</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">medium: {</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">timeStyle: 'medium',</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">dateStyle: 'medium'</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">},</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">shortDate: {</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">dateStyle: 'short',</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font>
+
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">@Pipe({</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">name: 'appDate',</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">standalone: true</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">})</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">export class DatePipe implements PipeTransform {</font></font>
+
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">transform(value: Parameters&lt;Intl.DateTimeFormat['format']&gt;[0], </font></font>
+           <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">format: Formats = 'short') {</font></font>
+    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">return new Intl.DateTimeFormat(LOCALE, predefinedFormats[format]).format(value);</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font></pre><p>
+<font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/d3081c5b4a70ddb6c5b43d8ad06f85b4#file-data-pipe-ng-ts">data-pipe.ng.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></font></p>
+<p><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">It
+can be customized to meet your needs. It supports timezones, locales,
+and custom formats, among other features.</font></font></p>
+<p><br/>
+<br/>
+
+</p>
+</body>
+</html>

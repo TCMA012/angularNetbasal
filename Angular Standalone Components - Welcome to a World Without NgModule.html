@@ -1,0 +1,251 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-03-16T21:36:10.184341611"/>
+	<meta name="changed" content="2023-03-16T22:10:38.687552695"/>
+	<style type="text/css">
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+	</style>
+</head>
+<body lang="en-CA" dir="ltr"><p>https://netbasal.com/angular-standalone-components-welcome-to-a-world-without-ngmodule-abd3963e89c5</p>
+<p>Netanel Basal</p>
+<p>May 12, 2022</p>
+<p><a name="ae86"></a><font size="4" style="font-size: 14pt"><b>Angular
+Standalone Components: Welcome to a World Without NgModule</b></font></p>
+<p>The powers that be have spoken, and based on the community’s
+feedback, the often maligned NgModule is on its way out (partially).
+Angular 14 introduces an alternative way to write applications —
+Standalone components, directives, and pipes.</p>
+<p>The term “standalone” refers to components, directives, or
+pipes that can be used independently of NgModule. Although you’ll
+still need to use the core and external NgModules, you probably won’t
+need to create new ones.</p>
+<p>Let’s create an application without NgModules. First, we need to
+generate it using the angular-cli:</p>
+<pre class="western" style="margin-bottom: 0.5cm"><a name="ff75"></a><font size="3" style="font-size: 12pt">npm init @angular ng14</font></pre><p>
+<font face="Liberation Serif, serif">The next step is to delete
+</font><code class="western"><font face="Liberation Serif, serif">app.module.ts</font></code><font face="Liberation Serif, serif">
+and replace the </font><code class="western"><font face="Liberation Serif, serif">bootstrapModule()</font></code><font face="Liberation Serif, serif">
+function in </font><code class="western"><font face="Liberation Serif, serif">main.ts</font></code><font face="Liberation Serif, serif">
+with </font><code class="western"><font face="Liberation Serif, serif">bootstrapApplication()</font></code><font face="Liberation Serif, serif">:</font></p>
+<pre class="western"><font size="3" style="font-size: 12pt">import { enableProdMode } from '@angular/core';</font>
+<font size="3" style="font-size: 12pt">import { bootstrapApplication } from '@angular/platform-browser';</font>
+<font size="3" style="font-size: 12pt">import { AppComponent } from './app/app.component';</font>
+<font size="3" style="font-size: 12pt">import { environment } from './environments/environment';</font>
+
+<font size="3" style="font-size: 12pt">if (environment.production) {</font>
+  <font size="3" style="font-size: 12pt">enableProdMode();</font>
+<font size="3" style="font-size: 12pt">}</font>
+
+<font size="3" style="font-size: 12pt">bootstrapApplication(AppComponent)</font></pre><p>
+<a href="https://gist.github.com/NetanelBasal/fbd5c1841a75d3a11de68d0313124269#file-sta-1-ts">sta-1.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<p>The <code class="western">bootstrapApplication()</code> can take a
+list of <code class="western">providers</code> that should be
+available to the root component and all its children:</p>
+<pre class="western"><font size="3" style="font-size: 12pt">import { importProvidersFrom } from '@angular/core';</font>
+<font size="3" style="font-size: 12pt">import { bootstrapApplication } from '@angular/platform-browser';</font>
+<font size="3" style="font-size: 12pt">import { AppComponent } from './app/app.component';</font>
+<font size="3" style="font-size: 12pt">import { HttpClientModule } from '@angular/common/http'</font>
+
+<font size="3" style="font-size: 12pt">bootstrapApplication(AppComponent, {</font>
+  <font size="3" style="font-size: 12pt">providers: [importProvidersFrom(HttpClientModule)]</font>
+<font size="3" style="font-size: 12pt">}).catch(err =&gt; console.error(err));</font>
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/418d52ee746fafeb4853985471444207#file-sta-11-ts">sta-11.ts </a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></pre><p>
+<a name="eac8"></a>As the name suggests, the function extracts the
+<code class="western">providers</code> from the provided module.</p>
+<p><a name="238d"></a>Now we need to change the <code class="western">AppComponent</code>
+to be a standalone component. Simply set the <code class="western">standalone</code>
+property to true:</p>
+<pre class="western"><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">selector: 'app-root',</font>
+  <font size="3" style="font-size: 12pt">templateUrl: './app.component.html',</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">styleUrls: ['./app.component.scss']</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class AppComponent {}</font></pre><p>
+<a href="https://gist.github.com/NetanelBasal/091be5b1449e8687efc14cb3adfd4ede#file-sta-2-ts">sta-2.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<p><a name="76eb"></a>You should see the <code class="western">AppComponent</code>’s
+template in your browser. As our component is standalone, we can use
+the new <code class="western">imports</code> property. The <code class="western">imports</code>
+property specifies the template dependencies of the component —
+those directives, components, and pipes it can use.</p>
+<p><a name="5948"></a>Standalone components can import other
+standalone components, directives, pipes, and existing <code class="western">NgModules</code>.
+For example, we can create a standalone directive, and use it in our
+component:</p>
+<pre class="western" style="margin-bottom: 0.5cm"><a name="65d9"></a><font size="3" style="font-size: 12pt">npx ng g directive foo --standalone</font>
+<font size="3" style="font-size: 12pt">import { Directive } from '@angular/core';</font>
+
+<font size="3" style="font-size: 12pt">@Directive({</font>
+  <font size="3" style="font-size: 12pt">selector: '[appFoo]',</font>
+  <font size="3" style="font-size: 12pt">standalone: true</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class FooDirective {}</font></pre><p>
+<a href="https://gist.github.com/NetanelBasal/9e80f41b12b50369b8735a576397b31e#file-sta-3-ts">sta-3.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<pre class="western"><font size="3" style="font-size: 12pt">import { CommonModule } from '@angular/common';</font>
+<font size="3" style="font-size: 12pt">import { FooDirective } from './foo.directive';</font>
+
+<font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">selector: 'app-root',</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+     <font size="3" style="font-size: 12pt">&lt;div appFoo *ngIf=&quot;bar&quot;&gt;Foo&lt;/div&gt;</font>
+  <font size="3" style="font-size: 12pt">`,</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">imports: [FooDirective, CommonModule]</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class AppComponent {}</font></pre><p>
+<a href="https://gist.github.com/NetanelBasal/9e80f41b12b50369b8735a576397b31e#file-sta-4-ts">sta-4.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<p>That’s neat. Now, let’s add routing to the application. You
+might be tempted to add it to the <code class="western">AppComponent</code>:</p>
+<pre class="western"><font size="3" style="font-size: 12pt">const routes: Routes = [{</font>
+  <font size="3" style="font-size: 12pt">path: 'todos',</font>
+  <font size="3" style="font-size: 12pt">component: TodosPageComponent</font>
+<font size="3" style="font-size: 12pt">}]</font>
+
+<font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">selector: 'app-root',</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+     <font size="3" style="font-size: 12pt">&lt;a routerLink=&quot;/todos&quot;&gt;Todos&lt;/a&gt;</font>
+     <font size="3" style="font-size: 12pt">&lt;router-outlet&gt;&lt;/router-outlet&gt;</font>
+  <font size="3" style="font-size: 12pt">`,</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">imports: [RouterModule.forRoot(routes)],</font>
+  <font size="3" style="font-size: 12pt">styleUrls: ['./app.component.scss']</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class AppComponent {}</font></pre><p>
+<a href="https://gist.github.com/NetanelBasal/e6520f478e1b33ae7f4e1b13167913c3#file-sta-5-ts">sta-5.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<p>Unfortunately, that isn’t possible because Angular doesn’t
+allow you to use <code class="western">ModuleWithProvider</code> in a
+standalone component. Next, we might try using the new
+<code class="western">importProvidersFrom</code> function in the
+component’s providers:</p>
+<pre class="western"><font size="3" style="font-size: 12pt">const routes: Routes = [{</font>
+  <font size="3" style="font-size: 12pt">path: 'todos',</font>
+  <font size="3" style="font-size: 12pt">component: TodosPageComponent</font>
+<font size="3" style="font-size: 12pt">}]</font>
+
+<font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">selector: 'app-root',</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+     <font size="3" style="font-size: 12pt">&lt;a routerLink=&quot;/todos&quot;&gt;Todos&lt;/a&gt;</font>
+     <font size="3" style="font-size: 12pt">&lt;router-outlet&gt;&lt;/router-outlet&gt;</font>
+  <font size="3" style="font-size: 12pt">`,</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">providers: importProvidersFrom(RouterModule.forRoot(routes)),</font>
+  <font size="3" style="font-size: 12pt">imports: [FooDirective, CommonModule],</font>
+  <font size="3" style="font-size: 12pt">styleUrls: ['./app.component.scss']</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class AppComponent {}</font></pre><p>
+<a href="https://gist.github.com/NetanelBasal/02923e6c7c44e8639c2d1adada989eb9#file-sta-6-ts">sta-6.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<p>Using in-app navigation will work; however, the router will miss
+the first navigation. Initialization of the router should be
+performed in the <code class="western">bootstrap</code> process:</p>
+<pre class="western"><font size="3" style="font-size: 12pt">bootstrapApplication(AppComponent, {</font>
+  <font size="3" style="font-size: 12pt">providers: [importProvidersFrom(RouterModule.forRoot(routes))]</font>
+<font size="3" style="font-size: 12pt">}).catch(err =&gt; console.error(err));</font></pre><p>
+<a href="https://gist.github.com/NetanelBasal/3641301ce55f0f354937f9ed0c667a93#file-sta-7-ts">sta-7.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<p>Now it works as expected. The <code class="western">TodosPageComponent</code>
+is eagerly loaded. Let’s change it to load lazily and add a
+<code class="western">TodoPageComponent</code>:</p>
+<pre class="western"><font size="3" style="font-size: 12pt">import { Routes } from '@angular/router';</font>
+
+<font size="3" style="font-size: 12pt">export const todosRoutes: Routes = [</font>
+  <font size="3" style="font-size: 12pt">{</font>
+    <font size="3" style="font-size: 12pt">path: 'todos',</font>
+    <font size="3" style="font-size: 12pt">title: 'Todos Page',</font>
+    <font size="3" style="font-size: 12pt">children: [</font>
+      <font size="3" style="font-size: 12pt">{</font>
+        <font size="3" style="font-size: 12pt">path: '',</font>
+        <font size="3" style="font-size: 12pt">loadComponent: () =&gt;</font>
+          <font size="3" style="font-size: 12pt">import('./todos-page.component').then((m) =&gt; m.TodosPageComponent),</font>
+        <font size="3" style="font-size: 12pt">children: [</font>
+          <font size="3" style="font-size: 12pt">{</font>
+            <font size="3" style="font-size: 12pt">path: ':id',</font>
+            <font size="3" style="font-size: 12pt">loadComponent: () =&gt;</font>
+              <font size="3" style="font-size: 12pt">import('./todo-page/todo-page.component').then(</font>
+                <font size="3" style="font-size: 12pt">(m) =&gt; m.TodoPageComponent</font>
+              <font size="3" style="font-size: 12pt">),</font>
+          <font size="3" style="font-size: 12pt">},</font>
+        <font size="3" style="font-size: 12pt">],</font>
+      <font size="3" style="font-size: 12pt">},</font>
+    <font size="3" style="font-size: 12pt">],</font>
+  <font size="3" style="font-size: 12pt">},</font>
+<font size="3" style="font-size: 12pt">];</font></pre><p>
+<a href="https://gist.github.com/NetanelBasal/2911d6bd74b34a6b65b91f5c70185878#file-todos-routes-ts">todos-routes.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<p>Instead of using <code class="western">loadChildren</code> and
+passing a <code class="western">NgModule</code>, we use the
+<code class="western">loadComponent</code> property and pass a
+<code class="western">component</code>. We can also declare <code class="western">providers</code>
+for this Route and its children using the new <code class="western">providers</code>
+property:</p>
+<pre class="western"><font size="3" style="font-size: 12pt">import { Routes } from '@angular/router';</font>
+
+<font size="3" style="font-size: 12pt">export const todosRoutes: Routes = [</font>
+  <font size="3" style="font-size: 12pt">{</font>
+    <font size="3" style="font-size: 12pt">path: 'todos',</font>
+    <font size="3" style="font-size: 12pt">title: 'Todos Page',</font>
+    <font size="3" style="font-size: 12pt">providers: [</font>
+      <font size="3" style="font-size: 12pt">{</font>
+        <font size="3" style="font-size: 12pt">provide: 'Angular',</font>
+        <font size="3" style="font-size: 12pt">useValue: 'v14',</font>
+      <font size="3" style="font-size: 12pt">},</font>
+    <font size="3" style="font-size: 12pt">],</font>
+    <font size="3" style="font-size: 12pt">children: [</font>
+      <font size="3" style="font-size: 12pt">{</font>
+        <font size="3" style="font-size: 12pt">path: '',</font>
+        <font size="3" style="font-size: 12pt">loadComponent: () =&gt;</font>
+          <font size="3" style="font-size: 12pt">import('./todos-page.component').then((m) =&gt; m.TodosPageComponent),</font>
+        <font size="3" style="font-size: 12pt">children: [</font>
+          <font size="3" style="font-size: 12pt">{</font>
+            <font size="3" style="font-size: 12pt">path: ':id',</font>
+            <font size="3" style="font-size: 12pt">loadComponent: () =&gt;</font>
+              <font size="3" style="font-size: 12pt">import('./todo-page/todo-page.component').then(</font>
+                <font size="3" style="font-size: 12pt">(m) =&gt; m.TodoPageComponent</font>
+              <font size="3" style="font-size: 12pt">),</font>
+          <font size="3" style="font-size: 12pt">},</font>
+        <font size="3" style="font-size: 12pt">],</font>
+      <font size="3" style="font-size: 12pt">},</font>
+    <font size="3" style="font-size: 12pt">],</font>
+  <font size="3" style="font-size: 12pt">},</font>
+<font size="3" style="font-size: 12pt">];</font></pre><p>
+<a href="https://gist.github.com/NetanelBasal/ef01698635a740f2fc5c66a4838ab642#file-todos-routes-1-ts">todos-routes-1.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<p>We can also pass an array of routes to <code class="western">loadChildren</code>:</p>
+<pre class="western"><font size="3" style="font-size: 12pt">export const ROUTES: Route[] = [</font>
+  <font size="3" style="font-size: 12pt">{ path: 'child', component: ChildCmp},</font>
+<font size="3" style="font-size: 12pt">]</font></pre><p>
+<a href="https://gist.github.com/NetanelBasal/46cfdcc7a1a3e3370baa3c304786b72c#file-children-ts">children.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<pre class="western"><font size="3" style="font-size: 12pt">{</font>
+  <font size="3" style="font-size: 12pt">path: 'parent',</font>
+  <font size="3" style="font-size: 12pt">loadChildren: () =&gt; import('./children').then(m =&gt; m.ROUTES),</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a href="https://gist.github.com/NetanelBasal/46cfdcc7a1a3e3370baa3c304786b72c#file-stg-c-1-ts">stg-c-1.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></p>
+<p>There will be more to come, so stay tuned 😋</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+</body>
+</html>
