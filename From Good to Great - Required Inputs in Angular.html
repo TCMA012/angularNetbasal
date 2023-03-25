@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-03-24T22:13:17.810226303"/>
+	<meta name="changed" content="2023-03-24T22:18:21.790123569"/>
+	<style type="text/css">
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+	</style>
+</head>
+<body lang="en-CA" dir="ltr"><h1><font face="Liberation Serif, serif"><font size="4" style="font-size: 14pt">From
+Good to Great: Required Inputs in Angular</font></font></h1>
+<p><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">Netanel
+Basal</font></font></p>
+<p><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">Mar
+23</font></font></p>
+<p><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt"><a href="https://netbasal.com/from-good-to-great-required-inputs-in-angular-47374c8a43cf">https://netbasal.com/from-good-to-great-required-inputs-in-angular-47374c8a43cf</a></font></font></p>
+<p><a name="c361"></a><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">A
+new feature introduced in Angular 16.0.0-next.4 is the ability to
+define <code class="western">inputs</code> as <strong>required</strong>
+for components and directives. In other words, we can now specify
+that a component or directive requires certain <code class="western">inputs</code>
+to function properly.</font></font></p>
+<p><a name="b15b"></a>By using this new feature, we can ensure that
+all necessary data is present before the component or directive logic
+is executed, resulting in better code quality, fewer errors, and an
+overall more efficient development process. To use it we can set the
+new <code class="western">required</code> option in our <code class="western">input</code>:</p>
+<pre class="western"><a name="683c"></a><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">@Component({</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">selector: 'app-foo',</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">standalone: true,</font></font>
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">templateUrl: './foo.component.html',</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">})</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">export class FooComponent {</font></font>
+           👇
+  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">@Input({ required: true }) elementId: string;</font></font>
+<font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font></pre><p>
+<br/>
+<br/>
+
+</p>
+<p><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">There
+will be a compilation error if the consumer doesn’t initialize this
+input:</font></font></p>
+<p><img src="From%20Good%20to%20Great%20-%20Required%20Inputs%20in%20Angular_html_24ad1f5d6af08b0a.png" name="Image1" align="bottom" width="700" height="160" border="0"/>
+</p>
+<p><a name="0d8e"></a><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">We
+can also pass an <code class="western">alias</code> using the new
+alias option:</font></font></p>
+<pre class="western"><a name="b3ea"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">selector: 'app-foo',</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">templateUrl: './foo.component.html',</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class FooComponent {</font>
+           👇
+  <font size="3" style="font-size: 12pt">@Input({ required: true, alias: 'elementId' }) id: string;</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<img src="From%20Good%20to%20Great%20-%20Required%20Inputs%20in%20Angular_html_be65601a1ea42400.png" name="Image2" align="bottom" width="700" height="173" border="0"/>
+</p>
+<p><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">This
+feature also works with host directives. It means that if we consume
+a directive using <code class="western">hostDirectives</code>, we
+must expose its required <code class="western">inputs</code>.</font></font></p>
+<p><br/>
+<br/>
+
+</p>
+</body>
+</html>
