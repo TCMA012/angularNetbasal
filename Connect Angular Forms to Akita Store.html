@@ -1,0 +1,192 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-03-29T21:53:53.044652765"/>
+	<meta name="changed" content="2023-03-29T22:09:19.208437682"/>
+	<style type="text/css">
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+	</style>
+</head>
+<body lang="en-CA" dir="ltr"><p>https://netbasal.com/connect-angular-forms-to-akita-store-d51845f621cd</p>
+<p>Netanel Basal</p>
+<p>Oct 2, 2018</p>
+<h1><a name="a05b"></a><font size="4" style="font-size: 14pt">Connect
+Angular Forms to Akita Store</font></h1>
+<p><a name="32b5"></a>The <code class="western"><a href="https://netbasal.gitbook.io/akita/angular-plugins/persist-form" target="_blank">PersistNgFormPlugin</a></code>
+helps to keep your form synced with your store. One common scenario
+is preventing your user from losing data he filled in a form, after
+navigating away without saving it. Another scenario is when you want
+to persist a form’s state across pages.</p>
+<p><a name="66d0"></a>Let’s build a small application that
+demonstrates it. We’ll create a page like eBay, where you have a
+list of products on one side and filters you can apply on the other
+side.</p>
+<p><a name="bc7e"></a>Here’s an illustration of the final result:</p>
+<p><img src="Connect%20Angular%20Forms%20to%20Akita%20Store_html_fd533b1df9cd40f3.gif" name="Image1" align="bottom" width="700" height="620" border="0"/>
+</p>
+<p>We knows that we need to maintain a collection of products so
+we’ll create an <code class="western">EntityStore</code>.</p>
+<pre class="western"><font size="3" style="font-size: 12pt">const initialState: ProductsState = {</font>
+  <font size="3" style="font-size: 12pt">ui: {</font>
+    <font size="3" style="font-size: 12pt">filters: {</font>
+      <font size="3" style="font-size: 12pt">condition: {</font>
+        <font size="3" style="font-size: 12pt">new: false,</font>
+        <font size="3" style="font-size: 12pt">used: false,</font>
+        <font size="3" style="font-size: 12pt">notSpecified: false,</font>
+      <font size="3" style="font-size: 12pt">},</font>
+      <font size="3" style="font-size: 12pt">location: false,</font>
+    <font size="3" style="font-size: 12pt">}</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font>
+
+<font size="3" style="font-size: 12pt">@StoreConfig({ name: 'products' })</font>
+<font size="3" style="font-size: 12pt">export class ProductsStore extends EntityStore&lt;ProductsState, Product&gt; {</font>
+
+  <font size="3" style="font-size: 12pt">constructor() {</font>
+    <font size="3" style="font-size: 12pt">super(initialState);</font>
+  <font size="3" style="font-size: 12pt">}</font>
+
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a href="https://gist.github.com/NetanelBasal/36f530ffa7df9ad3a2296775b6f9fe34#file-abay-1-ts">abay-1.ts</a></p>
+<pre class="western"><font size="3" style="font-size: 12pt">export class ProductsQuery extends QueryEntity&lt;ProductsState, Product&gt; {</font>
+  <font size="3" style="font-size: 12pt">filtersChange$ = this.select(state =&gt; state.ui.filters);</font>
+  
+  <font size="3" style="font-size: 12pt">constructor(protected store: ProductsStore) {</font>
+    <font size="3" style="font-size: 12pt">super(store);</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a href="https://gist.github.com/NetanelBasal/36f530ffa7df9ad3a2296775b6f9fe34#file-abay-2-ts">abay-2.ts</a></p>
+<p><a name="eab4"></a>In addition to the products entities, the store
+root holds a state which contains the current active filters.</p>
+<p><a name="2fd7"></a>Akita recommends separating the Domain State
+from the UI State. Domain State is the state of your application in
+the server side, while the UI state is more along the lines of the
+current time based on the user’s machine, which tab is active tab,
+or whether a drop-down is open.</p>
+<p><a name="b707"></a>When you have a global UI state for a specific
+store, you can put the state under a <code class="western">ui</code>
+key.</p>
+<p><a name="13b6"></a>At this point, our store state looks like the
+following:</p>
+<p><img src="Connect%20Angular%20Forms%20to%20Akita%20Store_html_dc9732daa36d752.png" name="Image2" align="bottom" width="700" height="171" border="0"/>
+</p>
+<p><a name="eaa7"></a>Now, let’s create our components. We need a
+<code class="western">products</code> component which displays the
+list of products and <code class="western">filters</code> component
+in charge of maintaining the filters.</p>
+<p><a name="4638"></a>Let’s start with the <code class="western">products</code>
+component:</p>
+<pre class="western"><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">selector: 'app-products',</font>
+  <font size="3" style="font-size: 12pt">templateUrl: 'List of products...',</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class ProductsComponent implements OnInit {</font>
+  <font size="3" style="font-size: 12pt">products$: Observable&lt;Product[]&gt;;</font>
+  <font size="3" style="font-size: 12pt">isLoading$: Observable&lt;boolean&gt;;</font>
+
+  <font size="3" style="font-size: 12pt">constructor(</font>
+    <font size="3" style="font-size: 12pt">private productsQuery: ProductsQuery,</font>
+    <font size="3" style="font-size: 12pt">private productsService: ProductsService</font>
+  <font size="3" style="font-size: 12pt">) { }</font>
+
+  <font size="3" style="font-size: 12pt">ngOnInit() {</font>
+    <font size="3" style="font-size: 12pt">this.fetchProducts();</font>
+    <font size="3" style="font-size: 12pt">this.products$ = this.productsQuery.selectAll();</font>
+    <font size="3" style="font-size: 12pt">this.isLoading$ = this.productsQuery.selectLoading();</font>
+  <font size="3" style="font-size: 12pt">}</font>
+
+  <font size="3" style="font-size: 12pt">private fetchProducts() {</font>
+    <font size="3" style="font-size: 12pt">if (this.productsQuery.isPristine) {</font>
+      <font size="3" style="font-size: 12pt">this.productsService.get();</font>
+    <font size="3" style="font-size: 12pt">}</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a href="https://gist.github.com/NetanelBasal/debe3cb5f43e0b2e12ce3fa2fcf5a8e9#file-abay-4-ts">abay-4.ts</a></p>
+<p><a name="60d8"></a>Nothing fancy here. We’re using the built-in
+Akita query methods to reactively get the products from our store and
+the <code class="western">loading</code> status.</p>
+<p><a name="ce32"></a>Let’s continue with the <code class="western">filters</code>
+component.</p>
+<pre class="western"><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">selector: 'app-filters',</font>
+  <font size="3" style="font-size: 12pt">template: 'Filters form..'</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class FiltersComponent implements OnInit {</font>
+  <font size="3" style="font-size: 12pt">filters: FormGroup;</font>
+  <font size="3" style="font-size: 12pt">persistForm: PersistNgFormPlugin;</font>
+
+  <font size="3" style="font-size: 12pt">constructor(private productsQuery: ProductsQuery) { }</font>
+
+  <font size="3" style="font-size: 12pt">ngOnInit() {</font>
+    <font size="3" style="font-size: 12pt">this.filters = new FormGroup({</font>
+      <font size="3" style="font-size: 12pt">condition: new FormGroup({</font>
+        <font size="3" style="font-size: 12pt">new: new FormControl(false),</font>
+        <font size="3" style="font-size: 12pt">used: new FormControl(false),</font>
+        <font size="3" style="font-size: 12pt">notSpecified: new FormControl(false)</font>
+      <font size="3" style="font-size: 12pt">}),</font>
+      <font size="3" style="font-size: 12pt">location: new FormControl()</font>
+    <font size="3" style="font-size: 12pt">});</font>
+
+    <font size="3" style="font-size: 12pt">this.persistForm = new PersistNgFormPlugin(this.productsQuery, 'ui.filters')</font>
+      <font size="3" style="font-size: 12pt">.setForm(this.filters);</font>
+  <font size="3" style="font-size: 12pt">}</font>
+
+  <font size="3" style="font-size: 12pt">reset() {</font>
+    <font size="3" style="font-size: 12pt">// reset the current state to the initial value</font>
+    <font size="3" style="font-size: 12pt">this.persistForm.reset();</font>
+  <font size="3" style="font-size: 12pt">}</font>
+
+  <font size="3" style="font-size: 12pt">ngOnDestroy() {</font>
+    <font size="3" style="font-size: 12pt">this.persistForm.destroy();</font>
+  <font size="3" style="font-size: 12pt">}</font>
+
+<font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/195a83b0a6f3d5fc2a92e974164b9d21#file-abay-3-ts">abay-3.ts</a></font></pre><p>
+<a name="35ee"></a><font size="3" style="font-size: 12pt">We can call
+the <code class="western">PersistNgFormPlugin</code>, passing the
+<code class="western">ProductsQuery</code>, the <code class="western">FormGroup</code>,
+and the path we want to sync. From this point, Akita will take care
+of updating the form value on component initialization and the store
+upon form’s value changes.</font></p>
+<p><a name="6006"></a>The last thing we want to do is to listen to
+filters state changes and perform HTTP request to get new data
+according to their value.</p>
+<pre class="western" style="margin-bottom: 0.5cm">  <font size="3" style="font-size: 12pt">ngOnInit() {</font>
+    <font size="3" style="font-size: 12pt">this.fetchProducts();</font>
+    <font size="3" style="font-size: 12pt">this.products$ = this.productsQuery.selectAll();</font>
+    <font size="3" style="font-size: 12pt">this.isLoading$ = this.productsQuery.selectLoading();</font>
+
+    <font size="3" style="font-size: 12pt">this.productsQuery.filtersChange$.pipe(</font>
+      <font size="3" style="font-size: 12pt">untilDestroyed(this)</font>
+    <font size="3" style="font-size: 12pt">).subscribe(filters =&gt; {</font>
+      <font size="3" style="font-size: 12pt">// fetch new data ...</font>
+    <font size="3" style="font-size: 12pt">});</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/c5516741437234b645fcaaddb0e9c82c#file-abay-5-ts">abay-5.ts</a></font>
+<font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">Let’s see it in action with the dev-tools.</font></font>
+<img src="Connect%20Angular%20Forms%20to%20Akita%20Store_html_1bda69537d00ae4a.gif" name="Image3" align="bottom" width="700" height="575" border="0"/>
+
+</pre><h1>
+<a name="3210"></a><font face="Liberation Serif, serif"><font size="4" style="font-size: 14pt">But
+Wait, There’s More!</font></font></h1>
+<p><a name="9c13"></a><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">Akita
+is a very robust tool which saves you the hassle of creating
+boilerplate code and offers powerful tools with a moderate learning
+curve, suitable for both experienced and inexperienced developers
+alike. For more on that, please see the <a href="https://netbasal.gitbook.io/akita/entity-store/additional-functionality/web-workers" target="_blank">documentation</a>.</font></font></p>
+<p><a name="1a51"></a><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">In
+summary: </font></font><strong><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">The
+Akita </font></font></strong><code class="western"><a href="https://netbasal.gitbook.io/akita/plugins/persist-form" target="_blank"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">PersistNgFormPlugin</font></font></a></code><strong><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">
+can provide you with a quick and easy way to sync between any form
+and a store, which comes with built-in functionality that’s often
+needed when carrying out this technique. Neat.</font></font></strong></p>
+<p><br/>
+<br/>
+
+</p>
+</body>
+</html>
