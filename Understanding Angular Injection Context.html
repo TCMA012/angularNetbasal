@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-04-26T20:26:00.518161867"/>
+	<meta name="changed" content="2023-04-26T20:40:39.707157766"/>
+	<style type="text/css">
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+	</style>
+</head>
+<body lang="en-CA" dir="ltr"><h1><font size="4" style="font-size: 14pt">Understanding
+Angular Injection Context</font></h1>
+<p><font size="3" style="font-size: 12pt">Netanel Basal</font></p>
+<p><font size="3" style="font-size: 12pt">Apr 26</font></p>
+<p><a href="https://netbasal.com/understanding-angular-injection-context-18a0780ede2d"><font size="3" style="font-size: 12pt">https://netbasal.com/understanding-angular-injection-context-18a0780ede2d</font></a></p>
+<p><br/>
+<br/>
+
+</p>
+<p><font size="3" style="font-size: 12pt">Angular introduced the
+</font><code class="western"><font size="3" style="font-size: 12pt">inject()</font></code><font size="3" style="font-size: 12pt">
+function in recent versions, which allows us to obtain a reference to
+a provider in a functional way rather than using the </font><code class="western"><font size="3" style="font-size: 12pt">Injector.get()</font></code><font size="3" style="font-size: 12pt">
+method. However, if you have used it or a library that uses it under
+the hood, you may have encountered the following error:</font></p>
+<pre class="western"><a name="8c9c"></a><font size="3" style="font-size: 12pt">inject() must be called from an injection context </font>
+<font size="3" style="font-size: 12pt">such as a constructor, a factory function, a field initializer, </font>
+<font size="3" style="font-size: 12pt">or a function used with `runInInjectionContext`. </font></pre><p>
+<a name="48f9"></a><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">An
+injection context is simply a term for “someone is using the
+</font></font><code class="western"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">inject()</font></font></code><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">
+function but there is no </font></font><code class="western"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">injector</font></font></code><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">
+available in the current stack frame.&quot;</font></font></p>
+<p><a name="1d86"></a><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">Angular
+has two global variables that can hold an </font></font><code class="western"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">injector</font></font></code><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">
+at a certain point in time: one for an </font></font><code class="western"><a href="https://github.com/angular/angular/blob/main/packages/core/src/di/injector_compatibility.ts#L44" target="_blank"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">Injector</font></font></a></code><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">
+and one for </font></font><code class="western"><a href="https://github.com/angular/angular/blob/main/packages/core/src/di/inject_switch.ts#L27" target="_blank"><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">NodeInjector</font></font></a></code><font face="Liberation Serif, serif"><font size="3" style="font-size: 12pt">.
+Here are the code snippets for both:</font></font></p>
+<pre class="western"><a name="6122"></a><font size="3" style="font-size: 12pt">let _currentInjector = undefined;</font>
+<font size="3" style="font-size: 12pt">export function getCurrentInjector() {</font>
+  <font size="3" style="font-size: 12pt">return _currentInjector;</font>
+<font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">export function setCurrentInjector(injector: Injector|undefined|null {</font>
+  <font size="3" style="font-size: 12pt">const former = _currentInjector;</font>
+  <font size="3" style="font-size: 12pt">_currentInjector = injector;</font>
+  <font size="3" style="font-size: 12pt">return former;</font>
+<font size="3" style="font-size: 12pt">}</font>
+
+<a name="8651"></a><font size="3" style="font-size: 12pt">let _injectImplementation</font>
+<font size="3" style="font-size: 12pt">export function getInjectImplementation() {</font>
+  <font size="3" style="font-size: 12pt">return _injectImplementation;</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<font size="3" style="font-size: 12pt">In Angular v16, a new <a href="https://github.com/angular/angular/blob/main/packages/core/src/di/contextual.ts#L49" target="_blank">function</a>
+named </font><code class="western"><font size="3" style="font-size: 12pt">assertInInjectionContext</font></code><font size="3" style="font-size: 12pt">
+was introduced that checks if the current stack frame is running
+inside an </font><code class="western"><font size="3" style="font-size: 12pt">injection</font></code><font size="3" style="font-size: 12pt">
+context:</font></p>
+<pre class="western"><a name="1a50"></a><font size="3" style="font-size: 12pt">export function assertInInjectionContext(debugFn: Function): void {</font>
+  <font size="3" style="font-size: 12pt">if (!getInjectImplementation() &amp;&amp; !getCurrentInjector()) {</font>
+    <font size="3" style="font-size: 12pt">throw new RuntimeError(</font>
+        <font size="3" style="font-size: 12pt">RuntimeErrorCode.MISSING_INJECTION_CONTEXT,</font>
+        <font size="3" style="font-size: 12pt">ngDevMode &amp;&amp;</font>
+            <font size="3" style="font-size: 12pt">(debugFn.name +</font>
+             <font size="3" style="font-size: 12pt">'() can only be used within an injection context such as a constructor, a factory function, a field initializer, or a function used with `runInInjectionContext`'));</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<font size="3" style="font-size: 12pt">If no </font><code class="western"><font size="3" style="font-size: 12pt">injector</font></code><font size="3" style="font-size: 12pt">
+is available, it throws the </font><strong><font size="3" style="font-size: 12pt"><span style="font-weight: normal">error</span></font></strong><font size="3" style="font-size: 12pt">.
+We can use this function if we have code that relies on the </font><code class="western"><font size="3" style="font-size: 12pt">inject()</font></code><font size="3" style="font-size: 12pt">
+function and we want to verify that the consumer is using it where an
+</font><code class="western"><font size="3" style="font-size: 12pt">injector</font></code><font size="3" style="font-size: 12pt">
+is available. For example:</font></p>
+<pre class="western"><a name="fe87"></a><font size="3" style="font-size: 12pt">import {</font>
+  <font size="3" style="font-size: 12pt">ElementRef,</font>
+  <font size="3" style="font-size: 12pt">assertInInjectionContext,</font>
+  <font size="3" style="font-size: 12pt">inject,</font>
+<font size="3" style="font-size: 12pt">} from '@angular/core';</font>
+
+<font size="3" style="font-size: 12pt">export function injectNativeElement&lt;T extends Element&gt;(): T {</font>
+  <font size="3" style="font-size: 12pt">assertInInjectionContext(injectNativeElement);</font>
+  <font size="3" style="font-size: 12pt">return inject(ElementRef).nativeElement;</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a name="412f"></a><font size="3" style="font-size: 12pt">Let’s go
+over the phases in which we can use the </font><code class="western"><font size="3" style="font-size: 12pt">inject()</font></code><font size="3" style="font-size: 12pt">
+function:</font></p>
+<ul>
+	<li><p><a name="3142"></a><font size="3" style="font-size: 12pt">In
+	the </font><code class="western"><font size="3" style="font-size: 12pt">factory</font></code><font size="3" style="font-size: 12pt">
+	function specified for an </font><code class="western"><font size="3" style="font-size: 12pt">InjectionToken</font></code><font size="3" style="font-size: 12pt">:</font></p>
+</ul>
+<pre class="western"><a name="4f50"></a><font size="3" style="font-size: 12pt">export const FOO = new InjectionToken('FOO', {</font>
+  <font size="3" style="font-size: 12pt">factory() {</font>
+    <font size="3" style="font-size: 12pt">const value = inject(SOME_PROVIDER);</font>
+    <font size="3" style="font-size: 12pt">return ...</font>
+  <font size="3" style="font-size: 12pt">},</font>
+<font size="3" style="font-size: 12pt">});</font></pre>
+<ul>
+	<li><p><a name="9c87"></a><font size="3" style="font-size: 12pt">In
+	the </font><code class="western"><font size="3" style="font-size: 12pt">factory</font></code><font size="3" style="font-size: 12pt">
+	function specified for </font><code class="western"><font size="3" style="font-size: 12pt">useFactory</font></code><font size="3" style="font-size: 12pt">
+	of a </font><code class="western"><font size="3" style="font-size: 12pt">Provider</font></code><font size="3" style="font-size: 12pt">
+	or an </font><code class="western"><font size="3" style="font-size: 12pt">@Injectable</font></code><font size="3" style="font-size: 12pt">.</font></p>
+</ul>
+<pre class="western"><a name="44ad"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">providers: [</font>
+    <font size="3" style="font-size: 12pt">{</font>
+      <font size="3" style="font-size: 12pt">provide: FOO,</font>
+      <font size="3" style="font-size: 12pt">useFactory() {</font>
+        <font size="3" style="font-size: 12pt">const value = inject(SOME_PROVIDER);</font>
+        <font size="3" style="font-size: 12pt">return ...</font>
+      <font size="3" style="font-size: 12pt">},</font>
+    <font size="3" style="font-size: 12pt">},</font>
+  <font size="3" style="font-size: 12pt">]</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class FooComponent {}</font></pre>
+<ul>
+	<li><p><a name="8626"></a><font size="3" style="font-size: 12pt">During
+	the construction of a class that is being instantiated by the DI
+	system, such as an </font><code class="western"><font size="3" style="font-size: 12pt">@Injectable</font></code><font size="3" style="font-size: 12pt">
+	or </font><code class="western"><font size="3" style="font-size: 12pt">@Component</font></code><font size="3" style="font-size: 12pt">,
+	via the constructor or in the initializer for fields of such
+	classes:</font></p>
+</ul>
+<pre class="western"><a name="24d9"></a><font size="3" style="font-size: 12pt">@Component({})</font>
+<font size="3" style="font-size: 12pt">export class FooComponent {</font>
+  <font size="3" style="font-size: 12pt">foo = inject(FOO);</font>
+  <font size="3" style="font-size: 12pt">constructor(private ngZone: NgZone = inject(NgZone)) {</font>
+    <font size="3" style="font-size: 12pt">const bar = inject(BAR);</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a name="381f"></a><font size="3" style="font-size: 12pt">We can see
+in the source code that Angular calls the </font><code class="western"><a href="https://github.com/angular/angular/blob/main/packages/core/src/render3/di.ts#L619-L626" target="_blank"><font size="3" style="font-size: 12pt">getNodeInjectable</font></a></code><font size="3" style="font-size: 12pt">
+function right before instantiating the component and sets the
+current injector, which in this case, is the component node injector.</font></p>
+<ul>
+	<li><p><a name="25f1"></a><font size="3" style="font-size: 12pt">Inside
+	a function that is executed using the </font><code class="western"><a href="https://netbasal.com/getting-to-know-the-runincontext-api-in-angular-f8996d7e00da" target="_blank"><font size="3" style="font-size: 12pt">runInInjectionContext</font></a></code><font size="3" style="font-size: 12pt">
+	function:</font></p>
+</ul>
+<pre class="western"><a name="a196"></a><font size="3" style="font-size: 12pt">import { runInInjectionContext } from '@angular/core';</font>
+<font size="3" style="font-size: 12pt">export class FooComponent {</font>
+  <font size="3" style="font-size: 12pt">ngOnInit() {</font>
+    <font size="3" style="font-size: 12pt">runInInjectionContext(this.injector, () =&gt; {</font>
+      <font size="3" style="font-size: 12pt">console.log(</font>
+        <font size="3" style="font-size: 12pt">'I can access the NodeInjector using inject()',</font>
+        <font size="3" style="font-size: 12pt">inject(ElementRef)</font>
+      <font size="3" style="font-size: 12pt">);</font>
+    <font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a name="3079"></a><font size="3" style="font-size: 12pt">By
+examining the source <a href="https://github.com/angular/angular/blob/main/packages/core/src/di/contextual.ts#L27" target="_blank">code</a>
+of this function, we can determine that it assigns the passed
+</font><code class="western"><font size="3" style="font-size: 12pt">injector</font></code><font size="3" style="font-size: 12pt">
+to the global injector variable that we previously encountered.</font></p>
+<p><a name="8570"></a><font size="3" style="font-size: 12pt">It’s
+worth noting that the </font><code class="western"><font size="3" style="font-size: 12pt">inject</font></code><font size="3" style="font-size: 12pt">
+function can only be used synchronously, and isn’t compatible with
+asynchronous callbacks or any await points.</font></p>
+<p><br/>
+<br/>
+
+</p>
+</body>
+</html>
