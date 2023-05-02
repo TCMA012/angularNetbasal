@@ -1,0 +1,176 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-05-01T20:11:27.786717741"/>
+	<meta name="changed" content="2023-05-01T20:14:41.643635812"/>
+	<style type="text/css">
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+	</style>
+</head>
+<body lang="en-CA" dir="ltr"><h1><font size="4" style="font-size: 14pt">Converting
+Observables to Signals in Angular: What You Need to Know</font></h1>
+<p><font size="3" style="font-size: 12pt">https://netbasal.com/converting-observables-to-signals-in-angular-what-you-need-to-know-4f5474c765a0</font></p>
+<p><font size="3" style="font-size: 12pt">Netanel Basal</font></p>
+<p><font size="3" style="font-size: 12pt">Apr 30</font></p>
+<p><a name="52a1"></a><font size="3" style="font-size: 12pt">Angular
+v16 comes with a new package named </font><code class="western"><font size="3" style="font-size: 12pt">rxjs-interop</font></code><font size="3" style="font-size: 12pt">,
+which introduces the </font><code class="western"><font size="3" style="font-size: 12pt">toSignal</font></code><font size="3" style="font-size: 12pt">
+function that converts an observable to a signal. In this article,
+we’ll take a closer look at this new feature and its usage.</font></p>
+<p><a name="f907"></a><font size="3" style="font-size: 12pt">To start
+using the </font><code class="western"><font size="3" style="font-size: 12pt">toSignal</font></code><font size="3" style="font-size: 12pt">
+function, we need to import it from the </font><code class="western"><font size="3" style="font-size: 12pt">@angular/core/rxjs-interop</font></code><font size="3" style="font-size: 12pt">
+module. Here’s an example code snippet that demonstrates its usage:</font></p>
+<pre class="western"><a name="5d66"></a><font size="3" style="font-size: 12pt">import { toSignal } from '@angular/core/rxjs-interop';</font>
+<font size="3" style="font-size: 12pt">import { interval } from 'rxjs';</font>
+<font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">template:`{{ counter() }}`,</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class FooComponent {</font>
+  <font size="3" style="font-size: 12pt">counter$ = interval(1000);</font>
+  <font size="3" style="font-size: 12pt">counter = toSignal(this.counter$);</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a name="e14d"></a><font size="3" style="font-size: 12pt">In this
+example, we have created an observable using the </font><code class="western"><font size="3" style="font-size: 12pt">interval</font></code><font size="3" style="font-size: 12pt">
+function with a period of 1 second. The </font><code class="western"><font size="3" style="font-size: 12pt">toSignal</font></code><font size="3" style="font-size: 12pt">
+function is then used to convert this observable to a signal. The
+resulting signal has the type </font><code class="western"><font size="3" style="font-size: 12pt">Signal&lt;number
+| undefined&gt;</font></code><font size="3" style="font-size: 12pt">,
+which means that it can produce </font><code class="western"><font size="3" style="font-size: 12pt">undefined</font></code><font size="3" style="font-size: 12pt">
+values since there is no initial value for our observable.</font></p>
+<p><a name="e1ab"></a><font size="3" style="font-size: 12pt">It’s
+worth noting that, unlike the </font><code class="western"><font size="3" style="font-size: 12pt">async</font></code><font size="3" style="font-size: 12pt">
+pipe, we can read the value of the signal immediately in our
+component, which can produce </font><code class="western"><font size="3" style="font-size: 12pt">undefined</font></code><font size="3" style="font-size: 12pt">.</font></p>
+<p><a name="1122"></a><font size="3" style="font-size: 12pt">Moreover,
+the </font><code class="western"><font size="3" style="font-size: 12pt">toSignal</font></code><font size="3" style="font-size: 12pt">
+function </font><strong><font size="3" style="font-size: 12pt">subscribes
+to the observable immediately</font></strong><font size="3" style="font-size: 12pt">,
+which can cause unwanted results in some cases if there are side
+effects.</font></p>
+<p><a name="7598"></a><font size="3" style="font-size: 12pt">If we
+have a code that uses the </font><code class="western"><font size="3" style="font-size: 12pt">async</font></code><font size="3" style="font-size: 12pt">
+pipe with an </font><code class="western"><font size="3" style="font-size: 12pt">ngIf</font></code><font size="3" style="font-size: 12pt">
+directive, it will subscribe to the observable only when we render
+the template.</font></p>
+<pre class="western"><a name="3640"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">template:`&lt;div *ngIf=&quot;someCondition&quot;&gt;</font>
+     <font size="3" style="font-size: 12pt">&lt;div *ngFor=&quot;let item of source$ | async&quot;&gt;&lt;/div&gt;</font>
+  <font size="3" style="font-size: 12pt">&lt;/div&gt;`,</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class FooComponent {</font>
+  <font size="3" style="font-size: 12pt">source$ = inject(Service).someMethod();</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a name="0727"></a><font size="3" style="font-size: 12pt">However, if
+we change it to use </font><code class="western"><font size="3" style="font-size: 12pt">toSignal</font></code><font size="3" style="font-size: 12pt">
+instead, it won’t have the same behavior since it will subscribe
+immediately and NOT based on the </font><code class="western"><font size="3" style="font-size: 12pt">ngIf</font></code><font size="3" style="font-size: 12pt">
+condition’s result.</font></p>
+<p><a name="5bbb"></a><font size="3" style="font-size: 12pt">In case
+we want to remove the </font><code class="western"><font size="3" style="font-size: 12pt">undefined</font></code><font size="3" style="font-size: 12pt">
+type from our resulting signal, we have two options. The first one is
+to pass an initial value when we have an </font><code class="western"><font size="3" style="font-size: 12pt">async</font></code><font size="3" style="font-size: 12pt">
+observable that doesn’t fire immediately.</font></p>
+<pre class="western"><a name="2116"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">template:`{{ counter() }}`,</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class FooComponent {</font>
+  <font size="3" style="font-size: 12pt">counter$ = interval(1000);</font>
+  <font size="3" style="font-size: 12pt">counter = toSignal(this.counter$, { initialValue: 0 });</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a name="3d80"></a><font size="3" style="font-size: 12pt">The second
+option, in case the source emits immediately, is to pass the
+</font><code class="western"><font size="3" style="font-size: 12pt">requireSync</font></code><font size="3" style="font-size: 12pt">
+option.</font></p>
+<pre class="western"><a name="abf6"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">template:`{{ counter() }}`,</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class FooComponent {</font>
+  <font size="3" style="font-size: 12pt">counter$ = interval(1000).pipe(startWith(0));</font>
+  <font size="3" style="font-size: 12pt">counter = toSignal(this.counter$, { requireSync: true });</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a name="11b6"></a><font size="3" style="font-size: 12pt">However, if
+we choose this option and the observable doesn’t emit immediately,
+Angular will throw an <a href="https://github.com/angular/angular/blob/main/packages/core/rxjs-interop/src/to_signal.ts#L206" target="_blank">error</a>.</font></p>
+<p><a name="1a20"></a><font size="3" style="font-size: 12pt">When the
+</font><code class="western"><font size="3" style="font-size: 12pt">toSignal</font></code><font size="3" style="font-size: 12pt">
+function is called, it first <a href="https://github.com/angular/angular/blob/main/packages/core/rxjs-interop/src/to_signal.ts#L161" target="_blank">checks</a>
+to ensure that it is being called in an </font><a href="https://netbasal.com/understanding-angular-injection-context-18a0780ede2d" target="_blank"><em><font size="3" style="font-size: 12pt">injection
+context</font></em><font size="3" style="font-size: 12pt">.</font></a><font size="3" style="font-size: 12pt">
+If not, an error will be thrown. That means that we can use the
+</font><code class="western"><font size="3" style="font-size: 12pt">toSignal</font></code><font size="3" style="font-size: 12pt">
+function only when the </font><code class="western"><font size="3" style="font-size: 12pt">inject()
+</font></code><font size="3" style="font-size: 12pt">function is
+available except for cases when we use the </font><code class="western"><font size="3" style="font-size: 12pt">manualCleanup</font></code><font size="3" style="font-size: 12pt">
+option or pass an </font><code class="western"><font size="3" style="font-size: 12pt">injector</font></code><font size="3" style="font-size: 12pt">
+explicitly.</font></p>
+<p><a name="40d0"></a><font size="3" style="font-size: 12pt">The
+reason for this is that Angular will <a href="https://github.com/angular/angular/blob/main/packages/core/rxjs-interop/src/to_signal.ts#L190" target="_blank">auto-unsubscribe
+</a>when the wrapping context is destroyed. It does this using the
+new </font><code class="western"><a href="https://netbasal.com/getting-to-know-the-destroyref-provider-in-angular-9791aa096d77" target="_blank"><font size="3" style="font-size: 12pt">OnDestroy</font></a></code><font size="3" style="font-size: 12pt">
+hook that it obtains from using the </font><code class="western"><font size="3" style="font-size: 12pt">inject()</font></code><font size="3" style="font-size: 12pt">
+function or the explicitly provided </font><code class="western"><font size="3" style="font-size: 12pt">injector</font></code><font size="3" style="font-size: 12pt">:</font></p>
+<pre class="western"><a name="3482"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">selector: 'foo',</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">template:`{{ counter() }}`,</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class FooComponent {</font>
+  <font size="3" style="font-size: 12pt">counter$ = interval(1000);</font>
+  <font size="3" style="font-size: 12pt">counter: Signal&lt;number | undefined&gt;; </font>
+  <font size="3" style="font-size: 12pt">private injector = inject(Injector);</font>
+  <font size="3" style="font-size: 12pt">ngOnInit() {</font>
+    <font size="3" style="font-size: 12pt">this.counter = toSignal(this.counter$, { injector: this.injector } );</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a name="5cc5"></a><font size="3" style="font-size: 12pt">If the
+subscription should persist until the observable itself completes, we
+can specify the </font><code class="western"><font size="3" style="font-size: 12pt">manualCleanup</font></code><font size="3" style="font-size: 12pt">
+option instead.</font></p>
+<pre class="western"><a name="5c59"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">template:`{{ counter() }}`,</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class FooComponent {</font>
+  <font size="3" style="font-size: 12pt">counter$ = interval(1000).pipe(take(3));</font>
+  <font size="3" style="font-size: 12pt">counter = toSignal(this.counter$, { manualCleanup: true });</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a name="3d31"></a><font size="3" style="font-size: 12pt">Handling
+errors with the </font><code class="western"><font size="3" style="font-size: 12pt">toSignal</font></code><font size="3" style="font-size: 12pt">
+function is straightforward. When the observable emits an error,
+Angular will <a href="https://github.com/angular/angular/blob/main/packages/core/rxjs-interop/src/to_signal.ts#L200" target="_blank">throw</a>
+it, and we can handle it with a try-catch block.</font></p>
+<pre class="western"><a name="45c8"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">template:`{{ counter() }}`,</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class FooComponent {</font>
+  <font size="3" style="font-size: 12pt">counter$ = interval(1000);</font>
+  <font size="3" style="font-size: 12pt">counter = toSignal(this.counter$, { initialValue: 0 });</font>
+  <font size="3" style="font-size: 12pt">ngOnInit() {</font>
+    <font size="3" style="font-size: 12pt">try {</font>
+      <font size="3" style="font-size: 12pt">this.counter();</font>
+    <font size="3" style="font-size: 12pt">} catch (e) {</font>
+      <font size="3" style="font-size: 12pt">console.log(e);</font>
+    <font size="3" style="font-size: 12pt">}</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a name="c92e"></a><font size="3" style="font-size: 12pt">In summary,
+the rxjs-interop and </font><code class="western"><font size="3" style="font-size: 12pt">toSignal</font></code><font size="3" style="font-size: 12pt">
+function in Angular v16 is a new feature that allows converting an
+observable to a signal. Its usage is simple and straightforward, but
+we need to be careful while using it to avoid unexpected results.</font></p>
+<p><br/>
+<br/>
+
+</p>
+</body>
+</html>

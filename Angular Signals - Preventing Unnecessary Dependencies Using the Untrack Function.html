@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-05-01T20:04:55.726274524"/>
+	<meta name="changed" content="2023-05-01T20:11:07.855283316"/>
+	<style type="text/css">
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+	</style>
+</head>
+<body lang="en-CA" dir="ltr"><h1><font size="4" style="font-size: 14pt">Angular
+Signals — Preventing Unnecessary Dependencies Using the Untrack
+Function</font></h1>
+<p><font size="3" style="font-size: 12pt">https://netbasal.com/angular-signals-preventing-unnecessary-dependencies-using-the-untrack-function-15a4c03b03fe</font></p>
+<p><font size="3" style="font-size: 12pt">Netanel Basal</font></p>
+<p><font size="3" style="font-size: 12pt">Apr 28</font></p>
+<p><a name="e1aa"></a><font size="3" style="font-size: 12pt">When a
+signal value changes, any </font><code class="western"><font size="3" style="font-size: 12pt">computed()</font></code><font size="3" style="font-size: 12pt">
+or </font><code class="western"><font size="3" style="font-size: 12pt">effect()</font></code><font size="3" style="font-size: 12pt">
+that depends on it will be re-evaluated. This is called tracking.
+However, sometimes we want to read a signal value without creating a
+dependency, i.e., without triggering the reactive function when its
+value changes. In such cases, we can use the </font><code class="western"><font size="3" style="font-size: 12pt">untrack</font></code><font size="3" style="font-size: 12pt">
+function provided by Angular.</font></p>
+<p><a name="5985"></a><font size="3" style="font-size: 12pt">Let’s
+consider an example where we have two signals, </font><code class="western"><font size="3" style="font-size: 12pt">a</font></code><font size="3" style="font-size: 12pt">
+and </font><code class="western"><font size="3" style="font-size: 12pt">b</font></code><font size="3" style="font-size: 12pt">,
+and we want to log their values in an </font><code class="western"><font size="3" style="font-size: 12pt">effect</font></code><font size="3" style="font-size: 12pt">:</font></p>
+<pre class="western"><a name="1770"></a><font size="3" style="font-size: 12pt">const a = signal(0);</font>
+<font size="3" style="font-size: 12pt">const b = signal(1);</font>
+<font size="3" style="font-size: 12pt">effect(() =&gt; {</font>
+  <font size="3" style="font-size: 12pt">console.log(a(), b());</font>
+<font size="3" style="font-size: 12pt">})</font></pre><p>
+<a name="3367"></a><font size="3" style="font-size: 12pt">This </font><code class="western"><font size="3" style="font-size: 12pt">effect</font></code><font size="3" style="font-size: 12pt">
+will run the function when either </font><code class="western"><font size="3" style="font-size: 12pt">a</font></code><font size="3" style="font-size: 12pt">
+or </font><code class="western"><font size="3" style="font-size: 12pt">b</font></code><font size="3" style="font-size: 12pt">
+signal emits a new value. However, let’s say we only want to log
+when </font><code class="western"><strong><font size="3" style="font-size: 12pt">a</font></strong></code><font size="3" style="font-size: 12pt">
+changes, not when </font><code class="western"><font size="3" style="font-size: 12pt">b</font></code><font size="3" style="font-size: 12pt">
+changes. We can achieve this by untracking the </font><code class="western"><font size="3" style="font-size: 12pt">b</font></code><font size="3" style="font-size: 12pt">
+signal:</font></p>
+<pre class="western"><a name="2edb"></a><font size="3" style="font-size: 12pt">import { untrack } from '@angular/core';</font>
+<font size="3" style="font-size: 12pt">const a = signal(0);</font>
+<font size="3" style="font-size: 12pt">const b = signal(1);</font>
+<font size="3" style="font-size: 12pt">effect(() =&gt; {</font>
+  <font size="3" style="font-size: 12pt">console.log(a(), untrack(() =&gt; b()));</font>
+<font size="3" style="font-size: 12pt">})</font></pre><p>
+<a name="0cd5"></a><font size="3" style="font-size: 12pt">The </font><code class="western"><font size="3" style="font-size: 12pt">untrack</font></code><font size="3" style="font-size: 12pt">
+function runs the provided function and return its result without
+creating any dependencies. Now, the effect will only run when the </font><code class="western"><strong><font size="3" style="font-size: 12pt">a</font></strong></code><font size="3" style="font-size: 12pt">
+signal emits a new value. We can also simplify the code by passing
+the signal directly to the </font><code class="western"><font size="3" style="font-size: 12pt">untrack</font></code><font size="3" style="font-size: 12pt">
+function:</font></p>
+<pre class="western"><a name="d032"></a><font size="3" style="font-size: 12pt">const a = signal(0);</font>
+<font size="3" style="font-size: 12pt">const b = signal(1);</font>
+<font size="3" style="font-size: 12pt">effect(() =&gt; {</font>
+  <font size="3" style="font-size: 12pt">console.log(a(), untrack(b));</font>
+<font size="3" style="font-size: 12pt">})</font></pre><p>
+<a name="4274"></a><font size="3" style="font-size: 12pt">Since
+signals are functions, they can be passed directly, but </font><code class="western"><font size="3" style="font-size: 12pt">untrack</font></code><font size="3" style="font-size: 12pt">
+can wrap functions with more complex behavior:</font></p>
+<pre class="western"><a name="c324"></a><font size="3" style="font-size: 12pt">effect(() =&gt; {</font>
+  <font size="3" style="font-size: 12pt">// ...read signals...</font>
+  <font size="3" style="font-size: 12pt">const a = a();</font>
+  <font size="3" style="font-size: 12pt">untracked(() =&gt; {</font>
+    <font size="3" style="font-size: 12pt">this.someMethodThatReadsSignals(a);</font>
+  <font size="3" style="font-size: 12pt">});</font>
+<font size="3" style="font-size: 12pt">})</font></pre><p>
+<a name="1100"></a><font size="3" style="font-size: 12pt">In this
+example, any signal reads by </font><code class="western"><font size="3" style="font-size: 12pt">someMethodThatReadsSignals</font></code><font size="3" style="font-size: 12pt">
+won’t be counted as dependencies of this effect.</font></p>
+<p><a name="5a9c"></a><font size="3" style="font-size: 12pt">In
+conclusion, the </font><code class="western"><font size="3" style="font-size: 12pt">untrack</font></code><font size="3" style="font-size: 12pt">
+function is a useful tool in Angular for improving signal read
+performance and preventing unnecessary dependencies.</font></p>
+<p><br/>
+<br/>
+
+</p>
+</body>
+</html>

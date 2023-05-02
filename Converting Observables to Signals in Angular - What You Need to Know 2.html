@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-05-01T20:19:16.590586156"/>
+	<meta name="changed" content="2023-05-01T20:22:10.774884901"/>
+	<style type="text/css">
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+	</style>
+</head>
+<body lang="en-CA" dir="ltr"><h1><font size="4" style="font-size: 14pt">Converting
+Signals to Observables in Angular: What You Need to Know</font></h1>
+<p><font size="3" style="font-size: 12pt">https://netbasal.com/converting-signals-to-observables-in-angular-what-you-need-to-know-971eacd3af2</font></p>
+<p><font size="3" style="font-size: 12pt">Netanel Basal</font></p>
+<p><font size="3" style="font-size: 12pt">Apr 30</font></p>
+<p><a name="8945"></a><font size="3" style="font-size: 12pt">Angular
+v16 introduces the new package </font><code class="western"><font size="3" style="font-size: 12pt">rxjs-interop</font></code><font size="3" style="font-size: 12pt">,
+which comes with a handy function called </font><code class="western"><font size="3" style="font-size: 12pt">toObservable</font></code><font size="3" style="font-size: 12pt">
+that allows developers to convert a </font><code class="western"><font size="3" style="font-size: 12pt">signal</font></code><font size="3" style="font-size: 12pt">
+to an </font><code class="western"><font size="3" style="font-size: 12pt">observable</font></code><font size="3" style="font-size: 12pt">.
+In this article, we’ll explore this new feature and how it can be
+used.</font></p>
+<p><a name="1258"></a><font size="3" style="font-size: 12pt">First,
+we need to import the </font><code class="western"><font size="3" style="font-size: 12pt">toObservable</font></code><font size="3" style="font-size: 12pt">
+function from the </font><code class="western"><font size="3" style="font-size: 12pt">@angular/core/rxjs-interop</font></code><font size="3" style="font-size: 12pt">
+module. Here’s an example code snippet that demonstrates its usage:</font></p>
+<pre class="western"><a name="f43d"></a><font size="3" style="font-size: 12pt">import { toObservable } from '@angular/core/rxjs-interop';</font>
+<font size="3" style="font-size: 12pt">import { signal } from '@angular/core';</font>
+<font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">&lt;input (input)=&quot;value.set(input.value)&quot; #input /&gt;</font>
+  <font size="3" style="font-size: 12pt">`,</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class FooComponent {</font>
+  <font size="3" style="font-size: 12pt">value = signal('');</font>
+  <font size="3" style="font-size: 12pt">value$ = toObservable(this.value);</font>
+  <font size="3" style="font-size: 12pt">ngOnInit() {</font>
+    <font size="3" style="font-size: 12pt">this.value$.subscribe(console.log);</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a name="570b"></a><font size="3" style="font-size: 12pt">We create a
+</font><code class="western"><font size="3" style="font-size: 12pt">signal</font></code><font size="3" style="font-size: 12pt">
+with an initial value of an empty string, and then we use the
+</font><code class="western"><font size="3" style="font-size: 12pt">toObservable</font></code><font size="3" style="font-size: 12pt">
+function to convert it into an </font><code class="western"><font size="3" style="font-size: 12pt">observable</font></code><font size="3" style="font-size: 12pt">.
+We then subscribe to the </font><code class="western"><font size="3" style="font-size: 12pt">observable</font></code><font size="3" style="font-size: 12pt">
+and log its value every time it changes.</font></p>
+<p><a name="32da"></a><font size="3" style="font-size: 12pt">Under
+the hood, the </font><code class="western"><font size="3" style="font-size: 12pt">toObservable</font></code><font size="3" style="font-size: 12pt">
+function creates a </font><code class="western"><a href="https://github.com/angular/angular/blob/main/packages/core/rxjs-interop/src/to_observable.ts#L41" target="_blank"><font size="3" style="font-size: 12pt">ReplaySubject</font></a></code><font size="3" style="font-size: 12pt">
+and wraps the provided </font><code class="western"><font size="3" style="font-size: 12pt">signal</font></code><font size="3" style="font-size: 12pt">
+in an </font><code class="western"><a href="https://github.com/angular/angular/blob/main/packages/core/rxjs-interop/src/to_observable.ts#L43" target="_blank"><font size="3" style="font-size: 12pt">effect</font></a></code><font size="3" style="font-size: 12pt">.
+When the </font><code class="western"><font size="3" style="font-size: 12pt">signal</font></code><font size="3" style="font-size: 12pt">
+value changes, the </font><code class="western"><font size="3" style="font-size: 12pt">effect</font></code><font size="3" style="font-size: 12pt">
+will emit the new value.</font></p>
+<p><a name="a26f"></a><font size="3" style="font-size: 12pt">One
+benefit of using signals is that we don’t need to add the
+</font><code class="western"><font size="3" style="font-size: 12pt">distinctUntilChanged</font></code><font size="3" style="font-size: 12pt">
+operator, as the work is already done at the </font><code class="western"><font size="3" style="font-size: 12pt">signal</font></code><font size="3" style="font-size: 12pt">
+level. Additionally, if the </font><code class="western"><font size="3" style="font-size: 12pt">signal</font></code><font size="3" style="font-size: 12pt">
+throws an error, it will be passed as an error notification to the
+subscriber.</font></p>
+<p><a name="02f2"></a><font size="3" style="font-size: 12pt">One
+interesting effect of using the effect (😄) to emit values is that
+the value will be delivered </font><strong><font size="3" style="font-size: 12pt">asynchronously</font></strong><font size="3" style="font-size: 12pt">.
+This means that even if we emit multiple values at the same “tick”,
+we’ll only receive </font><strong><font size="3" style="font-size: 12pt">the
+last signal value.</font></strong></p>
+<p><a name="08af"></a><font size="3" style="font-size: 12pt">It’s
+important to note that when the </font><code class="western"><font size="3" style="font-size: 12pt">toObservable</font></code><font size="3" style="font-size: 12pt">
+function is called, it <a href="https://github.com/angular/angular/blob/main/packages/core/rxjs-interop/src/to_observable.ts#L40" target="_blank">checks</a>
+to ensure that it is being called in an </font><em><a href="https://netbasal.com/understanding-angular-injection-context-18a0780ede2d" target="_blank"><font size="3" style="font-size: 12pt">injection
+context</font></a></em><font size="3" style="font-size: 12pt">. If
+not, an error will be thrown. This means that we can use the
+</font><code class="western"><font size="3" style="font-size: 12pt">toObservable</font></code><font size="3" style="font-size: 12pt">
+function only when the </font><code class="western"><font size="3" style="font-size: 12pt">inject()</font></code><font size="3" style="font-size: 12pt">
+function is available, except for cases when we pass an </font><code class="western"><font size="3" style="font-size: 12pt">injector</font></code><font size="3" style="font-size: 12pt">
+explicitly.</font></p>
+<pre class="western"><a name="ce57"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">&lt;input (input)=&quot;value.set(input.value)&quot; #input /&gt;</font>
+  <font size="3" style="font-size: 12pt">`,</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class FooComponent {</font>
+  <font size="3" style="font-size: 12pt">value = signal('');</font>
+  <font size="3" style="font-size: 12pt">private injector = inject(Injector);</font>
+ 
+  <font size="3" style="font-size: 12pt">ngOnInit() {</font>
+    <font size="3" style="font-size: 12pt">const value$ = toObservable(this.value, {</font>
+      <font size="3" style="font-size: 12pt">injector: this.injector</font>
+    <font size="3" style="font-size: 12pt">}).subscribe(console.log);</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a name="e28d"></a><font size="3" style="font-size: 12pt">This is
+because Angular will complete the underlying </font><code class="western"><font size="3" style="font-size: 12pt">ReplaySubject</font></code><font size="3" style="font-size: 12pt">
+and destroy the </font><code class="western"><font size="3" style="font-size: 12pt">effect</font></code><font size="3" style="font-size: 12pt">
+registration when the wrapping context is destroyed. It does this
+using the new </font><code class="western"><a href="https://netbasal.com/getting-to-know-the-destroyref-provider-in-angular-9791aa096d77" target="_blank"><font size="3" style="font-size: 12pt">OnDestroy</font></a></code><font size="3" style="font-size: 12pt">
+hook that it obtains from using the </font><code class="western"><font size="3" style="font-size: 12pt">inject()</font></code><font size="3" style="font-size: 12pt">
+function.</font></p>
+<p><br/>
+<br/>
+
+</p>
+</body>
+</html>
