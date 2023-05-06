@@ -1,0 +1,259 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-05-05T20:30:19.775499940"/>
+	<meta name="changed" content="2023-05-05T20:54:39.340128301"/>
+	<style type="text/css">
+		h2.cjk { font-family: "Noto Serif CJK SC" }
+		h2.ctl { font-family: "Lohit Devanagari" }
+		h3.cjk { font-family: "Noto Serif CJK SC" }
+		h3.ctl { font-family: "Lohit Devanagari" }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+	</style>
+</head>
+<body lang="en-CA" dir="ltr"><h1><font face="Liberation Serif, serif"><font size="4" style="font-size: 14pt">Adding
+Suspense to Angular! </font></font>
+</h1>
+<p><a href="https://netbasal.com/adding-suspense-to-angular-%EF%B8%8F-%EF%B8%8F-1f34fd603584"><font size="3" style="font-size: 12pt">https://netbasal.com/adding-suspense-to-angular-%EF%B8%8F-%EF%B8%8F-1f34fd603584</font></a></p>
+<p><font size="3" style="font-size: 12pt">Netanel Basal</font></p>
+<p><font size="3" style="font-size: 12pt">Jul 1, 2020</font></p>
+<p><a name="540f"></a><font size="3" style="font-size: 12pt">I see a
+lot of enthusiasm lately in the React and Vue communities for the
+Suspense API. Suspense offers a component that allows you “wait”
+for some code to be rendered, and declaratively specify a loading
+state (like a spinner) which is displayed until then. Here’s an
+example from Vue:</font></p>
+<pre class="western"><font size="3" style="font-size: 12pt">&lt;template&gt;</font>
+ <font size="3" style="font-size: 12pt">&lt;Suspense&gt;</font>
+   <font size="3" style="font-size: 12pt">&lt;template #default&gt;</font>
+     <font size="3" style="font-size: 12pt">&lt;MyAsyncComponent /&gt;</font>
+   <font size="3" style="font-size: 12pt">&lt;/template&gt;</font>
+   <font size="3" style="font-size: 12pt">&lt;template #fallback&gt;</font>
+     <font size="3" style="font-size: 12pt">&lt;span&gt;Loading... Please wait.&lt;/span&gt;</font>
+   <font size="3" style="font-size: 12pt">&lt;/template&gt;</font>
+ <font size="3" style="font-size: 12pt">&lt;/Suspense&gt;</font>
+<font size="3" style="font-size: 12pt">&lt;/template&gt;</font></pre><p>
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/5f6e66fa41de94c067057487d91f2ee4#file-su-1-html">su-1.html
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p><a name="a6e7"></a><font size="3" style="font-size: 12pt">If
+you’re not familiar with Suspense, I recommend reading <a href="https://reactjs.org/docs/concurrent-mode-suspense.html" target="_blank">these</a>
+<a href="https://vuedose.tips/go-async-in-vue-3-with-suspense/" target="_blank">articles</a>.</font></p>
+<p><a name="b648"></a><font size="3" style="font-size: 12pt">Seeing
+this, I told myself I’d try to do something similar in Angular. In
+this article I want to share what I’ve ended up creating, which
+took me about 20 minutes to make 😀</font></p>
+<p><a name="b0c7"></a><font size="3" style="font-size: 12pt">The
+approach I took is similar to the one Vue <a href="https://vuedose.tips/go-async-in-vue-3-with-suspense/" target="_blank">uses</a>,
+since it more resembles Angular. Here’s what we want to achieve:</font></p>
+<pre class="western"><font size="3" style="font-size: 12pt">&lt;suspense&gt;</font>
+  <font size="3" style="font-size: 12pt">&lt;ng-template [defaultView]=&quot;compFactory&quot;&gt;&lt;/ng-template&gt;</font>
+
+  <font size="3" style="font-size: 12pt">&lt;ng-template fallbackView&gt;</font>
+    <font size="3" style="font-size: 12pt">&lt;h4&gt;Fetching Users...&lt;/h4&gt;</font>
+  <font size="3" style="font-size: 12pt">&lt;/ng-template&gt;</font>
+  
+  <font size="3" style="font-size: 12pt">&lt;ng-template errorView&gt;</font>
+    <font size="3" style="font-size: 12pt">&lt;h4&gt;Oops...&lt;/h4&gt;</font>
+  <font size="3" style="font-size: 12pt">&lt;/ng-template&gt;</font>
+<font size="3" style="font-size: 12pt">&lt;/suspense&gt;</font></pre><p>
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/8c6d9e3a4218c1e780e175840eb40932#file-su-2-html">su-2.html
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<pre class="western"><font size="3" style="font-size: 12pt">@Component({})</font>
+<font size="3" style="font-size: 12pt">export class AppComponent {</font>
+  <font size="3" style="font-size: 12pt">usersFactory = () =&gt; import('./users/users.component');</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/8c6d9e3a4218c1e780e175840eb40932#file-su-3-ts">su-3.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<pre class="western"><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">&lt;ul&gt;&lt;li *ngFor=&quot;let user of users&quot;&gt;{{ user.name }}&lt;/li&gt;&lt;/ul&gt;</font>
+  <font size="3" style="font-size: 12pt">`,</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export default class UsersComponent implements Suspenseable {</font>
+  <font size="3" style="font-size: 12pt">users = [];</font>
+  <font size="3" style="font-size: 12pt">constructor(private http: HttpClient) {}</font>
+
+  <font size="3" style="font-size: 12pt">setup() {</font>
+    <font size="3" style="font-size: 12pt">return this.http</font>
+      <font size="3" style="font-size: 12pt">.get('https://jsonplaceholder.typicode.com/users')</font>
+      <font size="3" style="font-size: 12pt">.pipe(tap((users) =&gt; (this.users = users)));</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/8c6d9e3a4218c1e780e175840eb40932#file-su-4-ts">su-4.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p><a name="7773"></a><font size="3" style="font-size: 12pt">We want
+to show the fallback view while we’re fetching the users component
+and waiting for the </font><code class="western"><font size="3" style="font-size: 12pt">setup()</font></code><font size="3" style="font-size: 12pt">
+method to complete the asynchronous work it needs to do. When these
+both have occurred, we render the component. If an error occurs in
+the process, we render the error view instead.</font></p>
+<p><a name="4496"></a><font size="3" style="font-size: 12pt">If
+you’re not familiar with lazy loaded components with Ivy, I
+recommend reading the following article:</font></p>
+<h2 class="western"><a name="44961"></a><a href="https://netbasal.com/welcome-to-the-ivy-league-lazy-loading-components-in-angular-v9-e76f0ee2854a" target="_blank"><font size="3" style="font-size: 12pt">Welcome
+to the Ivy League: Lazy Loading Components in Angular v9</font></a></h2>
+<h3 class="western"><a href="https://netbasal.com/welcome-to-the-ivy-league-lazy-loading-components-in-angular-v9-e76f0ee2854a" target="_blank">Lazy
+Load Components with Ivy</a></h3>
+<p><a href="https://netbasal.com/welcome-to-the-ivy-league-lazy-loading-components-in-angular-v9-e76f0ee2854a" target="_blank">netbasal.com</a></p>
+<p><font size="3" style="font-size: 12pt">Let’s get started. First,
+let’s create the </font><code class="western"><font size="3" style="font-size: 12pt">defaultView</font></code><font size="3" style="font-size: 12pt">
+directive:</font></p>
+<pre class="western"><font size="3" style="font-size: 12pt">export interface Suspenseable {</font>
+  <font size="3" style="font-size: 12pt">setup(): ObservableInput&lt;any&gt;;</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/badb8a8f7b67777bfdb72bf57bce911e#file-s-5-ts">s-5.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<pre class="western"><font size="3" style="font-size: 12pt">import { Directive, Input, Type } from '@angular/core';</font>
+<font size="3" style="font-size: 12pt">import { Suspenseable } from './types';</font>
+
+<font size="3" style="font-size: 12pt">@Directive({</font>
+  <font size="3" style="font-size: 12pt">selector: '[defaultView]',</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class DefaultViewDirective {</font>
+  <font size="3" style="font-size: 12pt">@Input('defaultView') fetch: () =&gt; Promise&lt;{ default: Type&lt;Suspenseable&gt; }&gt;;</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/badb8a8f7b67777bfdb72bf57bce911e#file-s-6-ts">s-6.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p><font size="3" style="font-size: 12pt">This is a simple directive
+that takes as input the factory function that fetches the component.
+Let’s move on to the </font><code class="western"><font size="3" style="font-size: 12pt">fallbackView</font></code><font size="3" style="font-size: 12pt">
+directive:</font></p>
+<pre class="western"><font size="3" style="font-size: 12pt">import { Directive, TemplateRef } from '@angular/core';</font>
+
+<font size="3" style="font-size: 12pt">@Directive({</font>
+  <font size="3" style="font-size: 12pt">selector: '[fallbackView]',</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class FallbackViewDirective {</font>
+  <font size="3" style="font-size: 12pt">constructor(public tpl: TemplateRef&lt;any&gt;) {}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/864215a9dd9e4521a8a3f247a6162c11#file-s-6-ts">s-6.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p><font size="3" style="font-size: 12pt">The sole purpose of this
+directive is to expose a reference to the template, so that we can
+use it in the parent suspense component. The </font><code class="western"><font size="3" style="font-size: 12pt">errorView</font></code><font size="3" style="font-size: 12pt">
+directive works the same way:</font></p>
+<pre class="western"><font size="3" style="font-size: 12pt">import { Directive, TemplateRef } from '@angular/core';</font>
+
+<font size="3" style="font-size: 12pt">@Directive({</font>
+  <font size="3" style="font-size: 12pt">selector: '[errorView]',</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class ErrorViewDirective {</font>
+  <font size="3" style="font-size: 12pt">constructor(public tpl: TemplateRef&lt;any&gt;) {}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/c6142496509376e303001cb4d35c5890#file-su-20-ts">su-20.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p><font size="3" style="font-size: 12pt">Now let’s see the
+</font><code class="western"><font size="3" style="font-size: 12pt">suspense</font></code><font size="3" style="font-size: 12pt">
+component:</font></p>
+<pre class="western"><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">selector: 'suspense',</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">&lt;ng-template #anchor&gt;&lt;/ng-template&gt;</font>
+  <font size="3" style="font-size: 12pt">`,</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class SuspenseComponent {</font>
+  <font size="3" style="font-size: 12pt">@ViewChild('anchor', { read: ViewContainerRef }) anchor: ViewContainerRef;</font>
+  <font size="3" style="font-size: 12pt">@ContentChild(DefaultViewDirective) defaultView: DefaultViewDirective;</font>
+  <font size="3" style="font-size: 12pt">@ContentChild(FallbackViewDirective) fallbackView: FallbackViewDirective;</font>
+  <font size="3" style="font-size: 12pt">@ContentChild(ErrorViewDirective) errorView: ErrorViewDirective;</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/f68d9ae9cdd2fc51e4f32fc5d876d82f#file-s-7-ts">s-7.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p><a name="753f"></a><font size="3" style="font-size: 12pt">We
+obtain a reference to each of the directives we’ve created earlier.
+We also obtain a reference to a </font><code class="western"><font size="3" style="font-size: 12pt">ViewContainerRef</font></code><font size="3" style="font-size: 12pt">,
+so that we can add the component to the view.</font></p>
+<p><a name="941c"></a>The next steps are as follows: Create the
+<code class="western">fallback</code> view, fetch the component,
+create it, and wait for the <code class="western">setup()</code>
+method to complete its work. Then, clear the view and render the
+component. In case of an error, render the <code class="western">error</code>
+view instead.</p>
+<pre class="western"><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">selector: 'suspense',</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">&lt;ng-template #anchor&gt;&lt;/ng-template&gt;</font>
+  <font size="3" style="font-size: 12pt">`,</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class SuspenseComponent {</font>
+  <font size="3" style="font-size: 12pt">@ViewChild('anchor', { read: ViewContainerRef }) anchor: ViewContainerRef;</font>
+  <font size="3" style="font-size: 12pt">@ContentChild(DefaultViewDirective) defaultView: DefaultViewDirective;</font>
+  <font size="3" style="font-size: 12pt">@ContentChild(FallbackViewDirective) fallbackView: FallbackViewDirective;</font>
+  <font size="3" style="font-size: 12pt">@ContentChild(ErrorViewDirective) errorView: ErrorViewDirective;</font>
+
+  <font size="3" style="font-size: 12pt">private compRef: ComponentRef&lt;Suspenseable&gt;;</font>
+
+  <font size="3" style="font-size: 12pt">constructor(</font>
+    <font size="3" style="font-size: 12pt">private resolver: ComponentFactoryResolver,</font>
+    <font size="3" style="font-size: 12pt">private injector: Injector</font>
+  <font size="3" style="font-size: 12pt">) {}</font>
+
+  <font size="3" style="font-size: 12pt">ngAfterViewInit() {</font>
+    <font size="3" style="font-size: 12pt">this.anchor.createEmbeddedView(this.fallbackView.tpl);</font>
+
+    <font size="3" style="font-size: 12pt">this.defaultView.fetch().then((comp) =&gt; {</font>
+      <font size="3" style="font-size: 12pt">const factory = this.resolver.resolveComponentFactory(comp.default);</font>
+      <font size="3" style="font-size: 12pt">this.compRef = factory.create(this.injector);</font>
+
+      <font size="3" style="font-size: 12pt">from(this.compRef.instance.setup()).subscribe({</font>
+        <font size="3" style="font-size: 12pt">next: () =&gt; {</font>
+          <font size="3" style="font-size: 12pt">this.anchor.remove();</font>
+          <font size="3" style="font-size: 12pt">this.anchor.insert(this.compRef.hostView);</font>
+        <font size="3" style="font-size: 12pt">},</font>
+        <font size="3" style="font-size: 12pt">error: () =&gt; {</font>
+          <font size="3" style="font-size: 12pt">this.anchor.remove();</font>
+          <font size="3" style="font-size: 12pt">this.anchor.createEmbeddedView(this.errorView.tpl);</font>
+        <font size="3" style="font-size: 12pt">},</font>
+      <font size="3" style="font-size: 12pt">});</font>
+    <font size="3" style="font-size: 12pt">});</font>
+  <font size="3" style="font-size: 12pt">}</font>
+
+  <font size="3" style="font-size: 12pt">ngOnDestroy() {</font>
+    <font size="3" style="font-size: 12pt">this.compRef?.destroy();</font>
+    <font size="3" style="font-size: 12pt">this.compRef = null;</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/cfe4681e2ea8e61155c36a2d9ebb5496#file-s-8-ts">s-8.ts
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p><a name="2a65"></a><font size="3" style="font-size: 12pt">And
+that’s all. Let’s see it in action:</font></p>
+<p><img src="Adding%20Suspense%20to%20Angular_html_ad6561063152e46a.gif" name="Image1" align="bottom" width="426" height="366" border="0"/>
+</p>
+<p><a name="ec11"></a><font size="3" style="font-size: 12pt">I also
+took it a step further and added support for non-lazy components:</font></p>
+<pre class="western"><font size="3" style="font-size: 12pt">&lt;suspense&gt;</font>
+  <font size="3" style="font-size: 12pt">&lt;app-not-lazy&gt;&lt;/app-not-lazy&gt;</font>
+  <font size="3" style="font-size: 12pt">&lt;app-not-lazy2&gt;&lt;/app-not-lazy2&gt;</font>
+
+  <font size="3" style="font-size: 12pt">&lt;ng-template fallbackView&gt;</font>
+    <font size="3" style="font-size: 12pt">&lt;span&gt;Loading... Please wait.&lt;/span&gt;</font>
+  <font size="3" style="font-size: 12pt">&lt;/ng-template&gt;</font>
+<font size="3" style="font-size: 12pt">&lt;/suspense&gt;</font></pre><p>
+<font size="3" style="font-size: 12pt"><a href="https://gist.github.com/NetanelBasal/24cad6e3d98e0ca1e87ad7106f29e1f9#file-su-22-html">su-22.html
+</a>hosted with ❤ by <a href="https://github.com/">GitHub</a></font></p>
+<p><a name="9a8f"></a><font size="3" style="font-size: 12pt">In the
+above example, it’ll wait for both components to finish their
+</font><code class="western"><font size="3" style="font-size: 12pt">setup()</font></code><font size="3" style="font-size: 12pt">
+and then render both.</font></p>
+<p><font size="3" style="font-size: 12pt">You can see the complete
+code in <a href="https://github.com/NetanelBasal/ng-suspense" target="_blank">this</a>
+repo. </font><strong><font size="3" style="font-size: 12pt">I know I
+probably missed a few things, remember it was quick and dirty work </font></strong><font size="3" style="font-size: 12pt">🤓</font></p>
+<h2 class="western"><a href="https://github.com/ngneat" target="_blank"><font size="3" style="font-size: 12pt">ngneat</font></a></h2>
+<h3 class="western"><a href="https://github.com/ngneat" target="_blank"><font size="3" style="font-size: 12pt">Powerful
+open sources for JS &amp; Angular Applications - ngneat</font></a></h3>
+<p><a href="https://github.com/ngneat" target="_blank"><font size="3" style="font-size: 12pt">github.com</font></a></p>
+<p><a name="df85"></a><br/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+</body>
+</html>
