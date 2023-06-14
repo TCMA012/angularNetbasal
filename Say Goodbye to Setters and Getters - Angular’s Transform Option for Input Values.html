@@ -1,0 +1,121 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-06-13T20:39:08.784453751"/>
+	<meta name="changed" content="2023-06-13T20:55:32.929229060"/>
+	<style type="text/css">
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+	</style>
+</head>
+<body lang="en-CA" dir="ltr"><h1><font face="Liberation Serif, serif"><font size="4" style="font-size: 14pt">Say
+Goodbye to Setters and Getters: Angular’s Transform Option for
+Input Values</font></font></h1>
+<p><font size="3" style="font-size: 12pt">Netanel Basal</font></p>
+<p><font size="3" style="font-size: 12pt">12 June 2023</font></p>
+<p><a href="https://netbasal.com/say-goodbye-to-setters-and-getters-angulars-transform-option-for-input-values-88fd9442dcad"><font size="3" style="font-size: 12pt">https://netbasal.com/say-goodbye-to-setters-and-getters-angulars-transform-option-for-input-values-88fd9442dcad</font></a></p>
+<p><br/>
+<br/>
+
+</p>
+<p><a name="8cfc"></a><font size="3" style="font-size: 12pt">Starting
+from Angular v16.1.0, a new helpful feature has been introduced to
+provide an alternative and easy way to </font><strong><font size="3" style="font-size: 12pt">transform</font></strong><font size="3" style="font-size: 12pt">
+input values, eliminating the need for using </font><code class="western"><font size="3" style="font-size: 12pt">setter</font></code><font size="3" style="font-size: 12pt">
+and </font><code class="western"><font size="3" style="font-size: 12pt">getter</font></code><font size="3" style="font-size: 12pt">
+methods.</font></p>
+<p><a name="9092"></a><font size="3" style="font-size: 12pt">The
+</font><code class="western"><font size="3" style="font-size: 12pt">@Input</font></code><font size="3" style="font-size: 12pt">
+decorator now includes a </font><code class="western"><font size="3" style="font-size: 12pt">transform</font></code><font size="3" style="font-size: 12pt">
+option, which accepts a function that takes the passed </font><code class="western"><font size="3" style="font-size: 12pt">input</font></code><font size="3" style="font-size: 12pt">
+value and returns a new value. Let's consider a common example:</font></p>
+<pre class="western"><a name="8936"></a><font size="3" style="font-size: 12pt">function toNumber(value: string | number) {</font>
+  <font size="3" style="font-size: 12pt">return isNumber(value) ? value : parseInt(value);</font>
+<font size="3" style="font-size: 12pt">}</font>
+
+<font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">selector: 'app-rect',</font>
+  <font size="3" style="font-size: 12pt">template: ``,</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class FooComponent {</font>
+  <font size="3" style="font-size: 12pt">@Input({ transform: toNumber }) width: number;</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a name="f9d5"></a><font size="3" style="font-size: 12pt">In the
+above code snippet, when we use the </font><code class="western"><font size="3" style="font-size: 12pt">FooComponent</font></code><font size="3" style="font-size: 12pt">
+and pass the </font><code class="western"><font size="3" style="font-size: 12pt">width</font></code><font size="3" style="font-size: 12pt">
+input as a string:</font></p>
+<pre class="western" style="margin-bottom: 0.5cm"><a name="9db5"></a><font size="3" style="font-size: 12pt">&lt;app-foo width=&quot;100&quot; /&gt;</font></pre><p>
+<a name="dc63"></a><font size="3" style="font-size: 12pt">The
+transformer function </font><code class="western"><font size="3" style="font-size: 12pt">toNumber</font></code><font size="3" style="font-size: 12pt">
+will handle the coercion, converting the string value to a number.</font></p>
+<p><br/>
+<br/>
+
+</p>
+<p><a name="9097"></a><font size="3" style="font-size: 12pt">Another
+scenario where this feature comes in handy is when dealing with HTML
+attributes. </font><code class="western"><font size="3" style="font-size: 12pt">boolean</font></code><font size="3" style="font-size: 12pt">
+attributes are considered </font><code class="western"><font size="3" style="font-size: 12pt">true</font></code><font size="3" style="font-size: 12pt">
+if they are present on a DOM node and </font><code class="western"><font size="3" style="font-size: 12pt">false</font></code><font size="3" style="font-size: 12pt">
+if they are omitted. However, Angular interprets all static
+attributes as strings, leading to a common issue. For example, the
+following code would return an empty string:</font></p>
+<p><a name="5db9"></a><br/>
+<br/>
+
+</p>
+<pre class="western"><a name="5db91"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">selector: 'app-checkbox',</font>
+  <font size="3" style="font-size: 12pt">template: ``,</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class CheckboxComponent {</font>
+  <font size="3" style="font-size: 12pt">@Input() disabled: boolean;</font>
+<font size="3" style="font-size: 12pt">}</font>
+<a name="fbd6"></a><font size="3" style="font-size: 12pt">&lt;app-checkbox disabled/&gt;</font></pre><p>
+<a name="5431"></a><font size="3" style="font-size: 12pt">To address
+this issue, we can use the </font><code class="western"><font size="3" style="font-size: 12pt">transform</font></code><font size="3" style="font-size: 12pt">
+option instead of using getters and setters. Angular provides the
+</font><code class="western"><font size="3" style="font-size: 12pt">booleanAttribute</font></code><font size="3" style="font-size: 12pt">
+and </font><code class="western"><font size="3" style="font-size: 12pt">numberAttribute</font></code><font size="3" style="font-size: 12pt">
+utilities in </font><code class="western"><font size="3" style="font-size: 12pt">@angular/core</font></code><font size="3" style="font-size: 12pt">,
+which are commonly useful in most projects. Here's an example:</font></p>
+<pre class="western"><a name="2744"></a><font size="3" style="font-size: 12pt">import { Input, booleanAttribute } from '@angular/core';</font>
+
+<font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">selector: 'app-checkbox',</font>
+  <font size="3" style="font-size: 12pt">template: ``,</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class CheckboxComponent {</font>
+  <font size="3" style="font-size: 12pt">@Input({ transform: booleanAttribute }) disabled: boolean = false;</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a name="9880"></a><font size="3" style="font-size: 12pt">In the code
+above, the </font><code class="western"><font size="3" style="font-size: 12pt">booleanAttribute</font></code><font size="3" style="font-size: 12pt">
+transform function is used to handle the boolean coercion. Now, when
+we use the </font><code class="western"><font size="3" style="font-size: 12pt">CheckboxComponent</font></code><font size="3" style="font-size: 12pt">
+and specify the </font><code class="western"><font size="3" style="font-size: 12pt">disabled</font></code><font size="3" style="font-size: 12pt">
+attribute:</font></p>
+<pre class="western" style="margin-bottom: 0.5cm"><a name="0427"></a><font size="3" style="font-size: 12pt">&lt;app-checkbox disabled /&gt;</font></pre><p>
+<a name="291c"></a><font size="3" style="font-size: 12pt">The
+transformer function will appropriately interpret the presence of the
+attribute as </font><code class="western"><font size="3" style="font-size: 12pt">true</font></code><font size="3" style="font-size: 12pt">.</font></p>
+<p><a name="654e"></a><font size="3" style="font-size: 12pt">It’s
+worth noting that Angular already <a href="https://github.com/angular/angular/blob/main/packages/router/src/directives/router_link.ts#L209-L217" target="_blank">utilizes</a>
+this feature internally in the router.</font></p>
+<p><a name="1fdc"></a><font size="3" style="font-size: 12pt">Overall,
+with the introduction of the </font><code class="western"><font size="3" style="font-size: 12pt">transform</font></code><font size="3" style="font-size: 12pt">
+option in the </font><code class="western"><font size="3" style="font-size: 12pt">@Input</font></code><font size="3" style="font-size: 12pt">
+decorator, Angular simplifies the process of transforming input
+values, offering a more streamlined approach compared to traditional
+setter and getter methods.</font></p>
+<p><br/>
+<br/>
+
+</p>
+</body>
+</html>
