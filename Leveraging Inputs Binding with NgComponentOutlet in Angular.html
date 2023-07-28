@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-07-27T21:51:36.626741600"/>
+	<meta name="changed" content="2023-07-27T21:56:26.522823615"/>
+	<style type="text/css">
+		@page { margin: 2cm }
+		p { margin-bottom: 0.25cm; line-height: 115% }
+		h1 { margin-bottom: 0.21cm }
+		h1.western { font-family: "Liberation Serif", serif }
+		h1.cjk { font-family: "Noto Serif CJK SC"; font-size: 24pt }
+		h1.ctl { font-family: "Lohit Devanagari"; font-size: 24pt }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		a:link { so-language: zxx }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+	</style>
+</head>
+<body lang="en-CA" dir="ltr"><h1 class="western">Leveraging Inputs
+Binding with NgComponentOutlet in Angular</h1>
+<p style="margin-bottom: 0cm"><a name="67971"></a><a href="https://netbasal.medium.com/?source=post_page-----e04fadc26ad2--------------------------------">Netanel
+Basal</a></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">27
+July 2023</font></p>
+<p><a name="b74d"></a><font size="3" style="font-size: 12pt">Angular
+version <a href="https://github.com/angular/angular/blob/main/CHANGELOG.md#1620-next4-2023-07-26" target="_blank">v16.2.0</a>
+(next.4) introduced a highly practical feature — Inputs Binding
+with </font><code class="western"><font size="3" style="font-size: 12pt">NgComponentOutlet</font></code><font size="3" style="font-size: 12pt">.
+In the past, when utilizing the </font><code class="western"><font size="3" style="font-size: 12pt">NgComponentOutlet</font></code><font size="3" style="font-size: 12pt">
+directive and requiring the passage of data to the created component,
+developers were constrained to create a new injector and utilize it
+as the data provider.</font></p>
+<p><a name="d3bd"></a><font size="3" style="font-size: 12pt">Fortunately,
+with this new feature, we can now seamlessly pass component inputs
+using the </font><code class="western"><font size="3" style="font-size: 12pt">inputs</font></code><font size="3" style="font-size: 12pt">
+input.</font></p>
+<pre class="western"><a name="17ea"></a><font size="3" style="font-size: 12pt">Component({</font>
+  <font size="3" style="font-size: 12pt">selector: 'foo-cmp',</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">imports: [NgComponentOutlet],</font>
+  <font size="3" style="font-size: 12pt">template: `                                         👇</font>
+   <font size="3" style="font-size: 12pt">&lt;ng-template *ngComponentOutlet=&quot;dynamicComponent; inputs: inputs&quot; /&gt;</font>
+  <font size="3" style="font-size: 12pt">`</font>
+<font size="3" style="font-size: 12pt">class FooComponent {</font>
+  <font size="3" style="font-size: 12pt">dynamicComponent = DynamicChildComponent;</font>
+  <font size="3" style="font-size: 12pt">inputs = { dataProperty: 'Hello' }</font>
+<font size="3" style="font-size: 12pt">}</font>
+<a name="6249"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">selector: 'app-dynamic-child',</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">template: `{{ dataProperty }}`</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class DynamicChildComponent {</font>
+  <font size="3" style="font-size: 12pt">@Input() dataProperty: string;</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a name="c18e"></a><font size="3" style="font-size: 12pt">In the
+example above, we pass the </font><code class="western"><font size="3" style="font-size: 12pt">componentInputs</font></code><font size="3" style="font-size: 12pt">
+object as the value for the </font><code class="western"><font size="3" style="font-size: 12pt">inputs</font></code><font size="3" style="font-size: 12pt">
+input. This object contains the data that we want to transmit to the
+dynamically created </font><code class="western"><font size="3" style="font-size: 12pt">DynamicChildComponent</font></code><font size="3" style="font-size: 12pt">.
+The </font><code class="western"><font size="3" style="font-size: 12pt">dataProperty</font></code><font size="3" style="font-size: 12pt">
+in </font><code class="western"><font size="3" style="font-size: 12pt">FooComponent</font></code><font size="3" style="font-size: 12pt">
+is bound to the corresponding property in the </font><code class="western"><font size="3" style="font-size: 12pt">componentInputs</font></code><font size="3" style="font-size: 12pt">
+object, enabling seamless data transfer.</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+</body>
+</html>
