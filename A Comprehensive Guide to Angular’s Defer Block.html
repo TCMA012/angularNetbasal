@@ -1,0 +1,645 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-10-11T22:43:33.591100778"/>
+	<meta name="changed" content="2023-10-11T23:10:05.433316472"/>
+	<style type="text/css">
+		@page { size: 21.59cm 27.94cm; margin: 2cm }
+		p { margin-bottom: 0.25cm; line-height: 115%; background: transparent }
+		h1 { margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h1.western { font-family: "Liberation Serif", serif; font-size: 24pt; font-weight: bold }
+		h1.cjk { font-family: "Noto Serif CJK SC"; font-size: 24pt; font-weight: bold }
+		h1.ctl { font-family: "Lohit Devanagari"; font-size: 24pt; font-weight: bold }
+		pre { background: transparent }
+		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace; font-size: 10pt }
+		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		h2 { margin-top: 0.35cm; margin-bottom: 0.21cm; background: transparent; page-break-after: avoid }
+		h2.western { font-family: "Liberation Serif", serif; font-size: 18pt; font-weight: bold }
+		h2.cjk { font-family: "Noto Serif CJK SC"; font-size: 18pt; font-weight: bold }
+		h2.ctl { font-family: "Lohit Devanagari"; font-size: 18pt; font-weight: bold }
+		a:link { color: #000080; so-language: zxx; text-decoration: underline }
+		a:visited { color: #800000; so-language: zxx; text-decoration: underline }
+		code.western { font-family: "Liberation Mono", monospace }
+		code.cjk { font-family: "Noto Sans Mono CJK SC", monospace }
+		code.ctl { font-family: "Liberation Mono", monospace }
+		strong { font-weight: bold }
+	</style>
+</head>
+<body lang="en-CA" link="#000080" vlink="#800000" dir="ltr"><h1 class="western">
+<font size="4" style="font-size: 16pt">A Comprehensive Guide to
+Angular’s Defer Block</font></h1>
+<p><font size="3" style="font-size: 12pt">https://netbasal.com/a-comprehensive-guide-to-angulars-defer-block-468c74048df4</font></p>
+<p><a href="https://netbasal.medium.com/?source=post_page-----468c74048df4--------------------------------"><font size="3" style="font-size: 12pt">Netanel
+Basal</font></a></p>
+<p style="margin-bottom: 0cm"><font size="3" style="font-size: 12pt">2023-10-08</font></p>
+<p style="margin-bottom: 0cm"><br/>
+
+</p>
+<p><a name="3df8"></a><font size="3" style="font-size: 12pt">With the
+latest control flow enhancements, Angular v17 introduces an
+impressive and highly beneficial feature: the </font><code class="western"><font size="3" style="font-size: 12pt">defer</font></code><font size="3" style="font-size: 12pt">
+block.</font></p>
+<p><a name="c888"></a><font size="3" style="font-size: 12pt">The
+primary purpose of the </font><code class="western"><font size="3" style="font-size: 12pt">defer</font></code><font size="3" style="font-size: 12pt">
+block is to lazy load content. Whether it’s a component, directive,
+or pipe, if it’s placed inside a </font><code class="western"><font size="3" style="font-size: 12pt">defer</font></code><font size="3" style="font-size: 12pt">
+block, Angular will only load it based on the specified conditions or
+events. This is particularly useful for performance optimization,
+especially when certain components aren’t immediately needed or
+visible to the user.</font></p>
+<p><a name="5342"></a><font size="3" style="font-size: 12pt">Consider
+this simple component:</font></p>
+<pre class="western"><a name="ee56"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">selector: 'my-cmp',</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">template: 'Hi!',</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">class MyCmp { }</font></pre><p>
+<a name="60c6"></a><font size="3" style="font-size: 12pt">Now, let’s
+look at how the </font><code class="western"><font size="3" style="font-size: 12pt">defer</font></code><font size="3" style="font-size: 12pt">
+block can be applied:</font></p>
+<pre class="western"><a name="da2b"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">imports: [MyCmp, FooDirective, BarPipe],</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">@defer (when isVisible) {</font>
+      <font size="3" style="font-size: 12pt">&lt;my-cmp appFoo/&gt;</font>
+      <font size="3" style="font-size: 12pt">{{ 'foo' | bar }}</font>
+    <font size="3" style="font-size: 12pt">}</font>
+    <font size="3" style="font-size: 12pt">&lt;button (click)=&quot;isVisible = true&quot;&gt;Load&lt;/button&gt;</font>
+  <font size="3" style="font-size: 12pt">`</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class AppComponent {</font>
+  <font size="3" style="font-size: 12pt">isVisible = false;</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a name="7d3e"></a><font size="3" style="font-size: 12pt">In this
+example, the </font><code class="western"><font size="3" style="font-size: 12pt">defer</font></code><font size="3" style="font-size: 12pt">
+block is paired with the </font><code class="western"><font size="3" style="font-size: 12pt">when</font></code><font size="3" style="font-size: 12pt">
+condition, which expects a </font><code class="western"><font size="3" style="font-size: 12pt">boolean</font></code><font size="3" style="font-size: 12pt">
+value. Angular's compiler processes this by breaking down the
+component, directive, and pipe into separate chunks.</font></p>
+<p style="margin-bottom: 0cm"><a name="7d3e1"></a><img src="A%20Comprehensive%20Guide%20to%20Angular%E2%80%99s%20Defer%20Block_html_4a49f16cd29e23d5.png" name="Image1" align="bottom" width="700" height="611" border="0"/>
+</p>
+<p style="margin-bottom: 0cm"><br/>
+
+</p>
+<p><a name="b8dd"></a><font size="3" style="font-size: 12pt">They are
+then loaded and rendered only when </font><code class="western"><font size="3" style="font-size: 12pt">isVisible</font></code><font size="3" style="font-size: 12pt">
+is true:</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><img src="A%20Comprehensive%20Guide%20to%20Angular%E2%80%99s%20Defer%20Block_html_4db2b11e9de7f362.gif" name="Image2" align="left" width="723" height="734" border="0"/>
+<br/>
+
+</p>
+<p><br/>
+<br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="page-break-before: always"><a name="ad6e3"></a><font size="3" style="font-size: 12pt">Additionally,
+when integrating the </font><code class="western"><font size="3" style="font-size: 12pt">defer</font></code><font size="3" style="font-size: 12pt">
+block with basic HTML content, it takes on capabilities reminiscent
+of an advanced </font><code class="western"><font size="3" style="font-size: 12pt">ngIf</font></code><font size="3" style="font-size: 12pt">
+directive. This becomes particularly evident when combined with the
+</font><code class="western"><font size="3" style="font-size: 12pt">on</font></code><font size="3" style="font-size: 12pt">
+condition, a feature we'll delve into in greater detail shortly.</font></p>
+<p><a name="1ddd3"></a><font size="3" style="font-size: 12pt">The
+</font><code class="western"><font size="3" style="font-size: 12pt">defer</font></code><font size="3" style="font-size: 12pt">
+block can be further augmented with the </font><code class="western"><font size="3" style="font-size: 12pt">@loading</font></code><font size="3" style="font-size: 12pt">,
+</font><code class="western"><font size="3" style="font-size: 12pt">@placeholder</font></code><font size="3" style="font-size: 12pt">,
+and </font><code class="western"><font size="3" style="font-size: 12pt">@error</font></code><font size="3" style="font-size: 12pt">
+blocks to provide a more comprehensive user experience:</font></p>
+<pre class="western"><a name="b885"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">@defer (when isVisible) {</font>
+      <font size="3" style="font-size: 12pt">&lt;my-cmp /&gt;</font>
+    <font size="3" style="font-size: 12pt">}</font>
+    <font size="3" style="font-size: 12pt">@loading {</font>
+      <font size="3" style="font-size: 12pt">Loading...</font>
+    <font size="3" style="font-size: 12pt">} @placeholder {</font>
+      <font size="3" style="font-size: 12pt">Placeholder</font>
+    <font size="3" style="font-size: 12pt">} @error {</font>
+      <font size="3" style="font-size: 12pt">Failed to load dependencies</font>
+    <font size="3" style="font-size: 12pt">}</font>
+  <font size="3" style="font-size: 12pt">`</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">class AppComponent { ... }</font></pre>
+<ul>
+	<li><p style="margin-bottom: 0cm"><a name="e78e"></a><code class="western"><font size="3" style="font-size: 12pt">@loading</font></code><font size="3" style="font-size: 12pt">:
+	Displays the specified content during the loading phase of
+	dependencies.</font></p>
+	<li><p style="margin-bottom: 0cm"><a name="85bc"></a><code class="western"><font size="3" style="font-size: 12pt">@placeholder</font></code><font size="3" style="font-size: 12pt">:
+	Displays the given content as an interim display until the content
+	completes rendering.</font></p>
+	<li><p><a name="751e"></a><code class="western"><font size="3" style="font-size: 12pt">@error</font></code><font size="3" style="font-size: 12pt">:
+	Displays the specified content if there’s an issue loading
+	content’s dependencies.</font></p>
+</ul>
+<h1 class="western"><a name="ad39"></a><font size="3" style="font-size: 12pt">The
+on condition</font></h1>
+<p><a name="1e9f"></a><font size="3" style="font-size: 12pt">Angular’s
+</font><code class="western"><font size="3" style="font-size: 12pt">defer</font></code><font size="3" style="font-size: 12pt">
+functionality is not just limited to simple </font><code class="western"><font size="3" style="font-size: 12pt">boolean</font></code><font size="3" style="font-size: 12pt">
+checks. It introduces the versatile “on” condition, which offers
+a spectrum of options for component loading and rendering. Let’s
+dive deeper into its capabilities.</font></p>
+<h2 class="western"><a name="41c1"></a><font size="3" style="font-size: 12pt">Immediate
+Rendering with “On Immediate” Condition</font></h2>
+<pre class="western"><a name="b8ea"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">imports: [MyCmp],</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">@defer (on immediate) {</font>
+      <font size="3" style="font-size: 12pt">&lt;my-cmp /&gt;</font>
+    <font size="3" style="font-size: 12pt">}</font>
+  <font size="3" style="font-size: 12pt">`</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">class AppComponent { }</font></pre><p>
+<a name="6411"></a><font size="3" style="font-size: 12pt">In the code
+above, the combination of the </font><code class="western"><font size="3" style="font-size: 12pt">@defer</font></code><font size="3" style="font-size: 12pt">
+block with the &quot;on immediate&quot; condition guarantees that the
+component is instantly rendered once it undergoes lazy-loading.</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%; page-break-before: always">
+<img src="A%20Comprehensive%20Guide%20to%20Angular%E2%80%99s%20Defer%20Block_html_97784da400b84ca2.gif" name="Image3" align="left" width="715" height="834" border="0"/>
+<br/>
+
+</p>
+<h2 class="western" style="page-break-before: always"><a name="c4e8"></a>
+<font size="3" style="font-size: 12pt">Idle Rendering with “On
+Idle” Condition</font></h2>
+<pre class="western"><a name="df61"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">imports: [MyCmp],</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">@defer (on idle) {</font>
+      <font size="3" style="font-size: 12pt">&lt;my-cmp /&gt;</font>
+    <font size="3" style="font-size: 12pt">}</font>
+  <font size="3" style="font-size: 12pt">`</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">class AppComponent { }</font></pre><p>
+<a name="a017"></a><font size="3" style="font-size: 12pt">Here, the
+component is loaded and rendered during browser idle times,
+leveraging the </font><code class="western"><a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/requestIdleCallback" target="_blank"><font size="3" style="font-size: 12pt">requestIdleCallback</font></a></code><font size="3" style="font-size: 12pt">
+API.</font></p>
+<h1 class="western"><a name="b7b5"></a><font size="3" style="font-size: 12pt">Deferring
+Rendering Based on User Interaction</font></h1>
+<p><a name="6266"></a><font size="3" style="font-size: 12pt">One of
+the powerful features of Angular’s </font><code class="western"><font size="3" style="font-size: 12pt">defer</font></code><font size="3" style="font-size: 12pt">
+functionality is the ability to delay the rendering of a component
+until a specific interaction occurs. This is particularly useful for
+scenarios where you might want to load content only when the user
+interacts with a specific element, such as a button click:</font></p>
+<pre class="western"><a name="1646"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">@defer (on interaction(trigger)) {</font>
+      <font size="3" style="font-size: 12pt">&lt;my-cmp /&gt;</font>
+    <font size="3" style="font-size: 12pt">}</font>
+    <font size="3" style="font-size: 12pt">@placeholder { </font>
+      <font size="3" style="font-size: 12pt">Placeholder</font>
+    <font size="3" style="font-size: 12pt">}</font>
+    <font size="3" style="font-size: 12pt">&lt;button #trigger&gt;Trigger&lt;/button&gt;</font>
+  <font size="3" style="font-size: 12pt">`</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">class AppComponent { }</font></pre><p>
+<a name="7ce3"></a><font size="3" style="font-size: 12pt">In this
+example, the component loading and rendering is deferred and will
+only render once the button, denoted by the </font><code class="western"><font size="3" style="font-size: 12pt">#trigger</font></code><font size="3" style="font-size: 12pt">
+reference, is clicked. Until that interaction, the </font><code class="western"><font size="3" style="font-size: 12pt">@placeholder</font></code><font size="3" style="font-size: 12pt">
+block showcases the &quot;Placeholder&quot; content. Supported
+interaction events include </font><code class="western"><font size="3" style="font-size: 12pt">click</font></code><font size="3" style="font-size: 12pt">,
+</font><code class="western"><font size="3" style="font-size: 12pt">focus</font></code><font size="3" style="font-size: 12pt">,
+</font><code class="western"><font size="3" style="font-size: 12pt">touch</font></code><font size="3" style="font-size: 12pt">,
+and </font><code class="western"><font size="3" style="font-size: 12pt">input</font></code><font size="3" style="font-size: 12pt">.</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%; page-break-before: always">
+<img src="A%20Comprehensive%20Guide%20to%20Angular%E2%80%99s%20Defer%20Block_html_6fcecb555e6a4031.gif" name="Image4" align="left" width="711" height="550" border="0"/>
+<br/>
+
+</p>
+<p style="page-break-before: always"><a name="2c7b"></a><font size="3" style="font-size: 12pt">In
+certain situations, you might not want to tie the </font><code class="western"><font size="3" style="font-size: 12pt">defer</font></code><font size="3" style="font-size: 12pt">
+block to a specific element. Angular addresses this by allowing
+deferred content to load </font><strong><font size="3" style="font-size: 12pt"><span style="font-weight: normal">based
+on interactions with the placeholder itself:</span></font></strong></p>
+<pre class="western"><a name="34b2"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">@defer (on interaction) {</font>
+      <font size="3" style="font-size: 12pt">Main content</font>
+    <font size="3" style="font-size: 12pt">} @placeholder {</font>
+      <font size="3" style="font-size: 12pt">&lt;button&gt;Trigger&lt;/button&gt;</font>
+    <font size="3" style="font-size: 12pt">}</font>
+  <font size="3" style="font-size: 12pt">`</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">class AppComponent {}</font></pre><h1 class="western">
+<a name="5bb5"></a><font size="3" style="font-size: 12pt">Hover-Based
+Rendering</font></h1>
+<p><a name="a222"></a><font size="3" style="font-size: 12pt">Another
+versatile feature of Angular’s </font><code class="western"><font size="3" style="font-size: 12pt">defer</font></code><font size="3" style="font-size: 12pt">
+block is the ability to defer the rendering of content until a
+specific element is hovered over:</font></p>
+<pre class="western"><a name="93f6"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">@defer (on hover(trigger)) {</font>
+      <font size="3" style="font-size: 12pt">Main content</font>
+    <font size="3" style="font-size: 12pt">} @placeholder {</font>
+      <font size="3" style="font-size: 12pt">Placeholder</font>
+    <font size="3" style="font-size: 12pt">}</font>
+    <font size="3" style="font-size: 12pt">&lt;button #trigger&gt;Trigger&lt;/button&gt;</font>
+  <font size="3" style="font-size: 12pt">`</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">class AppComponent { }</font></pre><p>
+<a name="6846"></a><font size="3" style="font-size: 12pt">The </font><code class="western"><font size="3" style="font-size: 12pt">@defer
+(on hover(trigger))</font></code><font size="3" style="font-size: 12pt">
+block activates the rendering of the “Main content” exclusively
+when the button, denoted by the </font><code class="western"><font size="3" style="font-size: 12pt">#trigger</font></code><font size="3" style="font-size: 12pt">
+template reference, is moused over.</font></p>
+<h1 class="western"><a name="ba38"></a><font size="3" style="font-size: 12pt">Timer-Driven
+Rendering</font></h1>
+<p><a name="97f9"></a><font size="3" style="font-size: 12pt">Angular’s
+</font><code class="western"><font size="3" style="font-size: 12pt">defer</font></code><font size="3" style="font-size: 12pt">
+block also provides the capability to delay the rendering of content
+based on a timer. This can be particularly useful in scenarios where
+you want to stagger the loading of multiple components or introduce a
+delay before a component is rendered, enhancing the user experience
+with controlled and timed content display:</font></p>
+<pre class="western">
+<a name="a070"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">@defer (on timer(1500ms)) {</font>
+      <font size="3" style="font-size: 12pt">Main content</font>
+    <font size="3" style="font-size: 12pt">} @placeholder {</font>
+      <font size="3" style="font-size: 12pt">Placeholder</font>
+    <font size="3" style="font-size: 12pt">}</font>
+  <font size="3" style="font-size: 12pt">`</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">class AppComponent { }</font></pre><h1 class="western">
+<a name="7985"></a><font size="3" style="font-size: 12pt">Viewport-Based
+Rendering</font></h1>
+<p><a name="b016"></a><font size="3" style="font-size: 12pt">Angular’s
+</font><code class="western"><font size="3" style="font-size: 12pt">defer</font></code><font size="3" style="font-size: 12pt">
+block provides a built-in mechanism for this through the </font><code class="western"><font size="3" style="font-size: 12pt">on
+viewport</font></code><font size="3" style="font-size: 12pt">
+condition. This allows developers to defer the rendering of content
+until a specific element enters the viewport:</font></p>
+<pre class="western"><a name="dc52"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">@defer (on viewport(trigger)) {</font>
+      <font size="3" style="font-size: 12pt">&lt;my-comp /&gt;</font>
+    <font size="3" style="font-size: 12pt">} @placeholder {</font>
+      <font size="3" style="font-size: 12pt">Placeholder</font>
+    <font size="3" style="font-size: 12pt">}</font>
+    <font size="3" style="font-size: 12pt">&lt;div #trigger style=&quot;margin-top: 1500px&quot;&gt;Content&lt;/div&gt;</font>
+  <font size="3" style="font-size: 12pt">`</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">class AppComponent { }</font></pre><p>
+<a name="3fc1"></a><font size="3" style="font-size: 12pt">The </font><code class="western"><font size="3" style="font-size: 12pt">@defer
+(on viewport(trigger))</font></code><font size="3" style="font-size: 12pt">
+block ensures that the component is rendered only when the div
+(identified by the </font><code class="western"><font size="3" style="font-size: 12pt">#trigger</font></code><font size="3" style="font-size: 12pt">
+template reference variable) enters the viewport.</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%; page-break-before: always">
+<img src="A%20Comprehensive%20Guide%20to%20Angular%E2%80%99s%20Defer%20Block_html_1fc1be191f6af5bb.gif" name="Image5" align="left" width="713" height="780" border="0"/>
+<br/>
+
+</p>
+<p style="page-break-before: always"><a name="5dfa"></a><font size="3" style="font-size: 12pt">This
+viewport-triggered deferment is a powerful tool for developers aiming
+to optimize resource loading based on the user’s scroll position.
+It ensures that content is loaded and rendered only when necessary,
+reducing initial load times and improving overall performance.</font></p>
+<p><a name="27cb"></a><font size="3" style="font-size: 12pt">While
+specifying an explicit trigger for the </font><code class="western"><font size="3" style="font-size: 12pt">on
+viewport</font></code><font size="3" style="font-size: 12pt">
+condition can be useful, there are scenarios where developers might
+want the deferred content to be loaded based on the visibility of the
+placeholder itself. Angular's </font><code class="western"><font size="3" style="font-size: 12pt">defer</font></code><font size="3" style="font-size: 12pt">
+block supports this through an implicit viewport trigger mechanism:</font></p>
+<pre class="western"><a name="f30e"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">@defer (on viewport) {</font>
+      <font size="3" style="font-size: 12pt">&lt;my-comp /&gt;</font>
+    <font size="3" style="font-size: 12pt">} @placeholder {</font>
+      <font size="3" style="font-size: 12pt">&lt;div&gt;Placeholder&lt;/div&gt;</font>
+    <font size="3" style="font-size: 12pt">}</font>
+  <font size="3" style="font-size: 12pt">`</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">class AppComponent { }</font></pre><p>
+<a name="0377"></a><font size="3" style="font-size: 12pt">The </font><code class="western"><font size="3" style="font-size: 12pt">@defer
+(on viewport)</font></code><font size="3" style="font-size: 12pt">
+block is set up to render the component when the </font><code class="western"><font size="3" style="font-size: 12pt">placeholder</font></code><font size="3" style="font-size: 12pt">
+content enters the viewport. The placeholder content in this case is
+a </font><code class="western"><font size="3" style="font-size: 12pt">div</font></code><font size="3" style="font-size: 12pt">
+element with the label “Placeholder”. This </font><code class="western"><font size="3" style="font-size: 12pt">div</font></code><font size="3" style="font-size: 12pt">
+acts as the implicit trigger for the viewport condition.</font></p>
+<h1 class="western"><a name="4a79"></a><font size="3" style="font-size: 12pt">Optimizing
+with Prefetching</font></h1>
+<p><a name="f6fa"></a><font size="3" style="font-size: 12pt">In the
+realm of modern web development, performance is paramount.
+Prefetching, or preloading resources before they’re needed, is a
+strategy to bolster performance. Angular’s </font><code class="western"><font size="3" style="font-size: 12pt">defer</font></code><font size="3" style="font-size: 12pt">
+block natively supports prefetching, ensuring resources are primed
+and ready, thus minimizing wait times and elevating user experience.</font></p>
+<p><a name="a6ba"></a><font size="3" style="font-size: 12pt">The
+</font><code class="western"><font size="3" style="font-size: 12pt">prefetch</font></code><font size="3" style="font-size: 12pt">
+option seamlessly integrates with all the functionalities we’ve
+explored using the </font><code class="western"><font size="3" style="font-size: 12pt">when</font></code><font size="3" style="font-size: 12pt">
+or </font><code class="western"><font size="3" style="font-size: 12pt">on</font></code><font size="3" style="font-size: 12pt">
+conditions.</font></p>
+<h2 class="western"><a name="f7c5"></a><font size="3" style="font-size: 12pt">Basic
+Prefetching</font></h2>
+<p><a name="75af"></a><font size="3" style="font-size: 12pt">In the
+example below, the </font><code class="western"><font size="3" style="font-size: 12pt">@defer</font></code><font size="3" style="font-size: 12pt">
+block is combined with both the </font><code class="western"><font size="3" style="font-size: 12pt">when</font></code><font size="3" style="font-size: 12pt">
+and </font><code class="western"><font size="3" style="font-size: 12pt">prefetch</font></code><font size="3" style="font-size: 12pt">
+conditions. The component </font><code class="western"><font size="3" style="font-size: 12pt">&lt;my-comp
+/&gt;</font></code><font size="3" style="font-size: 12pt"> will be
+rendered when </font><code class="western"><font size="3" style="font-size: 12pt">isVisible</font></code><font size="3" style="font-size: 12pt">
+is true. Additionally, the component chunk will be prefetched when
+</font><code class="western"><font size="3" style="font-size: 12pt">prefetchCondition</font></code><font size="3" style="font-size: 12pt">
+is true.</font></p>
+<pre class="western">
+<a name="c0f5"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">imports: [MyComp],</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">@defer (when isVisible; prefetch when prefetchCondition) {</font>
+      <font size="3" style="font-size: 12pt">&lt;my-comp /&gt;</font>
+    <font size="3" style="font-size: 12pt">} @placeholder {</font>
+      <font size="3" style="font-size: 12pt">Placeholder</font>
+    <font size="3" style="font-size: 12pt">}</font>
+  <font size="3" style="font-size: 12pt">`</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">class AppComponent {</font>
+  <font size="3" style="font-size: 12pt">isVisible = false;</font>
+  <font size="3" style="font-size: 12pt">prefetchCondition = false;</font>
+<font size="3" style="font-size: 12pt">}</font></pre><h2 class="western">
+<a name="44e7"></a><font size="3" style="font-size: 12pt">Immediate
+Prefetching</font></h2>
+<p><a name="e33f"></a><font size="3" style="font-size: 12pt">In the
+next example, the </font><code class="western"><font size="3" style="font-size: 12pt">prefetch
+on immediate</font></code><font size="3" style="font-size: 12pt">
+condition ensures that the the component chunk is loaded immediately,
+even before it’s needed:</font></p>
+<pre class="western"><a name="c20b"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">imports: [MyComp],</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">@defer (when isVisible; prefetch on immediate) {</font>
+      <font size="3" style="font-size: 12pt">&lt;my-comp /&gt;</font>
+    <font size="3" style="font-size: 12pt">} @placeholder {</font>
+      <font size="3" style="font-size: 12pt">Placeholder</font>
+    <font size="3" style="font-size: 12pt">}</font>
+  <font size="3" style="font-size: 12pt">`</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">class AppComponent {</font>
+  <font size="3" style="font-size: 12pt">isVisible = false;</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%; page-break-before: always">
+<img src="A%20Comprehensive%20Guide%20to%20Angular%E2%80%99s%20Defer%20Block_html_bb22c6b35333a6a4.gif" name="Image6" align="left" width="712" height="777" border="0"/>
+<br/>
+
+</p>
+<h2 class="western" style="page-break-before: always"><a name="d3b8"></a>
+<font size="3" style="font-size: 12pt">Idle Prefetching</font></h2>
+<p><a name="c0e4"></a><font size="3" style="font-size: 12pt">Here,
+the </font><code class="western"><font size="3" style="font-size: 12pt">prefetch
+on idle</font></code><font size="3" style="font-size: 12pt">
+condition ensures that the component chunk is loaded during the
+browser's idle times. This is achieved using the </font><code class="western"><font size="3" style="font-size: 12pt">requestIdleCallback</font></code><font size="3" style="font-size: 12pt">
+API, which allows tasks to be scheduled during idle periods:</font></p>
+<pre class="western"><a name="0476"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">imports: [MyComp],</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">@defer (when isVisible; prefetch on idle) {</font>
+      <font size="3" style="font-size: 12pt">&lt;my-comp /&gt;</font>
+    <font size="3" style="font-size: 12pt">} @placeholder {</font>
+      <font size="3" style="font-size: 12pt">Placeholder</font>
+    <font size="3" style="font-size: 12pt">}</font>
+  <font size="3" style="font-size: 12pt">`</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">class AppComponent {</font>
+  <font size="3" style="font-size: 12pt">isVisible = false;</font>
+<font size="3" style="font-size: 12pt">}</font></pre><h2 class="western">
+<a name="a7be"></a><font size="3" style="font-size: 12pt">Timer-Based
+Prefetching</font></h2>
+<p><a name="e799"></a><font size="3" style="font-size: 12pt">In this
+example, the </font><code class="western"><font size="3" style="font-size: 12pt">prefetch
+on timer(100ms)</font></code><font size="3" style="font-size: 12pt">
+condition ensures that the the component is loaded after a delay of
+100 milliseconds. This can be particularly useful when you want to
+introduce a slight delay before prefetching resources, allowing other
+critical resources to load first.</font></p>
+<pre class="western"><a name="9e08"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">imports: [MyCmp],</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">@defer (when isVisible; prefetch on timer(100ms)) {</font>
+      <font size="3" style="font-size: 12pt">&lt;my-comp /&gt;</font>
+    <font size="3" style="font-size: 12pt">} @placeholder {</font>
+      <font size="3" style="font-size: 12pt">Placeholder</font>
+    <font size="3" style="font-size: 12pt">}</font>
+  <font size="3" style="font-size: 12pt">`</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">class AppComponent {</font>
+  <font size="3" style="font-size: 12pt">isVisible = false;</font>
+<font size="3" style="font-size: 12pt">}</font></pre><h2 class="western">
+<a name="75f9"></a><font size="3" style="font-size: 12pt">Viewport-Based
+Prefetching</font></h2>
+<pre class="western"><a name="1230"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">imports: [MyCmp],</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">@defer (when isVisible; prefetch on viewport(trigger)) {</font>
+      <font size="3" style="font-size: 12pt">&lt;my-comp /&gt;</font>
+    <font size="3" style="font-size: 12pt">} @placeholder {</font>
+      <font size="3" style="font-size: 12pt">Placeholder</font>
+    <font size="3" style="font-size: 12pt">}</font>
+  <font size="3" style="font-size: 12pt">`</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">class AppComponent {</font>
+  <font size="3" style="font-size: 12pt">isVisible = false;</font>
+<font size="3" style="font-size: 12pt">}</font></pre><h1 class="western">
+<a name="c9ab"></a><font size="3" style="font-size: 12pt">Advanced
+Conditions: Minimum and After</font></h1>
+<p><a name="5061"></a><font size="3" style="font-size: 12pt">These
+conditions offer granular control over the display duration of
+</font><code class="western"><font size="3" style="font-size: 12pt">loading</font></code><font size="3" style="font-size: 12pt">
+and </font><code class="western"><font size="3" style="font-size: 12pt">placeholder</font></code><font size="3" style="font-size: 12pt">
+states:</font></p>
+<pre class="western"><a name="30b6"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">imports: [MyCmp],</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">@defer (when isVisible; prefetch when prefetchTrigger) {</font>
+      <font size="3" style="font-size: 12pt">&lt;my-cmp /&gt;</font>
+    <font size="3" style="font-size: 12pt">} </font>
+    <font size="3" style="font-size: 12pt">@loading (after 100ms; minimum 150ms) {</font>
+      <font size="3" style="font-size: 12pt">Loading</font>
+    <font size="3" style="font-size: 12pt">} </font>
+    <font size="3" style="font-size: 12pt">@placeholder (minimum 100ms) {</font>
+      <font size="3" style="font-size: 12pt">Placeholder</font>
+    <font size="3" style="font-size: 12pt">} </font>
+    <font size="3" style="font-size: 12pt">@error {</font>
+      <font size="3" style="font-size: 12pt">Error</font>
+    <font size="3" style="font-size: 12pt">}</font>
+  <font size="3" style="font-size: 12pt">`</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">class AppComponent {</font>
+  <font size="3" style="font-size: 12pt">isVisible = false;</font>
+<font size="3" style="font-size: 12pt">}</font></pre>
+<ul>
+	<li><p style="margin-bottom: 0cm"><a name="18da"></a><code class="western"><font size="3" style="font-size: 12pt">after
+	100ms</font></code><font size="3" style="font-size: 12pt">: The
+	loading state appears after a 100ms delay.</font></p>
+	<li><p style="margin-bottom: 0cm"><a name="6f48"></a><code class="western"><font size="3" style="font-size: 12pt">minimum
+	150ms</font></code><font size="3" style="font-size: 12pt">: The
+	loading state persists for at least 150ms.</font></p>
+	<li><p><a name="3739"></a><code class="western"><font size="3" style="font-size: 12pt">minimum
+	100ms</font></code><font size="3" style="font-size: 12pt">: The
+	placeholder remains visible for a minimum of 100ms.</font></p>
+</ul>
+<p><a name="4c8b"></a><font size="3" style="font-size: 12pt">Note:
+The </font><code class="western"><font size="3" style="font-size: 12pt">@loading</font></code><font size="3" style="font-size: 12pt">
+state is bypassed when resources have been prefetched.</font></p>
+<h1 class="western"><br/>
+<br/>
+
+</h1>
+<h1 class="western" style="page-break-before: always"><a name="2490"></a>
+<font size="3" style="font-size: 12pt">Integrating the </font><code class="western"><font size="3" style="font-size: 12pt">defer</font></code><font size="3" style="font-size: 12pt">
+Block within the </font><code class="western"><font size="3" style="font-size: 12pt">for
+of</font></code><font size="3" style="font-size: 12pt"> Loop</font></h1>
+<p><a name="f23a"></a><font size="3" style="font-size: 12pt">The
+</font><code class="western"><font size="3" style="font-size: 12pt">defer</font></code><font size="3" style="font-size: 12pt">
+block can be seamlessly incorporated within the </font><code class="western"><font size="3" style="font-size: 12pt">for
+of</font></code><font size="3" style="font-size: 12pt"> loop,
+enhancing the dynamic rendering of components based on conditions.
+Here's a demonstration:</font></p>
+<pre class="western"><a name="8a28"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">imports: [MyCmp],</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+    <font size="3" style="font-size: 12pt">@for (item of items; track item) {</font>
+      <font size="3" style="font-size: 12pt">@defer (on timer(500ms)) {</font>
+        <font size="3" style="font-size: 12pt">&lt;my-cmp /&gt;</font>
+      <font size="3" style="font-size: 12pt">} @placeholder {</font>
+        <font size="3" style="font-size: 12pt">Placeholder for {{ item }}</font>
+      <font size="3" style="font-size: 12pt">}</font>
+    <font size="3" style="font-size: 12pt">}</font>
+  <font size="3" style="font-size: 12pt">`</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">class AppComponent {</font>
+  <font size="3" style="font-size: 12pt">items = [...];</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a name="321d"></a><font size="3" style="font-size: 12pt">In the
+example above, for each </font><code class="western"><font size="3" style="font-size: 12pt">item</font></code><font size="3" style="font-size: 12pt">
+in the </font><code class="western"><font size="3" style="font-size: 12pt">items</font></code><font size="3" style="font-size: 12pt">
+array, the </font><code class="western"><font size="3" style="font-size: 12pt">defer</font></code><font size="3" style="font-size: 12pt">
+block introduces a delay of 500ms before rendering the </font><code class="western"><font size="3" style="font-size: 12pt">&lt;my-cmp
+/&gt;</font></code><font size="3" style="font-size: 12pt"> component.
+Meanwhile, a </font><code class="western"><font size="3" style="font-size: 12pt">placeholder</font></code><font size="3" style="font-size: 12pt">
+specific to the current </font><code class="western"><font size="3" style="font-size: 12pt">item</font></code><font size="3" style="font-size: 12pt">
+is displayed.</font></p>
+<h1 class="western"><br/>
+<br/>
+
+</h1>
+<h1 class="western" style="page-break-before: always"><a name="99aa"></a>
+<font size="3" style="font-size: 12pt">Incorporating the defer Block
+with Content Projection</font></h1>
+<p><a name="2c86"></a><font size="3" style="font-size: 12pt">The
+</font><code class="western"><font size="3" style="font-size: 12pt">defer</font></code><font size="3" style="font-size: 12pt">
+block integrates effortlessly with content projection, enhancing the
+dynamic inclusion of content. Here's an example:</font></p>
+<pre class="western"><a name="42cd"></a><font size="3" style="font-size: 12pt">@Component({</font>
+    <font size="3" style="font-size: 12pt">selector: 'my-cmp',</font>
+    <font size="3" style="font-size: 12pt">standalone: true,</font>
+    <font size="3" style="font-size: 12pt">imports: [BazComponent],</font>
+    <font size="3" style="font-size: 12pt">template: `</font>
+     <font size="3" style="font-size: 12pt">@defer (when isVisible) {</font>
+        <font size="3" style="font-size: 12pt">&lt;app-baz /&gt;</font>
+        <font size="3" style="font-size: 12pt">&lt;ng-content /&gt;</font>
+     <font size="3" style="font-size: 12pt">}</font>
+     <font size="3" style="font-size: 12pt">&lt;button (click)=&quot;isVisible = true&quot;&gt;Show&lt;/button&gt;</font>
+    <font size="3" style="font-size: 12pt">`,</font>
+  <font size="3" style="font-size: 12pt">})</font>
+  <font size="3" style="font-size: 12pt">export class MyCmp {</font>
+    <font size="3" style="font-size: 12pt">isVisible = false;</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">imports: [MyCmp],</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+     <font size="3" style="font-size: 12pt">&lt;my-cmp&gt;</font>
+      <font size="3" style="font-size: 12pt">my content</font>
+    <font size="3" style="font-size: 12pt">&lt;/my-cmp&gt;</font>
+  <font size="3" style="font-size: 12pt">`</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">class AppComponent { }</font></pre><p>
+<br/>
+<br/>
+
+</p>
+<p style="page-break-before: always"><a name="16e2"></a><font size="3" style="font-size: 12pt">Let’s
+conclude with a practical example: a stepper that prefetches and
+lazy-loads its steps during idle times:</font></p>
+<pre class="western"><a name="cd61"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">imports: [MyCmp],</font>
+  <font size="3" style="font-size: 12pt">template: `</font>
+     <font size="3" style="font-size: 12pt">@if (step === 0) {</font>
+        <font size="3" style="font-size: 12pt">&lt;app-step-one /&gt;</font>
+        <font size="3" style="font-size: 12pt">&lt;button (click)=&quot;updateStep(1)&quot;&gt;Next&lt;/button&gt;</font>
+     <font size="3" style="font-size: 12pt">}</font>
+     <font size="3" style="font-size: 12pt">@defer (prefetch on idle) {</font>
+        <font size="3" style="font-size: 12pt">@if (step === 1) {</font>
+          <font size="3" style="font-size: 12pt">&lt;app-step-two /&gt;</font>
+          <font size="3" style="font-size: 12pt">&lt;button (click)=&quot;updateStep(2)&quot;&gt;Next&lt;/button&gt;</font>
+        <font size="3" style="font-size: 12pt">}</font>
+     <font size="3" style="font-size: 12pt">}</font>
+     <font size="3" style="font-size: 12pt">@defer (prefetch on idle) {</font>
+        <font size="3" style="font-size: 12pt">@if (step === 2) {</font>
+          <font size="3" style="font-size: 12pt">&lt;app-step-three /&gt;</font>
+        <font size="3" style="font-size: 12pt">}</font>
+     <font size="3" style="font-size: 12pt">}</font>
+  <font size="3" style="font-size: 12pt">`</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">class AppComponent {</font>
+  <font size="3" style="font-size: 12pt">step = 0;</font>
+  <font size="3" style="font-size: 12pt">updateStep(step: number) {</font>
+    <font size="3" style="font-size: 12pt">this.step = step;</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%; page-break-before: always">
+<img src="A%20Comprehensive%20Guide%20to%20Angular%E2%80%99s%20Defer%20Block_html_603b0b7d465d52db.gif" name="Image7" align="left" width="667" height="830" border="0"/>
+<br/>
+
+</p>
+</body>
+</html>
