@@ -1,0 +1,285 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.7.2 (Linux)"/>
+	<meta name="created" content="2023-10-26T22:13:40.407488141"/>
+	<meta name="changed" content="2023-10-26T22:29:37.359497574"/>
+	<style type="text/css">
+		@page { size: 21.59cm 27.94cm; margin: 2cm }
+		p { margin-bottom: 0.25cm; line-height: 115%; background: transparent }
+		pre { background: transparent }
+		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.cjk { font-family: "Noto Sans Mono CJK SC", monospace; font-size: 10pt }
+		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		a:link { color: #000080; so-language: zxx; text-decoration: underline }
+		a:visited { color: #800000; so-language: zxx; text-decoration: underline }
+		strong { font-weight: bold }
+	</style>
+</head>
+<body lang="en-CA" link="#000080" vlink="#800000" dir="ltr"><p style="margin-bottom: 0cm; line-height: 100%">
+<font size="3" style="font-size: 12pt">Getting to Know the Defer
+Observable in RxJS</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">https://netbasal.com/getting-to-know-the-defer-observable-in-rxjs-a16f092d8c09</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">Netanel
+Basal</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">Mar
+3, 2020</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">In
+the previous article, we learned how to create custom RxJS operators.
+In this one, I’d like to talk about one of the lesser known
+observables — defer — and explain how we can use it to solve the
+situations detailed below.</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">Imagine
+that we need to create a custom operator that takes a function, and
+executes it only upon the first source emission. Let’s implement
+such an operator, tapOnce:</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; orphans: 2; widows: 2"><font color="#000000"><font size="3" style="font-size: 12pt">function tapOnce&lt;T&gt;(fn: Function): OperatorFunction&lt;T, T&gt; {</font></font>
+<font color="#000000">  <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">return function(source: Observable&lt;any&gt;) {</span></span></font></font>
+<font color="#000000">    <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">let run = false;</span></span></font></font>
+<font color="#000000">    <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">return source.pipe(</span></span></font></font>
+<font color="#000000">      <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">tap(() =&gt; {</span></span></font></font>
+<font color="#000000">        <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">if (!run) {</span></span></font></font>
+<font color="#000000">          <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">fn();</span></span></font></font>
+<font color="#000000">          <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">run = true;</span></span></font></font>
+<font color="#000000">        <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">}</span></span></font></font>
+<font color="#000000">      <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">})</span></span></font></font>
+<font color="#000000">    <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">);</span></span></font></font>
+<font color="#000000">  <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">};</span></span></font></font>
+<font color="#000000"><font size="3" style="font-size: 12pt">}</font></font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font size="3" style="font-size: 12pt">def-1.ts hosted with ❤ by
+GitHub</font></p>
+<p align="left" style="margin-bottom: 0cm; line-height: 100%; orphans: 2; widows: 2">
+<br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">The
+code is straightforward; We leverage the tap operator to run the
+passed function once, based on the status of the run flag variable.
+Now, let’s use our operator:</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; orphans: 2; widows: 2"><font color="#000000"><font size="3" style="font-size: 12pt">const source = interval(5000).pipe(</font></font>
+<font color="#000000">  <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">tapOnce(() =&gt; console.log('🦊')</span></span></font></font>
+<font color="#000000"><font size="3" style="font-size: 12pt">));</font></font>
+
+<font color="#000000"><font size="3" style="font-size: 12pt">source.subscribe(console.log);</font></font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font size="3" style="font-size: 12pt">def-2.ts hosted with ❤ by
+GitHub</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">Everything
+works well. We see our emoji once, during the first source emission.
+Now, let’s add an additional subscriber:</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; orphans: 2; widows: 2"><font color="#000000"><font size="3" style="font-size: 12pt">const source = interval(5000).pipe(</font></font>
+<font color="#000000">  <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">tapOnce(() =&gt; console.log('🦊')</span></span></font></font>
+<font color="#000000"><font size="3" style="font-size: 12pt">));</font></font>
+
+<font color="#000000"><font size="3" style="font-size: 12pt">source.subscribe(console.log);</font></font>
+<font color="#000000"><font size="3" style="font-size: 12pt">source.subscribe(console.log);</font></font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font size="3" style="font-size: 12pt">def-3.ts hosted with ❤ by
+GitHub</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">If
+we look at the console, we only see a single emoji. The problem is
+that both subscribers share the same lexical scope, and therefore
+reference the same run variable. We need a way of deferring the
+creation of the observable until someone subscribes.</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">Defer
+to the rescue:</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; orphans: 2; widows: 2"><font color="#000000"><font size="3" style="font-size: 12pt">import { defer } from 'rxjs';</font></font>
+
+<font color="#000000"><font size="3" style="font-size: 12pt">function tapOnce&lt;T&gt;(fn: Function): OperatorFunction&lt;T, T&gt; {</font></font>
+<font color="#000000">  <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">return function(source: Observable&lt;any&gt;) {</span></span></font></font>
+<font color="#000000">    <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">return defer(() =&gt; {</span></span></font></font>
+<font color="#000000">      <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">let run = false;</span></span></font></font>
+<font color="#000000">      <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">return source.pipe(</span></span></font></font>
+<font color="#000000">        <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">tap(() =&gt; {</span></span></font></font>
+<font color="#000000">          <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">if (!run) {</span></span></font></font>
+<font color="#000000">            <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">fn();</span></span></font></font>
+<font color="#000000">            <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">run = true;</span></span></font></font>
+<font color="#000000">          <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">}</span></span></font></font>
+<font color="#000000">        <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">})</span></span></font></font>
+<font color="#000000">      <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">);</span></span></font></font>
+<font color="#000000">    <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">});</span></span></font></font>
+<font color="#000000">  <font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">};</span></span></font></font>
+<font color="#000000"><font size="3" style="font-size: 12pt">}</font></font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<font size="3" style="font-size: 12pt">def-4.ts hosted with ❤ by
+GitHub</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">The
+defer observable takes a function that returns an ObservableInput.
+The code inside of defer is executed only upon subscription, and not
+during creation time. Using this approach and thanks to JS closures,
+each subscriber gets its own lexical scope.</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">Let’s
+create a simple implementation of defer to understand how it works:</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">function
+defer(observableFactory: () =&gt; ObservableInput&lt;any&gt;) {</font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%">  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">return
+new Observable(subscriber =&gt; {</font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%">    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const
+source = observableFactory();</font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%">    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">return
+source.subscribe(subscriber);</font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%">  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">});</font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">}</font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">def-5.ts
+hosted with ❤ by GitHub</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">defer
+returns a new observable, which upon subscription invokes the factory
+function, and uses it as the source.</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">Let’s
+see more use cases where we can leverage the defer observable. Let’s
+say we have an expression that we want to evaluate only when someone
+subscribes. For example:</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; orphans: 2; widows: 2"><font color="#000000"><font size="3" style="font-size: 12pt">const randNum = of(Math.random());</font></font>
+<font color="#000000"> </font>
+<font color="#000000"><font size="3" style="font-size: 12pt">randNum.subscribe(console.log);</font></font>
+<font color="#000000"><font size="3" style="font-size: 12pt">randNum.subscribe(console.log);</font></font>
+<font color="#000000"><font size="3" style="font-size: 12pt">def-7.ts hosted with ❤ by GitHub</font></font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">In
+this example, each subscriber will get the same random value. We can
+solve this by using defer, so that the expression will be evaluated
+only when someone subscribed to the source, and not beforehand:</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<pre class="western" style="font-variant: normal; letter-spacing: normal; font-style: normal; font-weight: normal; orphans: 2; widows: 2"><font color="#000000"><font size="3" style="font-size: 12pt">const randNum = defer(() =&gt; of(Math.random()));</font></font>
+
+<font color="#000000"><font size="3" style="font-size: 12pt">randNum2.subscribe(console.log);</font></font>
+<font color="#000000"><font size="3" style="font-size: 12pt">randNum2.subscribe(console.log);</font></font>
+
+<font color="#000000"><font size="3" style="font-size: 12pt">// The same concept as using a function</font></font>
+<font color="#000000"><font size="3" style="font-size: 12pt">const randNum = () =&gt; of(Math.random());</font></font>
+<font color="#000000"><font size="3" style="font-size: 12pt">randNum2().subscribe(console.log);</font></font>
+<font color="#000000"><font size="3" style="font-size: 12pt">randNum2().subscribe(console.log);</font></font>
+<font color="#000000"><font size="3" style="font-size: 12pt">def-8.ts hosted with ❤ by GitHub</font></font></pre><p style="margin-bottom: 0cm; line-height: 100%">
+<br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">Another
+use case is when we want to defer a promise execution until someone
+subscribes:</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">//
+This already executing regardless the numbers of handlers</font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const
+promise = new Promise(resolve =&gt; {</font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%">  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">resolve();</font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">});</font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">//
+Deferring the creation of the promise until someone subscribes</font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">const
+promiseDefered = defer(() =&gt; {</font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%">  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">return
+new Promise(resolve =&gt; {</font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%">    <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">resolve();</font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%">  <font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">});</font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">});</font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font face="Liberation Mono, monospace"><font size="3" style="font-size: 12pt">promiseDefered.subscribe(console.log);</font></font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">def-11.ts
+hosted with ❤ by GitHub</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0cm; line-height: 100%"><font size="3" style="font-size: 12pt">Promises
+are naturally eager; They are executed regardless of the numbers of
+handlers. We can convert a Promise to become Observable-like (i.e.,
+lazy) by using the defer observable.</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%; page-break-before: always">
+🚀 <font size="3" style="font-size: 12pt">In Case You Missed It</font></p>
+<p style="margin-bottom: 0cm; line-height: 100%"><br/>
+
+</p>
+<p style="margin-left: 0.53cm; margin-right: 0.53cm; margin-bottom: 0cm; font-variant: normal; font-style: normal; font-weight: normal; line-height: 0.71cm"><a name="2854"></a>
+<font color="#242424"><font face="sohne, Helvetica Neue, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt">Here
+are a few of my open source projects:</font></font></font></p>
+<ul>
+	<li><p style="margin-right: 0.53cm; margin-bottom: 0cm; border: none; padding: 0cm; line-height: 0.71cm"><a name="c3dc"></a>
+	<strong><a href="https://github.com/datorama/akita" target="_blank"><span style="font-variant: normal"><font color="#242424"><font face="sohne, Helvetica Neue, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt"><span style="font-style: normal"><u><b>Akita</b></u></span></font></font></font></span></a></strong><span style="font-variant: normal"><font color="#242424"><font face="sohne, Helvetica Neue, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">:
+	State Management Tailored-Made for JS Applications</span></span></font></font></font></span></p>
+	<li><p style="margin-right: 0.53cm; margin-bottom: 0cm; border: none; padding: 0cm; line-height: 0.71cm"><a name="71c8"></a>
+	<strong><a href="https://github.com/ngneat/spectator" target="_blank"><span style="font-variant: normal"><font color="#242424"><font face="sohne, Helvetica Neue, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt"><span style="font-style: normal"><u><b>Spectator</b></u></span></font></font></font></span></a></strong><span style="font-variant: normal"><font color="#242424"><font face="sohne, Helvetica Neue, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">:
+	A Powerful Tool to Simplify Your Angular Tests</span></span></font></font></font></span></p>
+	<li><p style="margin-right: 0.53cm; margin-bottom: 0cm; border: none; padding: 0cm; line-height: 0.71cm"><a name="b856"></a>
+	<strong><a href="https://github.com/ngneat/transloco/" target="_blank"><span style="font-variant: normal"><font color="#242424"><font face="sohne, Helvetica Neue, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt"><span style="font-style: normal"><u><b>Transloco</b></u></span></font></font></font></span></a></strong><strong><span style="font-variant: normal"><font color="#242424"><font face="sohne, Helvetica Neue, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt"><span style="font-style: normal"><b>:&nbsp;</b></span></font></font></font></span></strong><span style="font-variant: normal"><font color="#242424"><font face="sohne, Helvetica Neue, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">The
+	Internationalization library Angular</span></span></font></font></font></span></p>
+	<li><p style="margin-right: 0.53cm; margin-bottom: 0cm; border: none; padding: 0cm; line-height: 0.71cm"><a name="2642"></a>
+	<strong><a href="https://github.com/ngneat/forms-manager" target="_blank"><span style="font-variant: normal"><font color="#242424"><font face="sohne, Helvetica Neue, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt"><span style="font-style: normal"><u><b>Forms
+	Manger</b></u></span></font></font></font></span></a></strong><span style="font-variant: normal"><font color="#242424"><font face="sohne, Helvetica Neue, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">:
+	The Foundation for Proper Form Management in Angular</span></span></font></font></font></span></p>
+	<li><p style="margin-right: 0.53cm; margin-bottom: 0cm; border: none; padding: 0cm; line-height: 0.71cm"><a name="4e17"></a>
+	<strong><a href="https://github.com/ngneat/cashew" target="_blank"><span style="font-variant: normal"><font color="#242424"><font face="sohne, Helvetica Neue, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt"><span style="font-style: normal"><u><b>Cashew</b></u></span></font></font></font></span></a></strong><span style="font-variant: normal"><font color="#242424"><font face="sohne, Helvetica Neue, Helvetica, Arial, sans-serif"><font size="3" style="font-size: 12pt"><span style="font-style: normal"><span style="font-weight: normal">:
+	A flexible and straightforward library that caches HTTP requests</span></span></font></font></font></span></p>
+</ul>
+<p style="margin-left: 0.53cm; margin-right: 0.53cm; margin-top: 0.18cm; line-height: 0.44cm; orphans: 2; widows: 2">
+<br/>
+<br/>
+
+</p>
+</body>
+</html>
