@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=windows-1252"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 6.4.5.2 (Windows)"/>
+	<meta name="created" content="2023-11-19T20:53:22.026000000"/>
+	<meta name="changed" content="2023-11-19T21:21:56.192000000"/>
+	<style type="text/css">
+		@page { size: 8.5in 11in; margin: 0.79in }
+		p { margin-bottom: 0.1in; line-height: 115%; background: transparent }
+		pre { background: transparent }
+		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.cjk { font-family: "MingLiU", monospace; font-size: 10pt }
+		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		a:link { color: #000080; so-language: zxx; text-decoration: underline }
+		a:visited { color: #800000; so-language: zxx; text-decoration: underline }
+		code.western { font-family: "Liberation Mono", monospace }
+		code.cjk { font-family: "MingLiU", monospace }
+		code.ctl { font-family: "Liberation Mono", monospace }
+		strong { font-weight: bold }
+		em { font-style: italic }
+	</style>
+</head>
+<body lang="en-US" link="#000080" vlink="#800000" dir="ltr"><p style="margin-bottom: 0in; line-height: 100%">
+<font size="4" style="font-size: 14pt"><b>Navigating the Nuances of
+toSignal in Angular: What to Know</b></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font size="3" style="font-size: 12pt">https://netbasal.com/navigating-the-nuances-of-tosignal-in-angular-what-to-know-e4d6a4b5dfaf</font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br/>
+
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font size="3" style="font-size: 12pt">Netanel
+Basal</font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font size="3" style="font-size: 12pt">2023-11-19</font></p>
+<p><a name="e16c"></a><font size="3" style="font-size: 12pt">Angular
+provides the </font><code class="western"><a href="https://netbasal.com/converting-observables-to-signals-in-angular-what-you-need-to-know-4f5474c765a0" target="_blank"><font size="3" style="font-size: 12pt">toSignal</font></a></code><font size="3" style="font-size: 12pt">
+function that transforms an observable to a signal. Upon examining
+various developers&rsquo; code, I&rsquo;ve noticed a trend where the
+</font><code class="western"><font size="3" style="font-size: 12pt">toSignal</font></code><font size="3" style="font-size: 12pt">
+function is utilized within root providers. For instance:</font></p>
+<pre class="western"><a name="18e9"></a><font size="3" style="font-size: 12pt">import { Injectable } from '@angular/core';</font>
+<font size="3" style="font-size: 12pt">import { toSignal } from '@angular/core/rxjs-interop';</font>
+<font size="3" style="font-size: 12pt">import { interval, tap } from 'rxjs';</font>
+<font size="3" style="font-size: 12pt">@Injectable({ providedIn: 'root' })</font>
+<font size="3" style="font-size: 12pt">export class FooService {</font>
+  <font size="3" style="font-size: 12pt">interval = toSignal(interval(1000).pipe(tap(console.log)));</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a name="c843"></a><font size="3" style="font-size: 12pt">We employ
+the </font><code class="western"><font size="3" style="font-size: 12pt">toSignal</font></code><font size="3" style="font-size: 12pt">
+function to convert the </font><code class="western"><font size="3" style="font-size: 12pt">interval</font></code><font size="3" style="font-size: 12pt">
+observable into a signal. Next, we proceed to inject this service
+into our component:</font></p>
+<pre class="western"><a name="87f5"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">selector: 'app-foo',</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">templateUrl: './foo.component.html',</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class FooComponent {</font>
+  <font size="3" style="font-size: 12pt">fooService = inject(FooService);</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a name="d5c4"></a><font size="3" style="font-size: 12pt">While this
+approach seems straightforward, it introduces two significant side
+effects:</font></p>
+<ol>
+	<li><p style="margin-bottom: 0in"><a name="71eb"></a><strong><font size="3" style="font-size: 12pt">Instant
+	Subscription:</font></strong><font size="3" style="font-size: 12pt">
+	Diverging from the typical lazy subscription pattern of observables,
+	</font><code class="western"><font size="3" style="font-size: 12pt">toSignal</font></code><font size="3" style="font-size: 12pt">
+	initiates an immediate subscription to any observable it receives.
+	This immediate action leads to instant log outputs, regardless of
+	whether the property is actively in use or not, a behavior that
+	might not always be desirable.</font></p>
+	<li><p><a name="095a"></a><strong><font size="3" style="font-size: 12pt">Subscription
+	</font></strong><strong><font color="#000000"><font size="3" style="font-size: 12pt"><span style="background: #ff3333">Leaks</span></font></font></strong><strong><font size="3" style="font-size: 12pt">
+	in </font></strong><strong><font size="3" style="font-size: 12pt"><span style="background: #ff0000">Root</span></font></strong><strong><font size="3" style="font-size: 12pt">
+	Services:</font></strong><font size="3" style="font-size: 12pt">
+	More critically, </font><code class="western"><font size="3" style="font-size: 12pt">toSignal</font></code><font size="3" style="font-size: 12pt">
+	uses the injector&rsquo;s context for <a href="https://netbasal.com/getting-to-know-the-destroyref-provider-in-angular-9791aa096d77" target="_blank">unsubscription</a>
+	by default. When used in a </font><em><font size="3" style="font-size: 12pt">root</font></em><font size="3" style="font-size: 12pt">
+	service, this can lead to memory leaks when the consuming component
+	is destroyed. </font><strong><font size="3" style="font-size: 12pt">It&rsquo;s
+	important to emphasize that this consideration applies to all
+	features that utilize the injection context.</font></strong></p>
+</ol>
+<pre class="western"><a name="c1ab"></a><font size="3" style="font-size: 12pt">@Component({</font>
+  <font size="3" style="font-size: 12pt">selector: 'app-foo',</font>
+  <font size="3" style="font-size: 12pt">standalone: true,</font>
+  <font size="3" style="font-size: 12pt">template: 'interval()'</font>
+<font size="3" style="font-size: 12pt">})</font>
+<font size="3" style="font-size: 12pt">export class FooComponent {</font>
+  <font size="3" style="font-size: 12pt">interval = inject(FooService).interval;</font>
+<font size="3" style="font-size: 12pt">}</font></pre><p>
+<a name="9c46"></a><font size="3" style="font-size: 12pt">For
+instance, toggling a component with </font><code class="western"><font size="3" style="font-size: 12pt">&lt;app-foo
+/&gt;</font></code><font size="3" style="font-size: 12pt"> in a
+conditional block still keeps the interval subscription active even
+after the component's removal.</font></p>
+<pre class="western"><a name="9c8c"></a><font size="3" style="font-size: 12pt">@if (show) {</font>
+  <font size="3" style="font-size: 12pt">&lt;app-foo /&gt;</font>
+<font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">&lt;button (click)=&quot;show = !show&quot;&gt;Toggle&lt;/button&gt;</font></pre><p>
+<a name="1c6e"></a><font size="3" style="font-size: 12pt">To mitigate
+these issues, consider these strategies:</font></p>
+<ul>
+	<li><p><a name="a006"></a><strong><font size="3" style="font-size: 12pt"><span style="background: #ffff00">Pass
+	the Node Injector</span></font></strong><strong><font size="3" style="font-size: 12pt">:</font></strong><font size="3" style="font-size: 12pt">
+	Modify the service to accept an </font><code class="western"><font size="3" style="font-size: 12pt">injector</font></code><font size="3" style="font-size: 12pt">
+	and pass the component&rsquo;s </font><code class="western"><font size="3" style="font-size: 12pt">NodeInjector</font></code><font size="3" style="font-size: 12pt">:</font></p>
+</ul>
+<pre class="western"><a name="f3c6"></a><font size="3" style="font-size: 12pt">@Injectable({ providedIn: 'root', })</font>
+<font size="3" style="font-size: 12pt">export class FooService {</font>
+  <font size="3" style="font-size: 12pt">getSource(injector: Injector) {</font>
+    <font size="3" style="font-size: 12pt">return toSignal(interval(1000).pipe(tap(console.log)), { injector });</font>
+  <font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">}</font>
+<font size="3" style="font-size: 12pt">export class FooComponent {</font>
+  <font size="3" style="font-size: 12pt">// Pass the NodeInjector</font>
+  <font size="3" style="font-size: 12pt">interval = inject(FooService).getSource(inject(Injector));</font>
+<font size="3" style="font-size: 12pt">}</font></pre>
+<ul>
+	<li><p style="margin-bottom: 0in"><a name="16b4"></a><strong><font size="3" style="font-size: 12pt">Component-Level
+	Providers: </font></strong><font size="3" style="font-size: 12pt">Alternatively,
+	providing the service at the component level ensures the
+	subscription&rsquo;s lifecycle is tied to the component.</font></p>
+	<li><p><a name="df1e"></a><strong><font size="3" style="font-size: 12pt"><span style="background: #ffff00">Using
+	toSignal within Components</span></font></strong><strong><font size="3" style="font-size: 12pt">:</font></strong><font size="3" style="font-size: 12pt">
+	Finally, and most recommended, consider always using </font><code class="western"><font size="3" style="font-size: 12pt">toSignal</font></code><font size="3" style="font-size: 12pt">
+	directly within components, thereby aligning the lifecycle with the
+	component and avoiding leaks.</font></p>
+</ul>
+<p style="margin-bottom: 0in; line-height: 100%"><br/>
+
+</p>
+</body>
+</html>
